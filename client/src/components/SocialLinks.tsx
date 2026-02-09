@@ -1,47 +1,12 @@
+import Image from 'next/image'
+
 const SocialLinks = () => {
   const socialLinks = [
-    // {
-    //   id: 'truth',
-    //   name: 'Truth Social',
-    //   icon: 'https://ext.same-assets.com/697774200/1261798764.png',
-    //   url: ''
-    // },
-    // {
-    //   id: 'rumble',
-    //   name: 'Rumble',
-    //   icon: 'https://ext.same-assets.com/697774200/537585103.png',
-    //   url: ''
-    // },
-    {
-      id: 'twitter',
-      name: 'X (Twitter)',
-      icon: 'https://ext.same-assets.com/697774200/2180659290.png',
-      url: '#'
-    },
-    {
-      id: 'tiktok',
-      name: 'TikTok',
-      icon: 'https://ext.same-assets.com/1716151995/2585614386.png',
-      url: '#'
-    },
-    {
-      id: 'facebook',
-      name: 'Facebook',
-      icon: 'https://ext.same-assets.com/697774200/1290627856.png',
-      url: '#'
-    },
-    {
-      id: 'instagram',
-      name: 'Instagram',
-      icon: 'https://ext.same-assets.com/697774200/29643769.png',
-      url: '#'
-    },
-    {
-      id: 'youtube',
-      name: 'YouTube',
-      icon: 'https://ext.same-assets.com/697774200/1477589357.png',
-      url: 'https://www.youtube.com/@Funyula2027'
-    }
+    { id: 'twitter', name: 'X (Twitter)', icon: '/images/twitter.png', url: 'https://www.youtube.com/@Funyula2027' },
+    { id: 'tiktok', name: 'TikTok', icon: '/images/tiktok.png', url: 'https://www.youtube.com/@Funyula2027' },
+    { id: 'facebook', name: 'Facebook', icon: '/images/facebook.png', url: 'https://www.youtube.com/@Funyula2027' },
+    { id: 'instagram', name: 'Instagram', icon: '/images/instagram.png', url: 'https://www.youtube.com/@Funyula2027' },
+    { id: 'youtube', name: 'YouTube', icon: '/images/youtube.png', url: 'https://www.youtube.com/@Funyula2027' },
   ];
 
   return (
@@ -55,13 +20,14 @@ const SocialLinks = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={social.name}
-              className="transform transition-transform hover:scale-110"
+              className="transform transition-transform hover:scale-110 block relative h-8 w-8"
             >
-              <img
+              <Image
                 src={social.icon}
                 alt={social.name}
-                className="h-8 w-auto"
-                loading="lazy"
+                fill
+                className="object-contain"
+                sizes="32px"
               />
             </a>
           ))}

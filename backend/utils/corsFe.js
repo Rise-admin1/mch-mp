@@ -1,7 +1,11 @@
 import dotenv from 'dotenv';
 dotenv.config();
-export const frontendURL = process.env.FRONTEND_URL || 
-['http://localhost:5173','https://fpfplatform.funyula.com/'];
+export const frontendURL = process.env.FRONTEND_URL ||
+  [
+    'http://localhost:5173',
+    'https://www.funyula.com',
+    'https://funyula.com',
+  ];
 
 export const corsOptions = {
     origin :  (origin, callback) => { 
