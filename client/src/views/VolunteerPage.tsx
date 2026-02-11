@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
+import { setupRecaptcha } from '../utils/firebase'
 import { BACKEND_URL } from '../utils/ipUrl'
 
 const VolunteerPage = () => {
@@ -20,6 +21,27 @@ const VolunteerPage = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
+  const recaptchaContainerRef = useRef<HTMLDivElement>(null);
+  const recaptchaVerifierRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (recaptchaContainerRef.current) {
+      recaptchaContainerRef.current.innerHTML = '';
+      try {
+        recaptchaVerifierRef.current = setupRecaptcha('volunteer-recaptcha-container');
+        recaptchaVerifierRef.current.render().then(() => {
+          console.log('Volunteer reCAPTCHA rendered');
+        });
+      } catch (error) {
+        console.error('Error initializing reCAPTCHA:', error);
+      }
+    }
+    return () => {
+      if (recaptchaVerifierRef.current) {
+        recaptchaVerifierRef.current.clear();
+      }
+    };
+  }, []);
 
   // Validation functions
   const validateField = (name: string, value: string | boolean): string => {
@@ -308,19 +330,7 @@ const VolunteerPage = () => {
           </div>
 
           <div className="flex flex-col items-start">
-            <div className="border border-gray-300 p-4 rounded-md mb-4 w-full">
-              <div className="flex items-center">
-                <div className="h-6 w-6 border border-gray-300 flex items-center justify-center mr-2"></div>
-                <span className="text-sm sm:text-base">I'm not a robot</span>
-              </div>
-              <div className="flex items-center mt-2 ml-8">
-                <img src="https://ext.same-assets.com/17751892/916436847.png" alt="reCAPTCHA" className="h-8 w-8" />
-                <div className="text-xs text-gray-500 ml-2">
-                  <div>reCAPTCHA</div>
-                  <div>Privacy - Terms</div>
-                </div>
-              </div>
-            </div>
+            <div id="volunteer-recaptcha-container" ref={recaptchaContainerRef} className="mb-4"></div>
           </div>
 
           <button
