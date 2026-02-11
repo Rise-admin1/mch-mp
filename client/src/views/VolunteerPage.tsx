@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
-import { setupRecaptcha } from '../utils/firebase'
+import { getAuth } from '../utils/firebase'
+import { RecaptchaVerifier } from 'firebase/auth'
 import { BACKEND_URL } from '../utils/ipUrl'
 
 const VolunteerPage = () => {
@@ -21,6 +22,7 @@ const VolunteerPage = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({});
+  const [recaptchaVerified, setRecaptchaVerified] = useState(false);
   const recaptchaContainerRef = useRef<HTMLDivElement>(null);
   const recaptchaVerifierRef = useRef<any>(null);
 
@@ -28,7 +30,16 @@ const VolunteerPage = () => {
     if (recaptchaContainerRef.current) {
       recaptchaContainerRef.current.innerHTML = '';
       try {
-        recaptchaVerifierRef.current = setupRecaptcha('volunteer-recaptcha-container');
+        const authInstance = getAuth();
+        recaptchaVerifierRef.current = new RecaptchaVerifier(authInstance, 'volunteer-recaptcha-container', {
+          size: 'normal',
+          callback: () => {
+            setRecaptchaVerified(true);
+          },
+          'expired-callback': () => {
+            setRecaptchaVerified(false);
+          }
+        });
         recaptchaVerifierRef.current.render().then(() => {
           console.log('Volunteer reCAPTCHA rendered');
         });
@@ -115,6 +126,11 @@ const VolunteerPage = () => {
     // Validate all fields
     if (!validateAllFields()) {
       setErrorMessage('Please fill in all required fields correctly');
+      return;
+    }
+
+    if (!recaptchaVerified) {
+      setErrorMessage('Please complete the reCAPTCHA verification');
       return;
     }
     
@@ -335,9 +351,9 @@ const VolunteerPage = () => {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !recaptchaVerified}
             className={`w-full text-white font-bold py-3 sm:py-4 flex items-center justify-center text-sm sm:text-base transition-all ${
-              isSubmitting 
+              isSubmitting || !recaptchaVerified
                 ? 'bg-gray-400 cursor-not-allowed' 
                 : 'bg-[#d61936] hover:bg-[#b01529]'
             }`}
