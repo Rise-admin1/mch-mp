@@ -38,7 +38,7 @@ export const volunteerGetPdf = async (req, res, next) => {
         });
         if (checkVolunteer) {
 
-            return res.status(400).json({ message: 'You have already verified.',pdf:true });
+            return res.status(200).json({ message: 'You have already verified.',pdf:true });
         }
         // Create a new volunteer
         const volunteer = await prisma.user.create({

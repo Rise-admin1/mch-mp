@@ -10,6 +10,7 @@ interface SignupFormProps {
 }
 
 const SignupForm = ({ variant = 'default' }: SignupFormProps) => {
+  const recaptchaId = `recaptcha-container-${variant}`;
   const [fullName, setFullName] = useState('');
   const [location, setLocation] = useState('');
   const [subLocation, setSubLocation] = useState('');
@@ -31,8 +32,8 @@ const SignupForm = ({ variant = 'default' }: SignupFormProps) => {
       
       // Set up new reCAPTCHA
       try {
-        recaptchaVerifierRef.current = setupRecaptcha('recaptcha-container');
-        console.log('reCAPTCHA initialized');
+        recaptchaVerifierRef.current = setupRecaptcha(recaptchaId);
+        console.log('reCAPTCHA initialized for', variant);
       } catch (error) {
         console.error('Error initializing reCAPTCHA:', error);
         setError('Failed to initialize verification. Please refresh the page and try again.');
@@ -94,7 +95,7 @@ const SignupForm = ({ variant = 'default' }: SignupFormProps) => {
       // Reset reCAPTCHA on error
       if (recaptchaVerifierRef.current) {
         recaptchaVerifierRef.current.clear();
-        recaptchaVerifierRef.current = setupRecaptcha('recaptcha-container');
+        recaptchaVerifierRef.current = setupRecaptcha(recaptchaId);
       }
     } finally {
       setLoading(false);
@@ -249,7 +250,7 @@ const SignupForm = ({ variant = 'default' }: SignupFormProps) => {
               required
             />
           </div>
-          <div id="recaptcha-container" ref={recaptchaContainerRef} className="sm:col-span-2 flex justify-center my-2"></div>
+          <div id={recaptchaId} ref={recaptchaContainerRef} className="sm:col-span-2 flex justify-center my-2"></div>
           {error && <div className="text-red-500 text-sm sm:col-span-2">{error}</div>}
           {successMessage && (
             <div className="text-green-600 bg-green-50 p-3 rounded-lg text-center font-medium sm:col-span-2">
@@ -380,7 +381,7 @@ const SignupForm = ({ variant = 'default' }: SignupFormProps) => {
                     required
                   />
                 </div>
-                <div id="recaptcha-container" ref={recaptchaContainerRef} className="flex justify-center my-2"></div>
+                <div id={recaptchaId} ref={recaptchaContainerRef} className="flex justify-center my-2"></div>
                 {error && <div className="text-red-500 text-sm">{error}</div>}
                 {successMessage && (
                   <div className="text-green-600 bg-green-50 p-3 rounded-lg text-center font-medium">
@@ -487,7 +488,7 @@ const SignupForm = ({ variant = 'default' }: SignupFormProps) => {
                 required
               />
             </div>
-            <div id="recaptcha-container" ref={recaptchaContainerRef} className="flex justify-center my-2"></div>
+            <div id={recaptchaId} ref={recaptchaContainerRef} className="flex justify-center my-2"></div>
             {error && <div className="text-red-500 text-sm">{error}</div>}
             {successMessage && (
               <div className="text-green-600 bg-green-50 p-3 rounded-lg text-center font-medium">
