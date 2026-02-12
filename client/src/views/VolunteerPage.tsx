@@ -5,6 +5,7 @@ import axios from 'axios'
 import { getAuth } from '../utils/firebase'
 import { RecaptchaVerifier } from 'firebase/auth'
 import { BACKEND_URL } from '../utils/ipUrl'
+import Link from 'next/link'
 
 const VolunteerPage = () => {
   const [formData, setFormData] = useState({
@@ -388,7 +389,7 @@ const VolunteerPage = () => {
 
       {/* Donate Section */}
       <div className="bg-[#263a66] text-white text-center py-12">
-        <h2 className="text-2xl sm:text-4xl font-bold">Donate</h2>
+        <h2 className="text-2xl sm:text-4xl font-bold"><Link href="/contribute" className="text-[#d61936] font-bold">Donate</Link></h2>
         <div className="w-12 h-1 bg-[#d61936] mx-auto mt-4"></div>
       </div>
     </div>
