@@ -1,9 +1,10 @@
 'use client'
 
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import axios from 'axios'
-import { redirect, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { BACKEND_URL } from '../utils/ipUrl'
+import { setupRecaptcha, sendVerificationCode, verifyCode } from '../utils/firebase'
 
 const DESIGNATIONS = ['Official', 'Member'] as const
 
@@ -44,6 +45,12 @@ export function ExpoRegisterProvider({ children }: { children: React.ReactNode }
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [formData, setFormData] = useState<FormData>(initialFormData)
+  const [verifyPhoneNumber, setVerifyPhoneNumber] = useState(false)
+  const [verificationCode, setVerificationCode] = useState('')
+  const [confirmationResult, setConfirmationResult] = useState<any>(null)
+  const recaptchaId = 'expo-recaptcha-container'
+  const recaptchaContainerRef = useRef<HTMLDivElement>(null)
+  const recaptchaVerifierRef = useRef<any>(null)
 
   const openModal = () => setModalOpen(true)
 
@@ -53,21 +60,111 @@ export function ExpoRegisterProvider({ children }: { children: React.ReactNode }
     setError(null)
   }
 
+  const formatPhoneNumber = (phone: string): string => {
+    const cleaned = phone.replace(/\D/g, '')
+    return `+254${cleaned}`
+  }
+
+  useEffect(() => {
+    if (!modalOpen) return
+    if (!recaptchaContainerRef.current) return
+
+    recaptchaContainerRef.current.innerHTML = ''
+    try {
+      recaptchaVerifierRef.current = setupRecaptcha(recaptchaId)
+    } catch (err) {
+      console.error('Error initializing reCAPTCHA:', err)
+      setError('Failed to initialize verification. Please refresh the page and try again.')
+    }
+
+    return () => {
+      if (recaptchaVerifierRef.current) {
+        recaptchaVerifierRef.current.clear()
+      }
+    }
+  }, [modalOpen])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
     try {
-      await axios.post(`${BACKEND_URL}/api/volunteer/expo-register`, formData)
+      const formattedPhoneNumber = formatPhoneNumber(formData.phoneNumber)
+
+      const statusRes = await axios.post(`${BACKEND_URL}/api/volunteer/expo-phone-status`, {
+        phoneNumber: formattedPhoneNumber,
+      })
+
+      if (statusRes.data?.isVerified) {
+        await axios.post(`${BACKEND_URL}/api/volunteer/expo-register`, {
+          ...formData,
+          phoneNumber: formattedPhoneNumber,
+          isVerified: true,
+        })
+        setSuccess(true)
+        setTimeout(() => {
+          setModalOpen(false)
+          setSuccess(false)
+          setFormData(initialFormData)
+          window.location.assign('https://fpfplatform.funyula.com/')
+        }, 1500)
+        return
+      }
+
+      if (!recaptchaVerifierRef.current) {
+        throw new Error('Verification not initialized. Please refresh the page and try again.')
+      }
+
+      const result = await sendVerificationCode(formattedPhoneNumber, recaptchaVerifierRef.current)
+      setConfirmationResult(result)
+      setVerifyPhoneNumber(true)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
+
+      if (recaptchaVerifierRef.current) {
+        recaptchaVerifierRef.current.clear()
+        try {
+          recaptchaVerifierRef.current = setupRecaptcha(recaptchaId)
+        } catch (e) {
+          console.error('Error re-initializing reCAPTCHA:', e)
+        }
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleVerifyCode = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+
+    try {
+      if (!confirmationResult) {
+        throw new Error('Verification session expired. Please try again.')
+      }
+
+      await verifyCode(confirmationResult, verificationCode)
+
+      const formattedPhoneNumber = formatPhoneNumber(formData.phoneNumber)
+      await axios.post(`${BACKEND_URL}/api/volunteer/expo-register`, {
+        ...formData,
+        phoneNumber: formattedPhoneNumber,
+        isVerified: true,
+      })
+
       setSuccess(true)
       setTimeout(() => {
         setModalOpen(false)
         setSuccess(false)
+        setVerifyPhoneNumber(false)
+        setVerificationCode('')
+        setConfirmationResult(null)
         setFormData(initialFormData)
-        redirect('https://fpfplatform.funyula.com/')
+        window.location.assign('https://fpfplatform.funyula.com/')
       }, 1500)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
+      setError(err instanceof Error ? err.message : 'Invalid verification code. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -77,6 +174,9 @@ export function ExpoRegisterProvider({ children }: { children: React.ReactNode }
     if (!loading) {
       setModalOpen(false)
       setError(null)
+      setVerifyPhoneNumber(false)
+      setVerificationCode('')
+      setConfirmationResult(null)
       setFormData(initialFormData)
     }
   }
@@ -107,7 +207,7 @@ export function ExpoRegisterProvider({ children }: { children: React.ReactNode }
                   <p className="text-gray-600 text-sm mt-2">Redirecting to manifesto...</p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={verifyPhoneNumber ? handleVerifyCode : handleSubmit} className="space-y-4">
                   <div>
                     <label htmlFor="expo-groupName" className="block text-sm font-medium text-gray-700 mb-1">
                       Group name
@@ -197,6 +297,32 @@ export function ExpoRegisterProvider({ children }: { children: React.ReactNode }
                       className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
                     />
                   </div>
+                  {!verifyPhoneNumber && (
+                    <div
+                      id={recaptchaId}
+                      ref={recaptchaContainerRef}
+                      className="flex justify-center"
+                    />
+                  )}
+                  {verifyPhoneNumber && (
+                    <div>
+                      <label htmlFor="expo-verificationCode" className="block text-sm font-medium text-gray-700 mb-1">
+                        Verification code
+                      </label>
+                      <input
+                        id="expo-verificationCode"
+                        name="verificationCode"
+                        type="text"
+                        placeholder="Enter 6-digit code"
+                        value={verificationCode}
+                        onChange={(e) => setVerificationCode(e.target.value.slice(0, 6))}
+                        maxLength={6}
+                        pattern="[0-9]{6}"
+                        required
+                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
+                      />
+                    </div>
+                  )}
                   {error && <p className="text-red-600 text-sm">{error}</p>}
                   <div className="flex gap-3 pt-2">
                     <button
@@ -212,7 +338,7 @@ export function ExpoRegisterProvider({ children }: { children: React.ReactNode }
                       disabled={loading}
                       className="flex-1 bg-trump-maingreen text-white py-2 px-4 rounded font-medium hover:opacity-90 disabled:opacity-50"
                     >
-                      {loading ? 'Submitting...' : 'Submit'}
+                      {verifyPhoneNumber ? (loading ? 'Verifying...' : 'Verify & Continue') : (loading ? 'Submitting...' : 'Submit')}
                     </button>
                   </div>
                 </form>

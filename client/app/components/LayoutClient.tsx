@@ -12,9 +12,56 @@ function StickyBar() {
       className="sticky top-16 md:top-32 z-40 w-full bg-white border-b border-gray-200 shadow-sm"
       aria-label="Sticky container"
     >
-      <div className="container mx-auto px-4 py-2 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+      <style jsx>{`
+        @keyframes stickyMarquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+      `}</style>
+
+      {/* Mobile: single-line marquee */}
+      <div className="md:hidden overflow-hidden">
+        <div
+          className="flex w-max items-center gap-3 px-4 py-3 whitespace-nowrap will-change-transform"
+          style={{ animation: 'stickyMarquee 14s linear infinite' }}
+        >
+          <div className="flex items-center gap-3">
+            <p className="text-base font-semibold text-gray-800">
+              Register for the Samia Women Business Expo this April.
+            </p>
+            <button
+              type="button"
+              onClick={openModal}
+              className="btn-primary text-base font-bold py-2 px-4 rounded whitespace-nowrap"
+            >
+              Register
+            </button>
+          </div>
+          {/* duplicate for seamless loop */}
+          <div className="flex items-center gap-3" aria-hidden="true">
+            <p className="text-base font-semibold text-gray-800">
+              Register for the Samia Women Business Expo this April.
+            </p>
+            <button
+              type="button"
+              onClick={openModal}
+              className="btn-primary text-base font-bold py-2 px-4 rounded whitespace-nowrap"
+              tabIndex={-1}
+            >
+              Register
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop: static layout */}
+      <div className="hidden md:flex container mx-auto px-4 py-2 flex-wrap items-center justify-center gap-2 sm:gap-3">
         <p className="text-sm sm:text-base text-gray-700">
-        Register for the Samia Women Business Expo this April.
+          Register for the Samia Women Business Expo this April.
         </p>
         <button
           type="button"

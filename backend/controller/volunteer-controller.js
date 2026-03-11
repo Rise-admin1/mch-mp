@@ -28,7 +28,7 @@ export const volunteerSubmitForm = async (req, res, next) => {
 
 export const expoRegister = async (req, res, next) => {
     try {
-        const { groupName, designation, groupLeaderName, yourName, idNumber, phoneNumber } = req.body;
+        const { groupName, designation, groupLeaderName, yourName, idNumber, phoneNumber, isVerified } = req.body;
         await prisma.expoRegistration.create({
             data: {
                 groupName,
@@ -36,13 +36,41 @@ export const expoRegister = async (req, res, next) => {
                 groupLeaderName,
                 yourName,
                 idNumber,
-                phoneNumber
+                phoneNumber,
+                isVerified: Boolean(isVerified),
             }
         });
         res.status(200).json({ message: 'Registration successful' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const expoPhoneStatus = async (req, res) => {
+    try {
+        const { phoneNumber } = req.body;
+        if (!phoneNumber) {
+            return res.status(400).json({ message: 'phoneNumber is required' });
+        }
+
+        const [user, expoVerified] = await Promise.all([
+            prisma.user.findUnique({
+                where: { phone: phoneNumber }
+            }),
+            prisma.expoRegistration.findFirst({
+                where: { phoneNumber, isVerified: true },
+                select: { id: true }
+            })
+        ]);
+
+        const isVerified = Boolean(user?.isVerified) || Boolean(expoVerified);
+        const exists = Boolean(user) || Boolean(expoVerified);
+
+        return res.status(200).json({ exists, isVerified });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
 };
 
