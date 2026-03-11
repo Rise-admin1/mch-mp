@@ -26,6 +26,26 @@ export const volunteerSubmitForm = async (req, res, next) => {
     }
 }
 
+export const expoRegister = async (req, res, next) => {
+    try {
+        const { groupName, designation, groupLeaderName, yourName, idNumber, phoneNumber } = req.body;
+        await prisma.expoRegistration.create({
+            data: {
+                groupName,
+                designation,
+                groupLeaderName,
+                yourName,
+                idNumber,
+                phoneNumber
+            }
+        });
+        res.status(200).json({ message: 'Registration successful' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 export const volunteerGetPdf = async (req, res, next) => {
     const { fullName, location, subLocation, phoneNumber, verificationCode } = req.body;
 

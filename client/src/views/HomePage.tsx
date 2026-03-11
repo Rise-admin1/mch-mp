@@ -1,4 +1,5 @@
 import Hero from '../components/Hero';
+import AutoScrollBanner from '../components/AutoScrollBanner';
 import SignupForm from '../components/SignupForm';
 import Agenda47 from '../components/Agenda47';
 import VideoSection from '../components/VideoSection';
@@ -9,6 +10,9 @@ import MerchPopup from '../components/MerchPopup';
 const HomePage = () => {
   return (
     <div className="flex flex-col">
+      {/* Autoscrolling banner at top */}
+      <AutoScrollBanner />
+
       {/* Hero section first */}
       <div className="relative">
         <Hero />

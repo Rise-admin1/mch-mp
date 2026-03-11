@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 export const frontendURL = process.env.FRONTEND_URL ||
   [
-    'http://localhost:5173',
+    'http://localhost:3000/',
     'https://www.funyula.com',
     'https://funyula.com',
   ];
@@ -21,4 +21,4 @@ export const corsOptions = {
     optionSuccessStatus: 200
 }
 
-export const stripeFrontendURL = process.env.STRIPE_FRONTEND_URL || 'http://localhost:5173';
+export const stripeFrontendURL = process.env.STRIPE_FRONTEND_URL || 'http://localhost:3000';

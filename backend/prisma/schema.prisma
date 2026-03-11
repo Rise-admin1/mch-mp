@@ -66,4 +66,17 @@ model Payment {
   @@index([checkoutRequestID])
 }
 
+model ExpoRegistration {
+  id               String   @id @default(cuid())
+  groupName        String
+  designation      String   // 'Official' or 'Member'
+  groupLeaderName  String
+  yourName         String
+  idNumber         String
+  phoneNumber      String
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
 
