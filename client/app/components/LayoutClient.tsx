@@ -30,9 +30,13 @@ function StickyBar() {
           style={{ animation: 'stickyMarquee 14s linear infinite' }}
         >
           <div className="flex items-center gap-3">
-            <p className="text-base font-semibold text-gray-800">
+            <button
+              type="button"
+              onClick={openModal}
+              className="text-base font-semibold text-gray-800 underline underline-offset-4 hover:text-trump-light-accent transition-colors"
+            >
               Register for the Samia Women Business Expo this April.
-            </p>
+            </button>
             <button
               type="button"
               onClick={openModal}
@@ -43,9 +47,14 @@ function StickyBar() {
           </div>
           {/* duplicate for seamless loop */}
           <div className="flex items-center gap-3" aria-hidden="true">
-            <p className="text-base font-semibold text-gray-800">
+            <button
+              type="button"
+              onClick={openModal}
+              className="text-base font-semibold text-gray-800 underline underline-offset-4 hover:text-trump-light-accent transition-colors"
+              tabIndex={-1}
+            >
               Register for the Samia Women Business Expo this April.
-            </p>
+            </button>
             <button
               type="button"
               onClick={openModal}

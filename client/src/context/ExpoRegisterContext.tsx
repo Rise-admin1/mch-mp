@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { BACKEND_URL } from '../utils/ipUrl'
 import { setupRecaptcha, sendVerificationCode, verifyCode } from '../utils/firebase'
 
-const DESIGNATIONS = ['Official', 'Member'] as const
+const DESIGNATIONS = ['Official', 'Member', '--Options--'] as const
 
 type FormData = {
   groupName: string
@@ -19,7 +19,7 @@ type FormData = {
 
 const initialFormData: FormData = {
   groupName: '',
-  designation: 'Member',
+  designation: '--Options--',
   groupLeaderName: '',
   yourName: '',
   idNumber: '',
@@ -62,8 +62,12 @@ export function ExpoRegisterProvider({ children }: { children: React.ReactNode }
 
   const formatPhoneNumber = (phone: string): string => {
     const cleaned = phone.replace(/\D/g, '')
-    return `+254${cleaned}`
+    const noLeadingCountry = cleaned.startsWith('254') ? cleaned.slice(3) : cleaned
+    const noLeadingZero = noLeadingCountry.startsWith('0') ? noLeadingCountry.slice(1) : noLeadingCountry
+    return `+254${noLeadingZero}`
   }
+
+  const isDesignationInvalid = formData.designation === '--Options--'
 
   useEffect(() => {
     if (!modalOpen) return
@@ -89,6 +93,11 @@ export function ExpoRegisterProvider({ children }: { children: React.ReactNode }
     setLoading(true)
     setError(null)
     try {
+      if (isDesignationInvalid) {
+        setError('Please select a designation to continue.')
+        return
+      }
+
       const formattedPhoneNumber = formatPhoneNumber(formData.phoneNumber)
 
       const statusRes = await axios.post(`${BACKEND_URL}/api/volunteer/expo-phone-status`, {
@@ -240,6 +249,9 @@ export function ExpoRegisterProvider({ children }: { children: React.ReactNode }
                         </option>
                       ))}
                     </select>
+                    {isDesignationInvalid && (
+                      <p className="text-red-600 text-sm mt-1">Please select a designation.</p>
+                    )}
                   </div>
                   <div>
                     <label htmlFor="expo-groupLeaderName" className="block text-sm font-medium text-gray-700 mb-1">
@@ -287,15 +299,25 @@ export function ExpoRegisterProvider({ children }: { children: React.ReactNode }
                     <label htmlFor="expo-phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
                       Phone number
                     </label>
-                    <input
-                      id="expo-phoneNumber"
-                      name="phoneNumber"
-                      type="tel"
-                      required
-                      value={formData.phoneNumber}
-                      onChange={handleChange}
-                      className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
-                    />
+                    <div className="relative w-full">
+                      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
+                        +254
+                      </div>
+                      <input
+                        id="expo-phoneNumber"
+                        name="phoneNumber"
+                        type="tel"
+                        required
+                        value={formData.phoneNumber}
+                        onChange={(e) => {
+                          const digitsOnly = e.target.value.replace(/\D/g, '')
+                          setFormData((prev) => ({ ...prev, phoneNumber: digitsOnly }))
+                          setError(null)
+                        }}
+                        className="w-full border border-gray-300 rounded pl-14 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
+                        placeholder="Phone Number"
+                      />
+                    </div>
                   </div>
                   {!verifyPhoneNumber && (
                     <div
@@ -335,7 +357,7 @@ export function ExpoRegisterProvider({ children }: { children: React.ReactNode }
                     </button>
                     <button
                       type="submit"
-                      disabled={loading}
+                      disabled={loading || (!verifyPhoneNumber && isDesignationInvalid)}
                       className="flex-1 bg-trump-maingreen text-white py-2 px-4 rounded font-medium hover:opacity-90 disabled:opacity-50"
                     >
                       {verifyPhoneNumber ? (loading ? 'Verifying...' : 'Verify & Continue') : (loading ? 'Submitting...' : 'Submit')}
