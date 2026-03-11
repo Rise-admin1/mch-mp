@@ -35,7 +35,7 @@ function StickyBar() {
               onClick={openModal}
               className="text-base font-semibold text-gray-800 underline underline-offset-4 hover:text-trump-light-accent transition-colors"
             >
-              Register for the Samia Women Business Expo this April.
+             Samia Women Business Expo
             </button>
             <button
               type="button"
