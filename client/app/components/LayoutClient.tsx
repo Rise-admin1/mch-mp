@@ -53,7 +53,7 @@ function StickyBar() {
               className="text-base font-semibold text-gray-800 underline underline-offset-4 hover:text-trump-light-accent transition-colors"
               tabIndex={-1}
             >
-              Register for the Samia Women Business Expo this April.
+              Samia Women Business Expo
             </button>
             <button
               type="button"
@@ -70,7 +70,7 @@ function StickyBar() {
       {/* Desktop: static layout */}
       <div className="hidden md:flex container mx-auto px-4 py-2 flex-wrap items-center justify-center gap-2 sm:gap-3">
         <p className="text-sm sm:text-base text-gray-700">
-          Register for the Samia Women Business Expo this April.
+          Samia Women Business Expo
         </p>
         <button
           type="button"
