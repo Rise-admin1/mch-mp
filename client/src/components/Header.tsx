@@ -37,6 +37,7 @@ const Header = () => {
               <nav className="hidden lg:flex items-center space-x-6 mr-4">
                 <Link href="/news" className="nav-link text-sm">NEWS</Link>
                 <Link href="/platform" className="nav-link text-sm">VISION</Link>
+                <Link href="/our-work" className="nav-link text-sm">OUR WORK</Link>
                 <Link href="/upcoming-projects" className="nav-link text-sm">UPCOMING PROJECTS</Link>
                 <Link href="/gallery" className="nav-link text-sm">GALLERY</Link>
                 <Link href="/get-involved" className="nav-link text-sm">GET INVOLVED </Link>
@@ -73,6 +74,7 @@ const Header = () => {
             <nav className="lg:hidden mt-4 pb-4 border-t border-gray-200 pt-4 flex flex-col space-y-4">
               <Link href="/news" className="nav-link" onClick={closeMobileMenu}>NEWS</Link>
               <Link href="/platform" className="nav-link" onClick={closeMobileMenu}>VISION</Link>
+              <Link href="/our-work" className="nav-link" onClick={closeMobileMenu}>OUR WORK</Link>
               <Link href="/upcoming-projects" className="nav-link" onClick={closeMobileMenu}>UPCOMING PROJECTS</Link>
               <Link href="/gallery" className="nav-link" onClick={closeMobileMenu}>GALLERY</Link>
               <Link href="/get-involved" className="nav-link" onClick={closeMobileMenu}>GET INVOLVED</Link>
