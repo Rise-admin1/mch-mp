@@ -10,11 +10,11 @@ const Events = () => {
     <section className="w-full py-10 md:py-14 bg-white">
       <div className="container mx-auto px-8 relative z-10">
         <h2 className="text-3xl md:text-5xl font-black mb-6 text-black md:leading-tight">
-          Our Work
+          Upcoming Events
         </h2>
-        <p className="text-lg md:text-xl text-black/80 mb-6">
+        <h3 className="text-lg md:text-2xl text-black/80 mb-6">
           Samia Women Business Expo
-        </p>
+        </h3>
         <p className="text-base md:text-lg text-black/70 mb-6 max-w-2xl">
           An ongoing initiative focused on mobilizing and supporting women in Samia through entrepreneurship, collaboration, and access to business opportunities.
         </p>

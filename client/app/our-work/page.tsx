@@ -3,10 +3,10 @@ import OurWorkPage from '../../src/views/OurWorkPage'
 
 export const metadata = {
   title: 'Our Work | Michael H. Mugenya 2027',
-  description: 'Samia Women Business Expo — Our Work',
+  description: 'An ongoing initiative focused on mobilizing and supporting women in Samia through entrepreneurship, collaboration, and access to business opportunities.',
   openGraph: {
     title: 'Our Work | Michael H. Mugenya 2027',
-    description: 'Samia Women Business Expo — Our Work',
+    description: 'An ongoing initiative focused on mobilizing and supporting women in Samia through entrepreneurship, collaboration, and access to business opportunities.',
     url: 'https://funyula.com/our-work',
     siteName: 'Michael H. Mugenya 2027',
     images: [{ url: 'https://i.postimg.cc/cL5MWGTh/logo.png', alt: 'Our Work | Michael H. Mugenya 2027' }],
@@ -15,7 +15,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image' as const,
     title: 'Our Work | Michael H. Mugenya 2027',
-    description: 'Samia Women Business Expo — Our Work',
+    description: 'An ongoing initiative focused on mobilizing and supporting women in Samia through entrepreneurship, collaboration, and access to business opportunities.',
     images: ['https://i.postimg.cc/cL5MWGTh/logo.png'],
   },
 }
