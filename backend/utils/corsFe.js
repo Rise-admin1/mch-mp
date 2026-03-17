@@ -5,6 +5,8 @@ export const frontendURL = process.env.FRONTEND_URL ||
     'http://localhost:3000/',
     'https://www.funyula.com',
     'https://funyula.com',
+    'http://localhost:5173',
+    'https://www.scheduling.phdsuccess.ae'
   ];
 
 export const corsOptions = {

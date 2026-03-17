@@ -80,4 +80,51 @@ model ExpoRegistration {
   updatedAt        DateTime @updatedAt
 }
 
+model SchedulingAvailability {
+  id        String   @id @default(uuid())
+  dayOfWeek Int      // 0 = Sunday
+  startTime String   // UTC start of availability, e.g. "09:00"
+  endTime   String   // UTC end of availability, e.g. "17:00"
+
+  bookings  SchedulingBooking[] @relation("AvailabilityBookings")
+}
+
+model SchedulingBooking {
+  id             String   @id @default(uuid())
+  name           String
+  email          String
+  startTime      DateTime // UTC
+  endTime        DateTime // UTC, always 1 hour after startTime
+  meetLink       String?
+  googleEventId  String?
+  status         String   // pending | confirmed | expired | cancelled
+  expiresAt      DateTime?
+  stripeSessionId String? @unique
+
+  availabilityId String
+  availability   SchedulingAvailability @relation("AvailabilityBookings", fields: [availabilityId], references: [id])
+
+  payment   SchedulingPayment?
+  createdAt DateTime @default(now())
+
+  @@unique([availabilityId, startTime])
+}
+
+model SchedulingPayment {
+  id        String   @id @default(uuid())
+  bookingId String   @unique
+  stripeId  String
+  amount    Int
+  status    String   // pending | paid
+
+  booking SchedulingBooking @relation(fields: [bookingId], references: [id])
+}
+
+model GoogleOAuthToken {
+  id           String   @id @default(uuid())
+  provider     String   @unique // "google"
+  refreshToken String   @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
 
