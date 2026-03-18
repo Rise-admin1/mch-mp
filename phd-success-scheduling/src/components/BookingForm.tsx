@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { format } from 'date-fns'
 import { ArrowLeft, Calendar, Clock } from 'lucide-react'
 import type { BookingData } from './BookingPage'
-import { apiUrl } from '@/lib/api'
 
 interface BookingFormProps {
   date: Date
@@ -24,6 +23,10 @@ export function BookingForm({ date, time, availabilityId, onBack, onConfirm }: B
   const [notes, setNotes] = useState('')
   const [errors, setErrors] = useState<{ name?: string; email?: string }>({})
   const [submitting, setSubmitting] = useState(false)
+  const API_BASE_URL = (((import.meta as any).env?.VITE_API_BASE_URL as string | undefined) || '').replace(
+    /\/$/,
+    ''
+  )
 
   const validate = () => {
     const newErrors: { name?: string; email?: string } = {}
@@ -48,6 +51,7 @@ export function BookingForm({ date, time, availabilityId, onBack, onConfirm }: B
     if (validate()) {
       setSubmitting(true)
       try {
+        if (!API_BASE_URL) throw new Error('Missing VITE_API_BASE_URL')
         sessionStorage.setItem(
           'phd_success:lastBooking',
           JSON.stringify({
@@ -63,7 +67,7 @@ export function BookingForm({ date, time, availabilityId, onBack, onConfirm }: B
         )
         // This will create a 10-minute hold and return a Stripe Checkout URL.
         const startTime = time
-        const resp = await fetch(apiUrl('/api/scheduling/checkout'), {
+        const resp = await fetch(`${API_BASE_URL}/api/scheduling/checkout`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

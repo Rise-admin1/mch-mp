@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { format } from 'date-fns'
 import { cn } from '../lib/utils'
-import { apiUrl } from '@/lib/api'
 
 interface TimeSlotsProps {
   selectedDate: Date
@@ -28,6 +27,11 @@ export function TimeSlots({ selectedDate, selectedTime, onTimeSelect }: TimeSlot
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const API_BASE_URL = (((import.meta as any).env?.VITE_API_BASE_URL as string | undefined) || '').replace(
+    /\/$/,
+    ''
+  )
+
   useEffect(() => {
     const controller = new AbortController()
 
@@ -35,13 +39,12 @@ export function TimeSlots({ selectedDate, selectedTime, onTimeSelect }: TimeSlot
       setLoading(true)
       setError(null)
       try {
+        if (!API_BASE_URL) throw new Error('Missing VITE_API_BASE_URL')
         const dateIso = toUtcMidnightIso(selectedDate)
         const nowIso = new Date().toISOString()
 
         const resp = await fetch(
-          apiUrl(
-            `/api/scheduling/get-availability?date=${encodeURIComponent(dateIso)}&now=${encodeURIComponent(nowIso)}`
-          ),
+          `${API_BASE_URL}/api/scheduling/get-availability?date=${encodeURIComponent(dateIso)}&now=${encodeURIComponent(nowIso)}`,
           { signal: controller.signal }
         )
         if (!resp.ok) {
