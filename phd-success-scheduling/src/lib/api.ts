@@ -13,6 +13,8 @@ export function apiUrl(path: string): string {
   if (!path.startsWith('/')) {
     throw new Error(`apiUrl(path) must start with "/": received "${path}"`)
   }
+  console.log('API_BASE_URL', API_BASE_URL)
+  console.log('path', path)
   return `${API_BASE_URL}${path}`
 }
 
