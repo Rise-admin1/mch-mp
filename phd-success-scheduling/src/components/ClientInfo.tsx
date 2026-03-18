@@ -1,6 +1,14 @@
 import { Clock, Video } from 'lucide-react'
+import type { SessionType } from '@/types/session'
+import { getSessionCopy } from '@/types/session'
 
-export function ClientInfo() {
+interface ClientInfoProps {
+  sessionType: SessionType | null
+}
+
+export function ClientInfo({ sessionType }: ClientInfoProps) {
+  const copy = sessionType ? getSessionCopy(sessionType) : null
+
   return (
     <div className="space-y-6">
       {/* Avatar and name */}
@@ -9,14 +17,14 @@ export function ClientInfo() {
           MH
         </div>
         <div>
-          <p className="text-sm text-muted-foreground">Michael Harun Mugenya</p>
+          <p className="text-sm text-muted-foreground">RISE Ltd.</p>
         </div>
       </div>
 
       {/* Meeting title */}
       <div>
         <h1 className="text-xl font-semibold text-foreground text-pretty">
-          1 Hour Meeting
+          {copy ? copy.title : 'Choose a session'}
         </h1>
       </div>
 
@@ -24,7 +32,7 @@ export function ClientInfo() {
       <div className="space-y-3">
         <div className="flex items-center gap-3 text-muted-foreground">
           <Clock className="w-4 h-4 shrink-0" />
-          <span className="text-sm"> 1 hour meeting</span>
+          <span className="text-sm"> 60 minute meeting</span>
         </div>
         <div className="flex items-center gap-3 text-muted-foreground">
           <Video className="w-4 h-4 shrink-0" />
@@ -35,7 +43,7 @@ export function ClientInfo() {
       {/* Description */}
       <div className="pt-4 border-t border-border">
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Schedule a quick call to discuss your DRI scores and how it can be improved.
+          {copy ? copy.description : 'Select a session type to continue booking.'}
         </p>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { Calendar } from './Calendar'
 import { TimeSlots } from './TimeSlots'
 import { BookingForm } from './BookingForm'
 import { ConfirmationScreen } from './ConfirmationScreen'
+import type { SessionType } from '@/types/session'
 
 export interface BookingData {
   date: Date | null
@@ -14,12 +15,17 @@ export interface BookingData {
 }
 
 export function BookingPage() {
+  const [sessionType, setSessionType] = useState<SessionType | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [selectedAvailabilityId, setSelectedAvailabilityId] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
   const [bookingData, setBookingData] = useState<BookingData | null>(null)
+
+  const handleSessionSelect = (type: SessionType) => {
+    setSessionType(type)
+  }
 
   const handleTimeSelect = (slot: { startTime: string; availabilityId: string }) => {
     setSelectedTime(slot.startTime)
@@ -46,12 +52,45 @@ export function BookingPage() {
         <div className="flex flex-col lg:flex-row">
           {/* Left sidebar - Client info */}
           <div className="lg:w-80 p-6 lg:p-8 border-b lg:border-b-0 lg:border-r border-border bg-muted/30">
-            <ClientInfo />
+            <ClientInfo sessionType={sessionType} />
           </div>
 
           {/* Right content - Calendar and time slots */}
           <div className="flex-1 p-6 lg:p-8">
-            {showForm && selectedDate && selectedTime && selectedAvailabilityId ? (
+            {!sessionType ? (
+              <div className="space-y-4">
+                <div>
+                  <h2 className="text-lg font-semibold text-foreground">Choose a session</h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Select the type of session you’d like to book.
+                  </p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    onClick={() => handleSessionSelect('consultative')}
+                    className="text-left p-4 rounded-xl border border-border bg-card hover:border-foreground transition-colors"
+                  >
+                    <div className="text-sm font-semibold text-foreground">Consultative Sessions</div>
+                    <div className="text-sm text-muted-foreground mt-1">
+                      PhD, Business and select postgraduate clients.
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleSessionSelect('consult-dri')}
+                    className="text-left p-4 rounded-xl border border-border bg-card hover:border-foreground transition-colors"
+                  >
+                    <div className="text-sm font-semibold text-foreground">Consult DRI Services</div>
+                    <div className="text-sm text-muted-foreground mt-1">
+                      DRI services for PhD, Business and select postgraduate clients.
+                    </div>
+                  </button>
+                </div>
+              </div>
+            ) : showForm && selectedDate && selectedTime && selectedAvailabilityId ? (
               <BookingForm
                 date={selectedDate}
                 time={selectedTime}
