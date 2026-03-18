@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { format } from 'date-fns'
 import { ArrowLeft, Calendar, Clock } from 'lucide-react'
 import type { BookingData } from './BookingPage'
+import { apiUrl } from '@/lib/api'
 
 interface BookingFormProps {
   date: Date
@@ -62,7 +63,7 @@ export function BookingForm({ date, time, availabilityId, onBack, onConfirm }: B
         )
         // This will create a 10-minute hold and return a Stripe Checkout URL.
         const startTime = time
-        const resp = await fetch('/api/scheduling/checkout', {
+        const resp = await fetch(apiUrl('/api/scheduling/checkout'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

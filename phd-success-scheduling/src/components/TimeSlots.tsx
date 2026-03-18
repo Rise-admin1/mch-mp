@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { format } from 'date-fns'
 import { cn } from '../lib/utils'
+import { apiUrl } from '@/lib/api'
 
 interface TimeSlotsProps {
   selectedDate: Date
@@ -38,7 +39,9 @@ export function TimeSlots({ selectedDate, selectedTime, onTimeSelect }: TimeSlot
         const nowIso = new Date().toISOString()
 
         const resp = await fetch(
-          `/api/scheduling/get-availability?date=${encodeURIComponent(dateIso)}&now=${encodeURIComponent(nowIso)}`,
+          apiUrl(
+            `/api/scheduling/get-availability?date=${encodeURIComponent(dateIso)}&now=${encodeURIComponent(nowIso)}`
+          ),
           { signal: controller.signal }
         )
         if (!resp.ok) {
