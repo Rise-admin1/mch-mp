@@ -1,5 +1,8 @@
 import { newsItems } from '../utils/newsData.js';
 import { extractImageFromContent, extractDescriptionFromContent, escapeHtml } from '../utils/metaUtils.js';
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient();
 
 /**
  * Serves Meta Tags for News Items
