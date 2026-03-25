@@ -3,8 +3,8 @@ import { getMetaTags, getReports, getContributeMetaTags } from '../controller/me
 
 const router = express.Router();
 
-router.get('/news/:id', getMetaTags);
 router.get('/contribute', getContributeMetaTags);
 router.get('/reports', getReports);
+router.get('/news/:id', getMetaTags);
 
 export default router;

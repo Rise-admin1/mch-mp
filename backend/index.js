@@ -173,7 +173,7 @@ app.get('/auth/google/callback', async (req, res) => {
 app.use('/api/volunteer', volunteerRouter);
 app.use('/api/africastalking',africastalkingRouter);
 app.use('/api/dajaria',dajariaRouter);
-app.use('/', metaRouter);
+app.use('/api/rise-reports', metaRouter);
 
 app.use('/api/scheduling', schedulingRouter);
 
