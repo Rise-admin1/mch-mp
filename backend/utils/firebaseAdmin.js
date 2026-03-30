@@ -24,25 +24,33 @@ export function getFirebaseAdminAuth() {
 
   const jsonRaw = process.env.FIREBASE_SERVICE_ACCOUNT_JSON
   const jsonPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH
+  const gacPath = process.env.GOOGLE_APPLICATION_CREDENTIALS
 
-  if (!jsonRaw && !jsonPath) {
+  // Standard GCP / many hosts: JSON file path only (no Firebase-specific name required)
+  if (!jsonRaw && !jsonPath && !gacPath) {
     return null
   }
 
   try {
-    const credObj = jsonRaw
-      ? JSON.parse(jsonRaw)
-      : JSON.parse(
-          readFileSync(
-            path.isAbsolute(jsonPath) ? jsonPath : path.join(process.cwd(), jsonPath),
-            'utf8'
-          )
-        )
+    if (jsonRaw) {
+      const credObj = JSON.parse(jsonRaw)
+      admin.initializeApp({
+        credential: admin.credential.cert(credObj),
+      })
+      return admin.auth()
+    }
 
-    admin.initializeApp({
-      credential: admin.credential.cert(credObj),
-    })
-    return admin.auth()
+    const filePath = jsonPath || gacPath
+    if (filePath) {
+      const resolved = path.isAbsolute(filePath) ? filePath : path.join(process.cwd(), filePath)
+      const credObj = JSON.parse(readFileSync(resolved, 'utf8'))
+      admin.initializeApp({
+        credential: admin.credential.cert(credObj),
+      })
+      return admin.auth()
+    }
+
+    return null
   } catch (e) {
     console.error('Firebase Admin init failed:', e?.message || e)
     return null
@@ -61,7 +69,7 @@ export async function ensureVolunteerCanSubmitPhone(normalizedPhone, firebaseIdT
       ok: false,
       status: 503,
       message:
-        'Phone verification is not configured on the server. Set FIREBASE_SERVICE_ACCOUNT_JSON or FIREBASE_SERVICE_ACCOUNT_PATH.',
+        'Phone verification is not configured on the server. Set FIREBASE_SERVICE_ACCOUNT_JSON, FIREBASE_SERVICE_ACCOUNT_PATH, or GOOGLE_APPLICATION_CREDENTIALS to your Firebase service account JSON.',
     }
   }
 
