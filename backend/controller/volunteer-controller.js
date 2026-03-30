@@ -1,20 +1,79 @@
 import { PrismaClient } from '@prisma/client'
+import { validateVolunteerPollingSelection } from '../utils/volunteerPollingCatalog.js'
+import { normalizeKePhone, ensureVolunteerCanSubmitPhone, getFirebaseAdminAuth } from '../utils/firebaseAdmin.js'
 
 const prisma = new PrismaClient();
 
+export const checkVolunteerFirebasePhone = async (req, res) => {
+    try {
+        const phone = req.body?.phone
+        if (!phone || typeof phone !== 'string') {
+            return res.status(400).json({ message: 'phone is required' })
+        }
+        const normalized = normalizeKePhone(phone)
+        if (!normalized) {
+            return res.status(400).json({ message: 'Invalid phone number' })
+        }
+        const auth = getFirebaseAdminAuth()
+        if (!auth) {
+            return res.status(200).json({ exists: false, checkUnavailable: true })
+        }
+        try {
+            await auth.getUserByPhoneNumber(normalized)
+            return res.status(200).json({ exists: true })
+        } catch (e) {
+            if (e?.code === 'auth/user-not-found') {
+                return res.status(200).json({ exists: false })
+            }
+            throw e
+        }
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
 export const volunteerSubmitForm = async (req, res, next) => {
     try {
-        const { firstName, lastName, email, phone, location, subLocation, message, privacyPolicy } = req.body;
+        const {
+            fullName,
+            ward,
+            location,
+            subLocation,
+            pollingStation,
+            phone,
+            privacyPolicy,
+            firebaseIdToken,
+        } = req.body;
+
+        const geoCheck = validateVolunteerPollingSelection(ward, location, subLocation, pollingStation)
+        if (!geoCheck.ok) {
+            return res.status(400).json({ message: geoCheck.message })
+        }
+
+        const normalizedPhone = normalizeKePhone(phone)
+        if (!normalizedPhone) {
+            return res.status(400).json({ message: 'Invalid phone number' })
+        }
+
+        const phoneGate = await ensureVolunteerCanSubmitPhone(normalizedPhone, firebaseIdToken)
+        if (!phoneGate.ok) {
+            return res.status(phoneGate.status).json({ message: phoneGate.message })
+        }
+
         const newVolunteer = await prisma.userVolunteer.create({
             data: {
-                firstName,
-                lastName,
-                email,
-                phone,
-                location,
-                subLocation,
-                message,
-                privacyPolicy
+                fullName: typeof fullName === 'string' ? fullName.trim() : '',
+                ward: typeof ward === 'string' ? ward.trim() : '',
+                location: typeof location === 'string' ? location.trim() : '',
+                subLocation: typeof subLocation === 'string' ? subLocation.trim() : '',
+                pollingStation: typeof pollingStation === 'string' ? pollingStation.trim() : '',
+                phone: normalizedPhone,
+                message: '',
+                privacyPolicy: Boolean(privacyPolicy),
+                firstName: '',
+                lastName: '',
+                email: '',
             }
         });
 

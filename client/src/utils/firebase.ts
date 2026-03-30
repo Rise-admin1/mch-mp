@@ -31,8 +31,13 @@ function getFirebaseAuth(): Auth {
   return auth
 }
 
+type RecaptchaHooks = {
+  onVerified?: () => void
+  onExpired?: () => void
+}
+
 // Function to set up reCAPTCHA verifier
-export const setupRecaptcha = (elementId: string) => {
+export const setupRecaptcha = (elementId: string, hooks?: RecaptchaHooks) => {
   const authInstance = getFirebaseAuth()
   const existingRecaptcha = document.getElementById(elementId)
   if (existingRecaptcha) {
@@ -40,31 +45,34 @@ export const setupRecaptcha = (elementId: string) => {
   }
   return new RecaptchaVerifier(authInstance, elementId, {
     size: 'normal', // Change from 'invisible' to 'normal' for better visibility
-    callback: (response) => {
-      // reCAPTCHA solved, allow signInWithPhoneNumber.
-      console.log('reCAPTCHA verified');
+    callback: () => {
+      hooks?.onVerified?.()
+      console.log('reCAPTCHA verified')
     },
     'expired-callback': () => {
-      // Reset reCAPTCHA when expired
-      console.log('reCAPTCHA expired');
+      hooks?.onExpired?.()
+      console.log('reCAPTCHA expired')
     }
-  });
-};
+  })
+}
 
 // Function to send verification code
-export const sendVerificationCode = async (phoneNumber: string, recaptchaVerifier: RecaptchaVerifier) => {
+export const sendVerificationCode = async (
+  phoneNumber: string,
+  recaptchaVerifier: RecaptchaVerifier,
+  options?: { skipRender?: boolean }
+) => {
   try {
-    // Render the reCAPTCHA widget
-    await recaptchaVerifier.render();
-    
-    // Send the verification code
+    if (!options?.skipRender) {
+      await recaptchaVerifier.render()
+    }
     const confirmationResult = await signInWithPhoneNumber(getFirebaseAuth(), phoneNumber, recaptchaVerifier)
-    return confirmationResult;
+    return confirmationResult
   } catch (error) {
-    console.error('Error sending verification code:', error);
-    throw error;
+    console.error('Error sending verification code:', error)
+    throw error
   }
-};
+}
 
 // Function to verify the code
 export const verifyCode = async (confirmationResult: any, code: string) => {

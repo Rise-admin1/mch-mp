@@ -30,12 +30,12 @@ model User {
 
 model UserVolunteer {
   id                  String    @id @default(cuid())
-  firstName           String    
-  lastName            String
-  email               String   
+  fullName            String    @default("")
+  ward                String    @default("")
   phone               String
   location            String
   subLocation         String
+  pollingStation      String    @default("")
   message             String  @default("") @db.VarChar(3000)
   privacyPolicy       Boolean
 
