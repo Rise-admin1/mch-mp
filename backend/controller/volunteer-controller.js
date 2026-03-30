@@ -71,9 +71,6 @@ export const volunteerSubmitForm = async (req, res, next) => {
                 phone: normalizedPhone,
                 message: '',
                 privacyPolicy: Boolean(privacyPolicy),
-                firstName: '',
-                lastName: '',
-                email: '',
             }
         });
 
