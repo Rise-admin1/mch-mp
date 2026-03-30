@@ -22,16 +22,28 @@ export function getFirebaseAdminAuth() {
     return admin.auth()
   }
 
+  const jsonB64 = process.env.FIREBASE_SERVICE_ACCOUNT_JSON_BASE64
   const jsonRaw = process.env.FIREBASE_SERVICE_ACCOUNT_JSON
   const jsonPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH
   const gacPath = process.env.GOOGLE_APPLICATION_CREDENTIALS
 
   // Standard GCP / many hosts: JSON file path only (no Firebase-specific name required)
-  if (!jsonRaw && !jsonPath && !gacPath) {
+  if (!jsonB64 && !jsonRaw && !jsonPath && !gacPath) {
     return null
   }
 
   try {
+    // Best for Render / PaaS: one env var, no multiline JSON parsing issues
+    if (jsonB64) {
+      const cleaned = String(jsonB64).replace(/\s/g, '')
+      const decoded = Buffer.from(cleaned, 'base64').toString('utf8')
+      const credObj = JSON.parse(decoded)
+      admin.initializeApp({
+        credential: admin.credential.cert(credObj),
+      })
+      return admin.auth()
+    }
+
     if (jsonRaw) {
       const credObj = JSON.parse(jsonRaw)
       admin.initializeApp({
@@ -69,7 +81,7 @@ export async function ensureVolunteerCanSubmitPhone(normalizedPhone, firebaseIdT
       ok: false,
       status: 503,
       message:
-        'Phone verification is not configured on the server. Set FIREBASE_SERVICE_ACCOUNT_JSON, FIREBASE_SERVICE_ACCOUNT_PATH, or GOOGLE_APPLICATION_CREDENTIALS to your Firebase service account JSON.',
+        'Phone verification is not configured on the server. Set FIREBASE_SERVICE_ACCOUNT_JSON_BASE64 (recommended on Render), FIREBASE_SERVICE_ACCOUNT_JSON, FIREBASE_SERVICE_ACCOUNT_PATH, or GOOGLE_APPLICATION_CREDENTIALS.',
     }
   }
 
