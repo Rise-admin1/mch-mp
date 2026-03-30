@@ -164,3 +164,46 @@ export const volunteerGetPdf = async (req, res, next) => {
         return res.status(500).json({ message: 'Internal server error',pdf:false });
     }
 };
+
+export const getAllVolunteers = async (req, res, next) => {
+    try {
+        const rawOffset = req.query?.offset
+        const rawLimit = req.query?.limit
+
+        const parsedOffset = Number.parseInt(String(rawOffset ?? '0'), 10)
+        const parsedLimit = Number.parseInt(String(rawLimit ?? '20'), 10)
+
+        const offset = Number.isNaN(parsedOffset) ? 0 : Math.max(0, parsedOffset)
+        const limitCandidate = Number.isNaN(parsedLimit) ? 20 : parsedLimit
+        const limit = Math.min(100, limitCandidate <= 0 ? 20 : limitCandidate)
+
+        const totalCount = await prisma.userVolunteer.count()
+
+        const volunteers = await prisma.userVolunteer.findMany({
+            skip: offset,
+            take: limit,
+            orderBy: { createdAt: 'desc' },
+            select: {
+                id: true,
+                fullName: true,
+                ward: true,
+                location: true,
+                subLocation: true,
+                pollingStation: true,
+                phone: true,
+            }
+        })
+
+        res.status(200).json({
+            data: volunteers,
+            pagination: {
+                offset,
+                limit,
+                totalCount,
+            }
+        })
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
