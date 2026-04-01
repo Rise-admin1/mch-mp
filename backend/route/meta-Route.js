@@ -6,10 +6,10 @@ const router = express.Router();
 
 router.get('/contribute', getContributeMetaTags);
 router.get('/reports', getReports);
-router.get('/news/:id', getMetaTags);
 router.post('/create-task', createTask);
 router.post('/update-task', updateTask);
 router.delete('/delete-task', deleteTask);
 router.get('/get-tasks', getTasks);
+router.get('/news/:id', getMetaTags);
 
 export default router;
