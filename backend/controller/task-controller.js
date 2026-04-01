@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 const ALLOWED_ASSETS = ['Coachacadem', 'PhD Success', 'Corpink', 'Funyula', 'Velo', 'Safari Books'];
-const ALLOWED_ASSIGNEES = ['Michael', 'Mark', 'Enock', 'Xylem'];
+const ALLOWED_ASSIGNEES = ['Michael', 'Mark', 'Enock', 'Alen'];
 const ALLOWED_STATUSES = ['Todo', 'In Progress', 'Done'];
 
 function normalizeTask(task) {
@@ -76,7 +76,6 @@ export const getTasks = async (req, res, next) => {
 export const createTask = async (req, res, next) => {
   try {
     const { title, description, asset, assignedTo, status } = req.body || {};
-
     if (typeof title !== 'string' || !title.trim()) {
       return res.status(400).json({ success: false, message: 'title is required' });
     }
@@ -89,7 +88,6 @@ export const createTask = async (req, res, next) => {
     if (typeof status !== 'string' || !status.trim() || !ALLOWED_STATUSES.includes(status)) {
       return res.status(400).json({ success: false, message: 'Invalid status' });
     }
-
     const descriptionValue =
       typeof description === 'string' && description.trim() ? description.trim() : null;
 
