@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import { newsItems } from '../utils/newsData'
 import SignupForm from '../components/SignupForm'
-import { extractImageFromContent, extractDescriptionFromContent } from '../utils/metaUtils'
+import { extractDescriptionFromContent } from '../utils/metaUtils'
+import { getPublicSiteUrl } from '../utils/siteUrl'
 
 function HtmlRenderer({ content, onManifestoClick }: { content: string, onManifestoClick: () => void }) {
   // Add the global function to window object
@@ -38,7 +39,7 @@ const SingleNews: React.FC<{ id: string }> = ({ id }) => {
         setIsModalOpen(false);
     };
 
-    const shareUrl = `https://future.funyula.com/news/${id}`;
+    const shareUrl = `${getPublicSiteUrl()}/news/${id}`;
     const shareTitle = newsItem ? newsItem.title : 'News Article';
     const shareDescription = newsItem ? extractDescriptionFromContent(newsItem.content) : '';
 

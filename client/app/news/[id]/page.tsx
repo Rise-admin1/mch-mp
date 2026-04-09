@@ -2,10 +2,12 @@ import { LayoutClient } from '../../components/LayoutClient'
 import SingleNews from '../../../src/views/SingleNews'
 import { newsItems } from '../../../src/utils/newsData'
 import { extractImageFromContent, extractDescriptionFromContent } from '../../../src/utils/metaUtils'
+import { getPublicSiteUrl } from '../../../src/utils/siteUrl'
 
 type Props = { params: Promise<{ id: string }> | { id: string } }
 
 export async function generateMetadata({ params }: Props) {
+  const base = getPublicSiteUrl()
   const resolved = await Promise.resolve(params)
   const id = resolved.id
   const newsItem = newsItems.find((item) => item.link === `/news/${id}`)
@@ -17,11 +19,14 @@ export async function generateMetadata({ params }: Props) {
     newsItem && extractImageFromContent(newsItem.content)
       ? extractImageFromContent(newsItem.content)!
       : 'https://i.postimg.cc/cL5MWGTh/logo.png'
-  const pageUrl = newsItem ? `https://funyula.com${newsItem.link}` : 'https://funyula.com'
+  const pageUrl = newsItem ? `${base}${newsItem.link}` : base
 
   return {
     title,
     description,
+    alternates: {
+      canonical: pageUrl,
+    },
     openGraph: {
       title: newsItem ? newsItem.title : 'Michael H. Mugenya 2027',
       description,

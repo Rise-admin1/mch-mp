@@ -7,7 +7,7 @@ export const metadata = {
   openGraph: {
     title: 'Our Work | Michael H. Mugenya 2027',
     description: 'Samia Women Business Expo - An ongoing initiative focused on mobilizing and supporting women in Samia through entrepreneurship, collaboration, and access to business opportunities.',
-    url: 'https://funyula.com/our-work',
+    url: 'https://www.funyula.com/our-work',
     siteName: 'Michael H. Mugenya 2027',
     images: [{ url: 'https://i.postimg.cc/cL5MWGTh/logo.png', alt: 'Our Work | Michael H. Mugenya 2027' }],
     type: 'website',

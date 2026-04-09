@@ -7,7 +7,7 @@ export const metadata = {
   openGraph: {
     title: 'Gallery | Michael H. Mugenya 2027',
     description: 'Photo gallery of Michael H. Mugenya 2027',
-    url: 'https://funyula.com/gallery',
+    url: 'https://www.funyula.com/gallery',
     siteName: 'Michael H. Mugenya 2027',
     images: [{ url: 'https://i.postimg.cc/cL5MWGTh/logo.png', alt: 'Gallery | Michael H. Mugenya 2027' }],
     type: 'website',

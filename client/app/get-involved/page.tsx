@@ -7,7 +7,7 @@ export const metadata = {
   openGraph: {
     title: 'Get Involved | Michael H. Mugenya 2027',
     description: 'Volunteer and get involved with Michael H. Mugenya 2027',
-    url: 'https://funyula.com/get-involved',
+    url: 'https://www.funyula.com/get-involved',
     siteName: 'Michael H. Mugenya 2027',
     images: [{ url: 'https://i.postimg.cc/cL5MWGTh/logo.png', alt: 'Get Involved | Michael H. Mugenya 2027' }],
     type: 'website',

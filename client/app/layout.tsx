@@ -2,14 +2,18 @@ import type { Metadata } from 'next'
 import Script from 'next/script'
 import '../src/index.css'
 import { GoogleAnalytics } from './components/GoogleAnalytics'
+import { getPublicSiteUrl } from '../src/utils/siteUrl'
+
+const siteUrl = getPublicSiteUrl()
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: 'Home | Michael H. Mugenya 2027',
   description: 'Certified Website of Michael H. Mugenya',
   openGraph: {
     title: 'Michael H. Mugenya 2027',
     description: 'Certified Website of Michael H. Mugenya',
-    url: 'https://funyula.com',
+    url: siteUrl,
     siteName: 'Michael H. Mugenya 2027',
     images: [{ url: 'https://i.postimg.cc/cL5MWGTh/logo.png', alt: 'Michael H. Mugenya 2027' }],
     type: 'website',
