@@ -121,22 +121,7 @@ const SingleNews: React.FC<{ id: string }> = ({ id }) => {
                     </div>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
                         {/* <p className="text-trump-gray font-medium">{newsItem ? newsItem.date : 'Loading...'}</p> */}
-                        <div className="flex space-x-3">
-                            <a href="#">
-                                <img
-                                    src="https://ext.same-assets.com/697774200/1290627856.png"
-                                    alt="Facebook"
-                                    className="h-6 w-4"
-                                />
-                            </a>
-                            <a href="#">
-                                <img
-                                    src="https://ext.same-assets.com/697774200/2180659290.png"
-                                    alt="X"
-                                    className="h-6 w-6"
-                                />
-                            </a>
-                        </div>
+                       
                     </div>
                 </div>
 

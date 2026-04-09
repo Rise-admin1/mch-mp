@@ -124,5 +124,32 @@
 
       </div>`
     },
+    {
+      id: 6,
+      // date: 'June 13, 2025',
+      title: 'Mugenya, Sonko Hold High-Level Talks on Empowerment Politics and Grassroots Leadership',
+      link: '/news/fpfp6',
+      content:` 
+      <div>
+
+        <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/Mugenya-Sonko-Hold-High-Level-Talks-on-Empowerment-Politics-and-Grassroots-Leadership.jpeg" alt="Mugenya, Sonko Hold High-Level Talks on Empowerment Politics and Grassroots Leadership" style="width:100%; height:auto; margin-bottom:2rem;" />
+
+
+
+      <p style=" font-size:1.25rem;">A renewed call for people-centered leadership took center stage when the aspirant and incoming Member of Parliament for Funyula Constituency, Hon. Michael Mugenya met the former Nairobi Governor, Mike Sonko in a strategic engagement anchored on Kenya’s political discourse toward empowerment-driven governance.</p>
+
+      <p style=" font-size:1.25rem;">The meeting, marked by honest reflections and forward-looking dialogue, also painted a longstanding mentor-mentee relationship between the two leaders. Their relationship is one that traces back to Sonko’s political journey as former Makadara MP, Nairobi Senator, and later Governor. Over time, Hon. Mugenya has drawn from this experience, particularly the emphasis on grassroots connection and direct engagement with ordinary citizens.</p>
+
+      <p style=" font-size:1.25rem;">Central to their engagement was a shared concern about the socio-economic realities facing everyday Kenyans, with both leaders aligning on the urgency of shifting from rhetoric-heavy politics to practical, empowerment-focused approaches that directly uplift communities. The discussion leaned heavily on the idea that leadership should ultimately be judged by its impact on those at the lowest levels of society, and the need for inclusive interventions that create opportunity and restore dignity.</p>
+
+      <p style=" font-size:1.25rem;">The question of Hon. Mugenya potentially carrying the National Economic Development Party (NEDP) ticket in Funyula Constituency also featured prominently. In keeping with his grassroots approach, Mugenya indicated that such a decision would not be made in isolation, but rather taken back to the people. Plans are already in motion to engage constituents directly during an upcoming women empowerment program, where their views will help shape the way forward.</p>
+
+      <p style=" font-size:1.25rem;">Beyond electoral considerations, the two leaders shared deeper reflections on the country’s politics and it’s evolution. The engagement, to a degree, expressed a growing consensus around leadership that prioritizes empowerment over mediocre symbolism, and the increasing expectation among Kenyans for tangible, people-first outcomes. There was also a clear acknowledgment of the long-standing disenfranchisement felt by many citizens, alongside recognition that current efforts within leadership spaces are beginning to address these systemic gaps.</p>
+
+      <p style=" font-size:1.25rem;">The meeting ultimately reinforced a shared outlook that places the ordinary Kenyan at the center of leadership, and positions empowerment not just as an ideal, but as a practical pathway for sustainable political and social transformation.</p>
+
+
+      </div>`
+    },
    
   ];
