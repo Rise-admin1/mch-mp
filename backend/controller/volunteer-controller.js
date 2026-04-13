@@ -46,10 +46,10 @@ export const volunteerSubmitForm = async (req, res, next) => {
             firebaseIdToken,
         } = req.body;
 
-        const geoCheck = validateVolunteerPollingSelection(ward, location, subLocation, pollingStation)
-        if (!geoCheck.ok) {
-            return res.status(400).json({ message: geoCheck.message })
-        }
+        // const geoCheck = validateVolunteerPollingSelection(ward, location, subLocation, pollingStation)
+        // if (!geoCheck.ok) {
+        //     return res.status(400).json({ message: geoCheck.message })
+        // }
 
         const normalizedPhone = normalizeKePhone(phone)
         if (!normalizedPhone) {
