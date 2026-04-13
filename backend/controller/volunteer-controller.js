@@ -191,6 +191,8 @@ export const getAllVolunteers = async (req, res, next) => {
                 subLocation: true,
                 pollingStation: true,
                 phone: true,
+                createdAt: true,
+                updatedAt: true,
             }
         })
 
