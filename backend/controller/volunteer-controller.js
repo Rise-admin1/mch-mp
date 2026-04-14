@@ -209,3 +209,49 @@ export const getAllVolunteers = async (req, res, next) => {
         res.status(500).json({ message: 'Internal server error' })
     }
 }
+
+export const getAllExpoRegistrations = async (req, res) => {
+    try {
+        const rawOffset = req.query?.offset
+        const rawLimit = req.query?.limit
+
+        const parsedOffset = Number.parseInt(String(rawOffset ?? '0'), 10)
+        const parsedLimit = Number.parseInt(String(rawLimit ?? '20'), 10)
+
+        const offset = Number.isNaN(parsedOffset) ? 0 : Math.max(0, parsedOffset)
+        const limitCandidate = Number.isNaN(parsedLimit) ? 20 : parsedLimit
+        const limit = Math.min(100, limitCandidate <= 0 ? 20 : limitCandidate)
+
+        const totalCount = await prisma.expoRegistration.count()
+
+        const expoRegistrations = await prisma.expoRegistration.findMany({
+            skip: offset,
+            take: limit,
+            orderBy: { createdAt: 'desc' },
+            select: {
+                id: true,
+                groupName: true,
+                designation: true,
+                groupLeaderName: true,
+                yourName: true,
+                idNumber: true,
+                phoneNumber: true,
+                isVerified: true,
+                createdAt: true,
+                updatedAt: true,
+            }
+        })
+
+        return res.status(200).json({
+            data: expoRegistrations,
+            pagination: {
+                offset,
+                limit,
+                totalCount,
+            }
+        })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
