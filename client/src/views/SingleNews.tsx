@@ -71,7 +71,7 @@ const SingleNews: React.FC<{ id: string }> = ({ id }) => {
     };
 
     const shareOnWhatsApp = () => {
-        window.open(`https://wa.me/?text=${encodeURIComponent(`${shareTitle} ${shareUrl}`)}`, '_blank');
+        window.open(`https://wa.me/?text=${encodeURIComponent(`${shareUrl}`)}`, '_blank');
     };
 
     const shareOnLinkedIn = () => {
