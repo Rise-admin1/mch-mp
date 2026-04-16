@@ -151,5 +151,41 @@
 
       </div>`
     },
+    {
+      id: 7,
+      // date: 'June 13, 2025',
+      title: 'Mugenya Seeks Wisdom as He Meets UDA Founding Chairman Muthama',
+      link: '/news/fpfp7',
+      content:` 
+      <div>
+
+        <img src="https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/7_news.jpeg" alt="Mugenya Seeks Wisdom as He Meets UDA Founding Chairman Muthama" style="width:100%; height:auto; margin-bottom:2rem;" />
+
+
+
+      <p style=" font-size:1.25rem;">In a quiet but politically significant encounter, Funyula aspirant Michael Mugenya held a high-level meeting with Johnson Muthama, a moment that blended mentorship, strategy, and the subtle shaping of future political alignments.</p>
+
+      <p style=" font-size:1.25rem;">TFrom the outset, the tone was less about power and more about perspective. Observers close to the meeting describe it as a mentor-mentee engagement, where Mugenya, an emerging voice in Funyula politics, sought guidance from one of Kenya’s most seasoned political operators. Muthama, known for his grassroots instincts and party-building acumen, is said to have offered what insiders call “nuggets of wisdom,” practical lessons drawn from decades in the trenches of Kenyan politics.</p>
+
+      <p style=" font-size:1.25rem;">At the heart of their discussion was a subject increasingly defining the country’s political scene: the strength and stability of political parties. Muthama reportedly emphasized the importance of structured, disciplined party systems as vehicles for both governance and accountability. For an aspirant like Mugenya, navigating a constituency with diverse political leanings, the message was clear, party choice is not only strategic; but foundational.</p>
+
+      <p style=" font-size:1.25rem;">TBut beyond philosophy, the meeting carried unmistakable political weight.</p>
+
+      <p style=" font-size:1.25rem;">Sources indicate that the possibility of Mugenya flying the UDA flag in Funyula Constituency under a broad-based formation was openly discussed. While no firm commitment was made, the conversation signals a growing interest in aligning local ambitions with national political machinery, a move that could reshape the constituency’s electoral dynamics.</p>
+
+      <p style=" font-size:1.25rem;">Yet, in a move that may resonate strongly with voters, Mugenya struck a cautious and consultative tone. He maintained that his ultimate decision on party affiliation would not be made in boardrooms or private meetings alone.</p>
+
+      <p style=" font-size:1.25rem;">Instead, he emphasized that he will return to the ground, to listen.</p>
+
+      <p style=" font-size:1.25rem;">“I will inquire from my constituents,” he is understood to have said, signaling a grassroots-first approach. “They will guide me on the right party platform through which I can best serve them.”</p>
+
+      <p style=" font-size:1.25rem;">That stance positions Mugenya as a politician attempting to balance ambition with accountability, strategy with sensitivity, a combination that could either strengthen his appeal or test his resolve in the complex calculus of Kenyan politics.</p>
+
+      <p style=" font-size:1.25rem;">As the political season gradually gathers momentum, this meeting may well be remembered not for its optics, but for its implications. A seasoned kingmaker sharing insights with a rising aspirant; a conversation about parties that could define loyalties; and a decision deferred to the people.</p>
+      <p style=" font-size:1.25rem;">For Funyula, the question now is not just who will run, but under what banner, and guided by whose vision.</p>
+
+
+      </div>`
+    },
    
   ];
