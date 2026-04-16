@@ -15,6 +15,23 @@ import {
 
 const VOLUNTEER_RECAPTCHA_ID = 'volunteer-recaptcha-container'
 
+const VOLUNTEER_ROLES = ['POLLING_AGENT', 'BLOGGING_TEAM', 'VOTER'] as const
+type VolunteerRole = (typeof VOLUNTEER_ROLES)[number]
+
+const VOLUNTEER_GENDERS = ['MALE', 'FEMALE'] as const
+type VolunteerGender = (typeof VOLUNTEER_GENDERS)[number]
+
+const ROLE_LABELS: Record<VolunteerRole, string> = {
+  POLLING_AGENT: 'Polling agent',
+  BLOGGING_TEAM: 'Blogging team',
+  VOTER: 'Voter',
+}
+
+const GENDER_LABELS: Record<VolunteerGender, string> = {
+  MALE: 'Male',
+  FEMALE: 'Female',
+}
+
 /** National digits only or with leading 0 / 254 — stored as +254… */
 function formatPhoneToE164(input: string): string {
   let d = input.replace(/\D/g, '')
@@ -127,6 +144,8 @@ function SearchableSelect({
 const VolunteerPage = () => {
   const [formData, setFormData] = useState<{
     fullName: string
+    role: VolunteerRole
+    gender: VolunteerGender
     ward: string
     location: string | null
     subLocation: string | null
@@ -135,6 +154,8 @@ const VolunteerPage = () => {
     privacyPolicy: boolean
   }>({
     fullName: '',
+    role: 'POLLING_AGENT',
+    gender: 'MALE',
     ward: '',
     location: null,
     subLocation: null,
@@ -270,6 +291,8 @@ const VolunteerPage = () => {
     const phoneE164 = formatPhoneToE164(formData.phone)
     return axios.post(`${BACKEND_URL}/api/volunteer/submit`, {
       fullName: formData.fullName.trim(),
+      role: formData.role,
+      gender: formData.gender,
       ward: formData.ward.trim(),
       location: (formData.location ?? '').trim(),
       subLocation: (formData.subLocation ?? '').trim(),
@@ -283,6 +306,8 @@ const VolunteerPage = () => {
   const resetAfterSuccess = () => {
     setFormData({
       fullName: '',
+      role: 'POLLING_AGENT',
+      gender: 'MALE',
       ward: '',
       location: null,
       subLocation: null,
@@ -452,6 +477,50 @@ const VolunteerPage = () => {
               } ${isSubmitting ? 'cursor-not-allowed bg-gray-100' : ''}`}
             />
             {fieldErrors.fullName ? <p className="mt-1 text-sm text-red-500">{fieldErrors.fullName}</p> : null}
+          </div>
+
+          <div className="flex flex-col gap-6 lg:flex-row lg:gap-10">
+            <div className="min-w-0 flex-1">
+              <span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-600">Role</span>
+              <div className="flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-8 lg:gap-y-2">
+                {VOLUNTEER_ROLES.map((r) => (
+                  <label key={r} className={`flex items-center gap-2 text-sm ${isSubmitting ? 'text-gray-500' : ''}`}>
+                    <input
+                      type="checkbox"
+                      checked={formData.role === r}
+                      onChange={(e) => {
+                        if (!e.target.checked) return
+                        setFormData((prev) => ({ ...prev, role: r }))
+                      }}
+                      disabled={isSubmitting}
+                      className={isSubmitting ? 'cursor-not-allowed' : ''}
+                    />
+                    <span>{ROLE_LABELS[r]}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-600">Gender</span>
+              <div className="flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-8 lg:gap-y-2">
+                {VOLUNTEER_GENDERS.map((g) => (
+                  <label key={g} className={`flex items-center gap-2 text-sm ${isSubmitting ? 'text-gray-500' : ''}`}>
+                    <input
+                      type="checkbox"
+                      checked={formData.gender === g}
+                      onChange={(e) => {
+                        if (!e.target.checked) return
+                        setFormData((prev) => ({ ...prev, gender: g }))
+                      }}
+                      disabled={isSubmitting}
+                      className={isSubmitting ? 'cursor-not-allowed' : ''}
+                    />
+                    <span>{GENDER_LABELS[g]}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

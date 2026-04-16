@@ -37,6 +37,8 @@ export const volunteerSubmitForm = async (req, res, next) => {
     try {
         const {
             fullName,
+            role: roleRaw,
+            gender: genderRaw,
             ward,
             location,
             subLocation,
@@ -45,6 +47,11 @@ export const volunteerSubmitForm = async (req, res, next) => {
             privacyPolicy,
             firebaseIdToken,
         } = req.body;
+
+        const VOLUNTEER_ROLES = ['POLLING_AGENT', 'BLOGGING_TEAM', 'VOTER']
+        const VOLUNTEER_GENDERS = ['MALE', 'FEMALE']
+        const role = VOLUNTEER_ROLES.includes(roleRaw) ? roleRaw : 'POLLING_AGENT'
+        const gender = VOLUNTEER_GENDERS.includes(genderRaw) ? genderRaw : 'MALE'
 
         // const geoCheck = validateVolunteerPollingSelection(ward, location, subLocation, pollingStation)
         // if (!geoCheck.ok) {
@@ -64,6 +71,8 @@ export const volunteerSubmitForm = async (req, res, next) => {
         const newVolunteer = await prisma.userVolunteer.create({
             data: {
                 fullName: typeof fullName === 'string' ? fullName.trim() : '',
+                role,
+                gender,
                 ward: typeof ward === 'string' ? ward.trim() : '',
                 location: typeof location === 'string' ? location.trim() : '',
                 subLocation: typeof subLocation === 'string' ? subLocation.trim() : '',
@@ -165,50 +174,64 @@ export const volunteerGetPdf = async (req, res, next) => {
     }
 };
 
-export const getAllVolunteers = async (req, res, next) => {
-    try {
-        const rawOffset = req.query?.offset
-        const rawLimit = req.query?.limit
+const ROLE_FILTERS = new Set(['ALL', 'POLLING_AGENT', 'BLOGGING_TEAM', 'VOTER']);
 
-        const parsedOffset = Number.parseInt(String(rawOffset ?? '0'), 10)
-        const parsedLimit = Number.parseInt(String(rawLimit ?? '20'), 10)
-
-        const offset = Number.isNaN(parsedOffset) ? 0 : Math.max(0, parsedOffset)
-        const limitCandidate = Number.isNaN(parsedLimit) ? 20 : parsedLimit
-        const limit = Math.min(100, limitCandidate <= 0 ? 20 : limitCandidate)
-
-        const totalCount = await prisma.userVolunteer.count()
-
-        const volunteers = await prisma.userVolunteer.findMany({
-            skip: offset,
-            take: limit,
-            orderBy: { createdAt: 'desc' },
-            select: {
-                id: true,
-                fullName: true,
-                ward: true,
-                location: true,
-                subLocation: true,
-                pollingStation: true,
-                phone: true,
-                createdAt: true,
-                updatedAt: true,
-            }
-        })
-
-        res.status(200).json({
-            data: volunteers,
-            pagination: {
-                offset,
-                limit,
-                totalCount,
-            }
-        })
-    } catch (error) {
-        console.error(error)
-        res.status(500).json({ message: 'Internal server error' })
-    }
+function parseRoleFilter(raw) {
+  const s = String(raw ?? 'ALL').trim().toUpperCase();
+  return ROLE_FILTERS.has(s) ? s : 'ALL';
 }
+
+export const getAllVolunteers = async (req, res) => {
+  try {
+    const rawOffset = req.query?.offset;
+    const rawLimit = req.query?.limit;
+
+    const parsedOffset = Number.parseInt(String(rawOffset ?? '0'), 10);
+    const parsedLimit = Number.parseInt(String(rawLimit ?? '20'), 10);
+
+    const offset = Number.isNaN(parsedOffset) ? 0 : Math.max(0, parsedOffset);
+    const limitCandidate = Number.isNaN(parsedLimit) ? 20 : parsedLimit;
+    const limit = Math.min(100, limitCandidate <= 0 ? 20 : limitCandidate);
+
+    const roleFilter = parseRoleFilter(req.query?.role);
+    const where = roleFilter === 'ALL' ? {} : { role: roleFilter };
+
+    const totalCount = await prisma.userVolunteer.count({ where });
+
+    const volunteers = await prisma.userVolunteer.findMany({
+      where,
+      skip: offset,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        fullName: true,
+        role: true,
+        gender: true,
+        ward: true,
+        location: true,
+        subLocation: true,
+        pollingStation: true,
+        phone: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    res.status(200).json({
+      data: volunteers,
+      pagination: {
+        offset,
+        limit,
+        totalCount,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 
 export const getAllExpoRegistrations = async (req, res) => {
     try {
