@@ -255,3 +255,45 @@ export const getAllExpoRegistrations = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' })
     }
 }
+
+export const deleteVolunteerById = async (req, res) => {
+    try {
+        const { id } = req.params
+        if (!id || typeof id !== 'string') {
+            return res.status(400).json({ message: 'id is required' })
+        }
+
+        const deleted = await prisma.userVolunteer.delete({
+            where: { id },
+        })
+
+        return res.status(200).json({ message: 'Volunteer deleted', id: deleted.id })
+    } catch (error) {
+        if (error?.code === 'P2025') {
+            return res.status(404).json({ message: 'Volunteer not found' })
+        }
+        console.error(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
+export const deleteExpoRegistrationById = async (req, res) => {
+    try {
+        const { id } = req.params
+        if (!id || typeof id !== 'string') {
+            return res.status(400).json({ message: 'id is required' })
+        }
+
+        const deleted = await prisma.expoRegistration.delete({
+            where: { id },
+        })
+
+        return res.status(200).json({ message: 'Expo registration deleted', id: deleted.id })
+    } catch (error) {
+        if (error?.code === 'P2025') {
+            return res.status(404).json({ message: 'Expo registration not found' })
+        }
+        console.error(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
