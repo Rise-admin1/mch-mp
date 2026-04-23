@@ -175,26 +175,112 @@ export const volunteerGetPdf = async (req, res, next) => {
 };
 
 const ROLE_FILTERS = new Set(['ALL', 'POLLING_AGENT', 'BLOGGING_TEAM', 'VOTER']);
+const GENDER_FILTERS = new Set(['MALE', 'FEMALE']);
 
 function parseRoleFilter(raw) {
   const s = String(raw ?? 'ALL').trim().toUpperCase();
   return ROLE_FILTERS.has(s) ? s : 'ALL';
 }
 
+function parseGenderFilter(raw) {
+  const s = String(raw ?? '').trim().toUpperCase();
+  return GENDER_FILTERS.has(s) ? s : null;
+}
+
 export const getAllVolunteers = async (req, res) => {
   try {
-    const rawOffset = req.query?.offset;
-    const rawLimit = req.query?.limit;
+    const rawOffset = req.query?.offset
+    const rawLimit = req.query?.limit
+    const rawSearch = String(req.query?.search ?? req.query?.q ?? '').trim()
 
-    const parsedOffset = Number.parseInt(String(rawOffset ?? '0'), 10);
-    const parsedLimit = Number.parseInt(String(rawLimit ?? '20'), 10);
+    const parsedOffset = Number.parseInt(String(rawOffset ?? '0'), 10)
+    const parsedLimit = Number.parseInt(String(rawLimit ?? '10'), 10)
 
-    const offset = Number.isNaN(parsedOffset) ? 0 : Math.max(0, parsedOffset);
-    const limitCandidate = Number.isNaN(parsedLimit) ? 20 : parsedLimit;
-    const limit = Math.min(100, limitCandidate <= 0 ? 20 : limitCandidate);
+    const queryFilters = []
+    const addContainsFilter = (field, value) => {
+      if (typeof value === 'string' && value.trim()) {
+        queryFilters.push({
+          [field]: {
+            contains: value.trim(),
+          },
+        })
+      }
+    }
+    const addDateRangeFilter = (field, fromRaw, toRaw) => {
+      const fromDate = typeof fromRaw === 'string' && fromRaw.trim() ? new Date(fromRaw) : null
+      const toDate = typeof toRaw === 'string' && toRaw.trim() ? new Date(toRaw) : null
+      const range = {}
 
-    const roleFilter = parseRoleFilter(req.query?.role);
-    const where = roleFilter === 'ALL' ? {} : { role: roleFilter };
+      if (fromDate && !Number.isNaN(fromDate.getTime())) {
+        range.gte = fromDate
+      }
+      if (toDate && !Number.isNaN(toDate.getTime())) {
+        range.lte = toDate
+      }
+      if (Object.keys(range).length) {
+        queryFilters.push({ [field]: range })
+      }
+    }
+
+    addContainsFilter('id', req.query?.id)
+    addContainsFilter('fullName', req.query?.fullName ?? req.query?.name)
+    addContainsFilter('ward', req.query?.ward)
+    addContainsFilter('phone', req.query?.phone)
+    addContainsFilter('location', req.query?.location)
+    addContainsFilter('subLocation', req.query?.subLocation)
+    addContainsFilter('pollingStation', req.query?.pollingStation)
+    addContainsFilter('message', req.query?.message)
+
+    if (typeof req.query?.privacyPolicy !== 'undefined') {
+      const normalizedPrivacy = String(req.query.privacyPolicy).trim().toLowerCase()
+      if (normalizedPrivacy === 'true' || normalizedPrivacy === 'false') {
+        queryFilters.push({ privacyPolicy: normalizedPrivacy === 'true' })
+      }
+    }
+
+    const roleFilter = parseRoleFilter(req.query?.role)
+    if (roleFilter !== 'ALL') {
+      queryFilters.push({ role: roleFilter })
+    }
+
+    const genderFilter = parseGenderFilter(req.query?.gender)
+    if (genderFilter) {
+      queryFilters.push({ gender: genderFilter })
+    }
+
+    const createdAtRaw = typeof req.query?.createdAt === 'string' ? req.query.createdAt.trim() : ''
+    if (createdAtRaw) {
+      const createdAtDate = new Date(createdAtRaw)
+      if (!Number.isNaN(createdAtDate.getTime())) {
+        queryFilters.push({ createdAt: createdAtDate })
+      }
+    }
+    addDateRangeFilter('createdAt', req.query?.createdAtFrom, req.query?.createdAtTo)
+
+    const updatedAtRaw = typeof req.query?.updatedAt === 'string' ? req.query.updatedAt.trim() : ''
+    if (updatedAtRaw) {
+      const updatedAtDate = new Date(updatedAtRaw)
+      if (!Number.isNaN(updatedAtDate.getTime())) {
+        queryFilters.push({ updatedAt: updatedAtDate })
+      }
+    }
+    addDateRangeFilter('updatedAt', req.query?.updatedAtFrom, req.query?.updatedAtTo)
+
+    if (rawSearch) {
+      queryFilters.push({ fullName: { contains: rawSearch } })
+    }
+
+    const hasSearchOrFilter = queryFilters.length > 0
+
+    const offset = hasSearchOrFilter
+      ? 0
+      : (Number.isNaN(parsedOffset) ? 0 : Math.max(0, parsedOffset))
+    const limitCandidate = Number.isNaN(parsedLimit) ? 10 : parsedLimit
+    const limit = hasSearchOrFilter
+      ? 10
+      : Math.min(100, limitCandidate <= 0 ? 10 : limitCandidate)
+
+    const where = queryFilters.length ? { AND: queryFilters } : {}
 
     const totalCount = await prisma.userVolunteer.count({ where });
 
@@ -237,17 +323,55 @@ export const getAllExpoRegistrations = async (req, res) => {
     try {
         const rawOffset = req.query?.offset
         const rawLimit = req.query?.limit
+        const rawSearch = String(req.query?.search ?? req.query?.q ?? '').trim()
 
         const parsedOffset = Number.parseInt(String(rawOffset ?? '0'), 10)
-        const parsedLimit = Number.parseInt(String(rawLimit ?? '20'), 10)
+        const parsedLimit = Number.parseInt(String(rawLimit ?? '10'), 10)
 
-        const offset = Number.isNaN(parsedOffset) ? 0 : Math.max(0, parsedOffset)
-        const limitCandidate = Number.isNaN(parsedLimit) ? 20 : parsedLimit
-        const limit = Math.min(100, limitCandidate <= 0 ? 20 : limitCandidate)
+        const queryFilters = []
+        const addContainsFilter = (field, value) => {
+            if (typeof value === 'string' && value.trim()) {
+                queryFilters.push({
+                    [field]: {
+                        contains: value.trim(),
+                    }
+                })
+            }
+        }
 
-        const totalCount = await prisma.expoRegistration.count()
+        addContainsFilter('groupName', req.query?.groupName)
+        addContainsFilter('designation', req.query?.designation)
+        addContainsFilter('groupLeaderName', req.query?.groupLeaderName)
+        addContainsFilter('yourName', req.query?.yourName)
+        addContainsFilter('phoneNumber', req.query?.phoneNumber)
+
+        if (rawSearch) {
+            queryFilters.push({
+                OR: [
+                    { groupName: { contains: rawSearch } },
+                    { designation: { contains: rawSearch } },
+                    { groupLeaderName: { contains: rawSearch } },
+                    { yourName: { contains: rawSearch } },
+                    { phoneNumber: { contains: rawSearch } },
+                ]
+            })
+        }
+
+        const hasSearchOrFilter = queryFilters.length > 0
+        const offset = hasSearchOrFilter
+            ? 0
+            : (Number.isNaN(parsedOffset) ? 0 : Math.max(0, parsedOffset))
+        const limitCandidate = Number.isNaN(parsedLimit) ? 10 : parsedLimit
+        const limit = hasSearchOrFilter
+            ? 10
+            : Math.min(100, limitCandidate <= 0 ? 10 : limitCandidate)
+
+        const where = queryFilters.length ? { AND: queryFilters } : {}
+
+        const totalCount = await prisma.expoRegistration.count({ where })
 
         const expoRegistrations = await prisma.expoRegistration.findMany({
+            where,
             skip: offset,
             take: limit,
             orderBy: { createdAt: 'desc' },
