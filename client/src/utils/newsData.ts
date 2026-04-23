@@ -196,7 +196,7 @@ export const newsItems = [
       <div>
 
 
-          <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/expo-one.jpeg" alt="A New Dawn for Samia Women: From Promise to Practical Empowerment" class="m-0 h-auto w-full" />
+          <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/women1.jpeg" alt="A New Dawn for Samia Women: From Promise to Practical Empowerment" class="m-0 h-auto w-full" />
 
 
 
@@ -228,7 +228,7 @@ export const newsItems = [
 
       <p style=" font-size:1.25rem;">Instead of navigating these steps separately, Samia women will now have a single space where ideas can be nurtured, supported, and funded.</p>
 
-       <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/expo-two.jpeg" alt="A New Dawn for Samia Women: From Promise to Practical Empowerment" class="m-0 h-auto w-full" />
+       <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/women2.jpeg" alt="A New Dawn for Samia Women: From Promise to Practical Empowerment" class="m-0 h-auto w-full" />
 
       <p style=" font-size:1.25rem;"><b>A Shift to Actionable Leadership</b></p>
 
