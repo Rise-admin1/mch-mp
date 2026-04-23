@@ -195,10 +195,8 @@ export const newsItems = [
     content: ` 
       <div>
 
-        <div class="not-prose mb-8 grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+
           <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/expo-one.jpeg" alt="A New Dawn for Samia Women: From Promise to Practical Empowerment" class="m-0 h-auto w-full" />
-          <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/expo-two.jpeg" alt="A New Dawn for Samia Women: From Promise to Practical Empowerment" class="m-0 h-auto w-full" />
-        </div>
 
 
 
@@ -230,7 +228,11 @@ export const newsItems = [
 
       <p style=" font-size:1.25rem;">Instead of navigating these steps separately, Samia women will now have a single space where ideas can be nurtured, supported, and funded.</p>
 
+       <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/expo-two.jpeg" alt="A New Dawn for Samia Women: From Promise to Practical Empowerment" class="m-0 h-auto w-full" />
+
       <p style=" font-size:1.25rem;"><b>A Shift to Actionable Leadership</b></p>
+
+       
 
       <p style=" font-size:1.25rem;">This initiative signals a broader shift in leadership philosophy, moving away from rhetoric and toward structured, measurable impact.
 Hon. Mugenya’s approach reflects a commitment to planned engagement, where empowerment is not promised but delivered through clear systems and support mechanisms. It is a model that prioritizes sustainability over short-term visibility.</p>
