@@ -1,23 +1,23 @@
-  export const newsItems = [
-    {
-      id: 1,
-      // date: 'June 13, 2025',
-      title: 'VISION 2027: FUTURE-PROOF FUNYULA PLATFORM',
-      link: '/news/fpfp1',
-      content:` 
+export const newsItems = [
+  {
+    id: 1,
+    // date: 'June 13, 2025',
+    title: 'VISION 2027: FUTURE-PROOF FUNYULA PLATFORM',
+    link: '/news/fpfp1',
+    content: ` 
       <div>
       <p style=" font-size:1.25rem;">The only way to make Funyula Constituency sustainable and restore the fabric of our glorious Samia!</p>
       <p style="text-align:center; margin-top:6rem;"><b><i>Dedication: To the Ever-great Men and Women of Funyula.</i></b></p>
       <p style="margin-top:6rem;">Funyula needs determined and visionary leadership at every level of its Wards to address the poverty and backwardness that pose threats to our very survival... To view Hon. Mugenya's Vision 2027 Future-Proof Funyula Platform that makes clear his commitment on what he proposes to offer the people of Samia please see what's inside <button id="manifesto-button" style="text-decoration:none; color:red; background:none; border:none; cursor:pointer; font-size:inherit; font-family:inherit; padding:0; text-decoration:underline;" onclick="openManifestoModal()">The Funyula 2027 and Beyond Manifesto</button>.</p>
       
       </div>`
-    },
-    {
-      id: 2,
-      // date: 'June 13, 2025',
-      title: 'Hon. Michael Mugenya Pledges Improved Market Infrastructure for Funyula Traders',
-      link: '/news/fpfp2',
-      content:` 
+  },
+  {
+    id: 2,
+    // date: 'June 13, 2025',
+    title: 'Hon. Michael Mugenya Pledges Improved Market Infrastructure for Funyula Traders',
+    link: '/news/fpfp2',
+    content: ` 
       <div>
 
           <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/20250420_081646000_iOS.jpg" alt="Women traders from the Funyula main trading centre" style="width:100%; height:auto; margin-bottom:2rem;" />
@@ -39,13 +39,13 @@
       <p style=" font-size:1.25rem;"><b><i>“A New Future For Funyula Begins Right Now”</i></b></p>
 
       </div>`
-    },
-    {
-      id: 3,
-      // date: 'June 13, 2025',
-      title: 'Hon. Michael Mugenya Erects Modern Boda Boda Shades to Improve Riders’ Welfare',
-      link: '/news/fpfp3',
-      content:` 
+  },
+  {
+    id: 3,
+    // date: 'June 13, 2025',
+    title: 'Hon. Michael Mugenya Erects Modern Boda Boda Shades to Improve Riders’ Welfare',
+    link: '/news/fpfp3',
+    content: ` 
       <div>
 
         <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/89_1.47.1.jpg" alt="Women traders from the Funyula main trading centre" style="width:100%; height:auto; margin-bottom:2rem;" />
@@ -67,13 +67,13 @@
       <p style=" font-size:1.25rem;"><b><i>“A New Future For Funyula Begins Right Now”</i></b></p>
 
       </div>`
-    },
-    {
-      id: 4,
-      date: 'Nairobi, Kenya | January 13, 2026.',
-      title: 'Strategic Dialogue at Bomas of Kenya Signals New Chapter for Funyula Leadership',
-      link: '/news/fpfp4',
-      content:` 
+  },
+  {
+    id: 4,
+    date: 'Nairobi, Kenya | January 13, 2026.',
+    title: 'Strategic Dialogue at Bomas of Kenya Signals New Chapter for Funyula Leadership',
+    link: '/news/fpfp4',
+    content: ` 
       <div>
 
         <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/michael_meets_SEO.jpeg" alt="Strategic Dialogue at Bomas of Kenya Signals New Chapter for Funyula Leadership" style="width:100%; height:500px; object-fit:cover; margin-bottom:2rem;" />
@@ -96,13 +96,13 @@
       <p style=" font-size:1.25rem;">As Funyula looks toward the future, this strategic engagement stands out as an early indicator of purposeful leadership aimed at prosperity, unity, and cultural pride for the Samia people.</p>
 
       </div>`
-    },
-    {
-      id: 5,
-      // date: 'June 13, 2025',
-      title: 'Mugenya Consults Mulanya as 2027 Politics Shift Toward Development-Centered Leadership in Busia',
-      link: '/news/fpfp5',
-      content:` 
+  },
+  {
+    id: 5,
+    // date: 'June 13, 2025',
+    title: 'Mugenya Consults Mulanya as 2027 Politics Shift Toward Development-Centered Leadership in Busia',
+    link: '/news/fpfp5',
+    content: ` 
       <div>
 
         <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/WhatsApp+Image+2026-01-25+at+8.47.53+AM.jpeg" alt="Mugenya Consults Mulanya as 2027 Politics Shift Toward Development-Centered Leadership in Busia" style="width:100%; height:auto; margin-bottom:2rem;" />
@@ -123,13 +123,13 @@
 
 
       </div>`
-    },
-    {
-      id: 6,
-      // date: 'June 13, 2025',
-      title: 'Mugenya, Sonko Hold High-Level Talks on Empowerment Politics and Grassroots Leadership',
-      link: '/news/fpfp6',
-      content:` 
+  },
+  {
+    id: 6,
+    // date: 'June 13, 2025',
+    title: 'Mugenya, Sonko Hold High-Level Talks on Empowerment Politics and Grassroots Leadership',
+    link: '/news/fpfp6',
+    content: ` 
       <div>
 
         <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/Mugenya-Sonko-Hold-High-Level-Talks-on-Empowerment-Politics-and-Grassroots-Leadership.jpeg" alt="Mugenya, Sonko Hold High-Level Talks on Empowerment Politics and Grassroots Leadership" style="width:100%; height:auto; margin-bottom:2rem;" />
@@ -150,16 +150,16 @@
 
 
       </div>`
-    },
-    {
-      id: 7,
-      // date: 'June 13, 2025',
-      title: 'Mugenya Seeks Wisdom as He Meets UDA Founding Chairman Muthama',
-      link: '/news/fpfp7',
-      content:` 
+  },
+  {
+    id: 7,
+    // date: 'June 13, 2025',
+    title: 'Mugenya Seeks Wisdom as He Meets UDA Founding Chairman Muthama',
+    link: '/news/fpfp7',
+    content: ` 
       <div>
 
-        <img src="https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/7_news.jpeg" alt="Mugenya Seeks Wisdom as He Meets UDA Founding Chairman Muthama" style="width:100%; height:auto; margin-bottom:2rem;" />
+        <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/7_news.jpeg" alt="Mugenya Seeks Wisdom as He Meets UDA Founding Chairman Muthama" style="width:100%; height:auto; margin-bottom:2rem;" />
 
 
 
@@ -186,6 +186,83 @@
 
 
       </div>`
-    },
-   
-  ];
+  },
+  {
+    id: 8,
+    // date: 'June 13, 2025',
+    title: 'A New Dawn for Samia Women: From Promise to Practical Empowerment',
+    link: '/news/fpfp8',
+    content: ` 
+      <div>
+
+        <div class="not-prose mb-8 grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+          <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/expo-one.jpeg" alt="A New Dawn for Samia Women: From Promise to Practical Empowerment" class="m-0 h-auto w-full" />
+          <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/expo-two.jpeg" alt="A New Dawn for Samia Women: From Promise to Practical Empowerment" class="m-0 h-auto w-full" />
+        </div>
+
+
+
+      <p style=" font-size:1.25rem;">Funyula is on the brink of something transformative.</p>
+
+      <p style=" font-size:1.25rem;">For years, conversations around women’s empowerment in Samia have remained just that, conversations. Promises have come and gone, often leaving behind little more than hopeful words. But now, a new chapter is unfolding; one that shifts from talk to tangible action.</p>
+
+      <p style=" font-size:1.25rem;">Talk is cheap, without practicality. So, this one-of-a-kind event is different.</p>
+
+      <p style=" font-size:1.25rem;">At the heart of this change is an upcoming landmark event spearheaded by Hon. Michael Mugenya, aspirant Member of Parliament for Funyula. This initiative is not only another gathering. It is designed as a cutting-edge platform to unlock real economic opportunities for the women of Samia.</p>
+
+      <p style=" font-size:1.25rem;"><b>A First of Its Kind in Samia</b></p>
+
+      <p style=" font-size:1.25rem;">For the first time, women across Samia will be brought together under a coordinated, structured effort aimed at strengthening their businesses and financial independence. This is a significant departure from the fragmented, individual efforts that have defined the past.</p>
+
+      <p style=" font-size:1.25rem;">This initiative recognizes a simple but powerful truth: when women are supported collectively, entire communities rise.</p>
+
+      <p style=" font-size:1.25rem;"><b>From Ideas to Income</b></p>
+
+      <p style=" font-size:1.25rem;">What makes this event truly groundbreaking is its all-in-one approach.</p>
+
+      <p style=" font-size:1.25rem;">Through the support of the <a href="https://mtcmfoundation.org/" target="_blank" rel="noopener noreferrer" class="text-blue-500">MTCM Foundation</a>, participants will gain access to:</p>
+
+      <ul>
+        <li>A platform to present and refine their business ideas</li>
+        <li>Professional business counseling and mentorship</li>
+        <li>Opportunities to access grants to kickstart or expand their enterprises</li>
+      </ul>
+
+      <p style=" font-size:1.25rem;">Instead of navigating these steps separately, Samia women will now have a single space where ideas can be nurtured, supported, and funded.</p>
+
+      <p style=" font-size:1.25rem;"><b>A Shift to Actionable Leadership</b></p>
+
+      <p style=" font-size:1.25rem;">This initiative signals a broader shift in leadership philosophy, moving away from rhetoric and toward structured, measurable impact.
+Hon. Mugenya’s approach reflects a commitment to planned engagement, where empowerment is not promised but delivered through clear systems and support mechanisms. It is a model that prioritizes sustainability over short-term visibility.</p>
+
+<p style=" font-size:1.25rem;"><b>Building for the Future: A Cooperative Vision</b></p>
+
+      <p style=" font-size:1.25rem;">The event will not end with discussions or training sessions. Its most significant outcome lies in what comes next.</p>
+
+      <p style=" font-size:1.25rem;">Participants will be invited to take part in forming the Samia Women Business Group Savings and Cooperative Society, a long-term vehicle designed to:
+      </p>
+
+      <ul>
+        <li>Provide ongoing financial support</li>
+        <li>Enable group savings and lending</li>
+        <li>Strengthen collective bargaining power</li>
+        <li>Ensure continuity beyond the event itself</li>
+      </ul>
+
+      <p style=" font-size:1.25rem;">This cooperative model will serve as the backbone for immediate, interim, and long-term economic empowerment for women across Samia.</p>
+
+      <p style=" font-size:1.25rem;"><b>Why This Matters</b></p>
+
+      <p style=" font-size:1.25rem;">For many women in Samia, access to capital, mentorship, and networks has remained a persistent challenge. This initiative directly addresses those barriers in a practical, inclusive way.</p>
+
+      <p style=" font-size:1.25rem;">It is not only about business, but dignity, independence, and the ability to shape one’s future.</p>
+
+      <p style=" font-size:1.25rem;">This is more than an event. It is the beginning of a movement and one that places Samia women at the center of economic transformation.</p>
+
+      <p style=" font-size:1.25rem;">And this time, it’s not cheap talk. It’s happening.</p>
+
+      <p style=" font-size:1.25rem;">On April 25, 2026.</p>
+      
+      </div>`
+  },
+];
