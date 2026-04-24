@@ -275,6 +275,8 @@ Hon. Mugenya’s approach reflects a commitment to planned engagement, where emp
     content: ` 
       <div>
 
+      <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/news9.jpeg" alt="Governor Otuoma Lauds SWOBE Concept in Discussion with Hon. Mugenya" class="m-0 h-auto w-full" />
+
       <p style=" font-size:1.25rem;">23 April, 2026, Busia County: Funyula parliamentary aspirant Hon. Michael Mugenya on Thursday met Busia Governor Paul Otuoma in an engagement where enterprise development, women empowerment, and institutional capacity building took centre stage.</p>
 
       <p style=" font-size:1.25rem;">During the meeting, Mugenya presented Governor Otuoma with a hand-crafted artwork, acknowledging him as a worthy predecessor and recognizing the county’s direction towards development-focused leadership and collaboration with the national government – it was symbolic.</p>
