@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 import { BACKEND_URL } from '../utils/ipUrl'
 import { setupRecaptcha, sendVerificationCode, verifyCode } from '../utils/firebase'
 
+const registrationClosed = true
+
 const DESIGNATIONS = ['Official', 'Member', '--Options--'] as const
 
 type FormData = {
@@ -70,6 +72,7 @@ export function ExpoRegisterProvider({ children }: { children: React.ReactNode }
   const isDesignationInvalid = formData.designation === '--Options--'
 
   useEffect(() => {
+    if (registrationClosed) return
     if (!modalOpen) return
     if (!recaptchaContainerRef.current) return
 
@@ -206,164 +209,184 @@ export function ExpoRegisterProvider({ children }: { children: React.ReactNode }
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6">
-              <h2 id="expo-modal-title" className="text-xl font-bold text-gray-800 mb-4">
-                Expo Registration
-              </h2>
-
-              {success ? (
-                <div className="text-center py-6">
-                  <p className="text-green-600 font-semibold">Registration successful!</p>
-                  <p className="text-gray-600 text-sm mt-2">Redirecting to manifesto...</p>
-                </div>
-              ) : (
-                <form onSubmit={verifyPhoneNumber ? handleVerifyCode : handleSubmit} className="space-y-4">
-                  <div>
-                    <label htmlFor="expo-groupName" className="block text-sm font-medium text-gray-700 mb-1">
-                      Group name
-                    </label>
-                    <input
-                      id="expo-groupName"
-                      name="groupName"
-                      type="text"
-                      required
-                      value={formData.groupName}
-                      onChange={handleChange}
-                      className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="expo-designation" className="block text-sm font-medium text-gray-700 mb-1">
-                      Designation
-                    </label>
-                    <select
-                      id="expo-designation"
-                      name="designation"
-                      required
-                      value={formData.designation}
-                      onChange={handleChange}
-                      className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
-                    >
-                      {DESIGNATIONS.map((d) => (
-                        <option key={d} value={d}>
-                          {d}
-                        </option>
-                      ))}
-                    </select>
-                    {isDesignationInvalid && (
-                      <p className="text-red-600 text-sm mt-1">Please select a designation.</p>
-                    )}
-                  </div>
-                  <div>
-                    <label htmlFor="expo-groupLeaderName" className="block text-sm font-medium text-gray-700 mb-1">
-                      Group leader name
-                    </label>
-                    <input
-                      id="expo-groupLeaderName"
-                      name="groupLeaderName"
-                      type="text"
-                      required
-                      value={formData.groupLeaderName}
-                      onChange={handleChange}
-                      className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="expo-yourName" className="block text-sm font-medium text-gray-700 mb-1">
-                      Your name
-                    </label>
-                    <input
-                      id="expo-yourName"
-                      name="yourName"
-                      type="text"
-                      required
-                      value={formData.yourName}
-                      onChange={handleChange}
-                      className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="expo-idNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                      ID number
-                    </label>
-                    <input
-                      id="expo-idNumber"
-                      name="idNumber"
-                      type="text"
-                      required
-                      value={formData.idNumber}
-                      onChange={handleChange}
-                      className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="expo-phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                      Phone number
-                    </label>
-                    <div className="relative w-full">
-                      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
-                        +254
-                      </div>
-                      <input
-                        id="expo-phoneNumber"
-                        name="phoneNumber"
-                        type="tel"
-                        required
-                        value={formData.phoneNumber}
-                        onChange={(e) => {
-                          const digitsOnly = e.target.value.replace(/\D/g, '')
-                          setFormData((prev) => ({ ...prev, phoneNumber: digitsOnly }))
-                          setError(null)
-                        }}
-                        className="w-full border border-gray-300 rounded pl-14 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
-                        placeholder="Phone Number"
-                      />
-                    </div>
-                  </div>
-                  {!verifyPhoneNumber && (
-                    <div
-                      id={recaptchaId}
-                      ref={recaptchaContainerRef}
-                      className="flex justify-center"
-                    />
-                  )}
-                  {verifyPhoneNumber && (
-                    <div>
-                      <label htmlFor="expo-verificationCode" className="block text-sm font-medium text-gray-700 mb-1">
-                        Verification code
-                      </label>
-                      <input
-                        id="expo-verificationCode"
-                        name="verificationCode"
-                        type="text"
-                        placeholder="Enter 6-digit code"
-                        value={verificationCode}
-                        onChange={(e) => setVerificationCode(e.target.value.slice(0, 6))}
-                        maxLength={6}
-                        pattern="[0-9]{6}"
-                        required
-                        className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
-                      />
-                    </div>
-                  )}
-                  {error && <p className="text-red-600 text-sm">{error}</p>}
-                  <div className="flex gap-3 pt-2">
+              {registrationClosed ? (
+                <>
+                  <h2 id="expo-modal-title" className="text-xl font-bold text-gray-800 mb-4">
+                    Expo Registration
+                  </h2>
+                  <p className="text-gray-700 text-center py-4">Registration is closed.</p>
+                  <div className="pt-2">
                     <button
                       type="button"
                       onClick={closeModal}
-                      disabled={loading}
-                      className="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded font-medium hover:bg-gray-50 disabled:opacity-50"
+                      className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded font-medium hover:bg-gray-50"
                     >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={loading || (!verifyPhoneNumber && isDesignationInvalid)}
-                      className="flex-1 bg-trump-maingreen text-white py-2 px-4 rounded font-medium hover:opacity-90 disabled:opacity-50"
-                    >
-                      {verifyPhoneNumber ? (loading ? 'Verifying...' : 'Verify & Continue') : (loading ? 'Submitting...' : 'Submit')}
+                      Close
                     </button>
                   </div>
-                </form>
+                </>
+              ) : (
+                <>
+                  <h2 id="expo-modal-title" className="text-xl font-bold text-gray-800 mb-4">
+                    Expo Registration
+                  </h2>
+
+                  {success ? (
+                    <div className="text-center py-6">
+                      <p className="text-green-600 font-semibold">Registration successful!</p>
+                      <p className="text-gray-600 text-sm mt-2">Redirecting to manifesto...</p>
+                    </div>
+                  ) : (
+                    <form onSubmit={verifyPhoneNumber ? handleVerifyCode : handleSubmit} className="space-y-4">
+                      <div>
+                        <label htmlFor="expo-groupName" className="block text-sm font-medium text-gray-700 mb-1">
+                          Group name
+                        </label>
+                        <input
+                          id="expo-groupName"
+                          name="groupName"
+                          type="text"
+                          required
+                          value={formData.groupName}
+                          onChange={handleChange}
+                          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="expo-designation" className="block text-sm font-medium text-gray-700 mb-1">
+                          Designation
+                        </label>
+                        <select
+                          id="expo-designation"
+                          name="designation"
+                          required
+                          value={formData.designation}
+                          onChange={handleChange}
+                          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
+                        >
+                          {DESIGNATIONS.map((d) => (
+                            <option key={d} value={d}>
+                              {d}
+                            </option>
+                          ))}
+                        </select>
+                        {isDesignationInvalid && (
+                          <p className="text-red-600 text-sm mt-1">Please select a designation.</p>
+                        )}
+                      </div>
+                      <div>
+                        <label htmlFor="expo-groupLeaderName" className="block text-sm font-medium text-gray-700 mb-1">
+                          Group leader name
+                        </label>
+                        <input
+                          id="expo-groupLeaderName"
+                          name="groupLeaderName"
+                          type="text"
+                          required
+                          value={formData.groupLeaderName}
+                          onChange={handleChange}
+                          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="expo-yourName" className="block text-sm font-medium text-gray-700 mb-1">
+                          Your name
+                        </label>
+                        <input
+                          id="expo-yourName"
+                          name="yourName"
+                          type="text"
+                          required
+                          value={formData.yourName}
+                          onChange={handleChange}
+                          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="expo-idNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                          ID number
+                        </label>
+                        <input
+                          id="expo-idNumber"
+                          name="idNumber"
+                          type="text"
+                          required
+                          value={formData.idNumber}
+                          onChange={handleChange}
+                          className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="expo-phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                          Phone number
+                        </label>
+                        <div className="relative w-full">
+                          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
+                            +254
+                          </div>
+                          <input
+                            id="expo-phoneNumber"
+                            name="phoneNumber"
+                            type="tel"
+                            required
+                            value={formData.phoneNumber}
+                            onChange={(e) => {
+                              const digitsOnly = e.target.value.replace(/\D/g, '')
+                              setFormData((prev) => ({ ...prev, phoneNumber: digitsOnly }))
+                              setError(null)
+                            }}
+                            className="w-full border border-gray-300 rounded pl-14 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
+                            placeholder="Phone Number"
+                          />
+                        </div>
+                      </div>
+                      {!verifyPhoneNumber && (
+                        <div
+                          id={recaptchaId}
+                          ref={recaptchaContainerRef}
+                          className="flex justify-center"
+                        />
+                      )}
+                      {verifyPhoneNumber && (
+                        <div>
+                          <label htmlFor="expo-verificationCode" className="block text-sm font-medium text-gray-700 mb-1">
+                            Verification code
+                          </label>
+                          <input
+                            id="expo-verificationCode"
+                            name="verificationCode"
+                            type="text"
+                            placeholder="Enter 6-digit code"
+                            value={verificationCode}
+                            onChange={(e) => setVerificationCode(e.target.value.slice(0, 6))}
+                            maxLength={6}
+                            pattern="[0-9]{6}"
+                            required
+                            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-trump-maingreen"
+                          />
+                        </div>
+                      )}
+                      {error && <p className="text-red-600 text-sm">{error}</p>}
+                      <div className="flex gap-3 pt-2">
+                        <button
+                          type="button"
+                          onClick={closeModal}
+                          disabled={loading}
+                          className="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded font-medium hover:bg-gray-50 disabled:opacity-50"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={loading || (!verifyPhoneNumber && isDesignationInvalid)}
+                          className="flex-1 bg-trump-maingreen text-white py-2 px-4 rounded font-medium hover:opacity-90 disabled:opacity-50"
+                        >
+                          {verifyPhoneNumber ? (loading ? 'Verifying...' : 'Verify & Continue') : (loading ? 'Submitting...' : 'Submit')}
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </>
               )}
             </div>
           </div>

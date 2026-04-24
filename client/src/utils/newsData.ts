@@ -263,7 +263,35 @@ Hon. Mugenya’s approach reflects a commitment to planned engagement, where emp
 
       <p style=" font-size:1.25rem;">And this time, it’s not cheap talk. It’s happening.</p>
 
-      <p style=" font-size:1.25rem;">On April 25, 2026.</p>
+      <p style=" font-size:1.25rem;">On April 24, 2026.</p>
+      
+      </div>`
+  },
+  {
+    id: 9,
+    // date: 'June 13, 2025',
+    title: 'Governor Otuoma Lauds SWOBE Concept in Discussion with Hon. Mugenya',
+    link: '/news/fpfp9',
+    content: ` 
+      <div>
+
+      <p style=" font-size:1.25rem;">23 April, 2026, Busia County: Funyula parliamentary aspirant Hon. Michael Mugenya on Thursday met Busia Governor Paul Otuoma in an engagement where enterprise development, women empowerment, and institutional capacity building took centre stage.</p>
+
+      <p style=" font-size:1.25rem;">During the meeting, Mugenya presented Governor Otuoma with a hand-crafted artwork, acknowledging him as a worthy predecessor and recognizing the county’s direction towards development-focused leadership and collaboration with the national government – it was symbolic.</p>
+
+      <p style=" font-size:1.25rem;">The discussion focused on the upcoming <b>Samia Women Business Expo (SWOBE)</b>, with Mugenya outlining its vision as an annual platform aimed at bringing together hardworking Samia women, mapping business opportunities, and linking small and medium enterprises (SMEs) to financial support.</p>
+
+      <p style=" font-size:1.25rem;">Governor Otuoma welcomed the initiative, expressing support and noting that such programs reflect the right direction for building a stronger, more advanced, and economically empowered community. He indicated willingness to support SWOBE and its broader objectives.</p>
+
+      <p style=" font-size:1.25rem;">The initiative is being organized by <a href="https://www.samiafuture.com/" target="_blank" rel="noopener noreferrer" class="text-blue-500">Samia Future <b>(SF)</b></a> in partnership with <a href="https://www.mtcmfoundation.org/" target="_blank" rel="noopener noreferrer" class="text-blue-500">MTCM Foundation</a>, with further plans underway ahead of MTCM’s anticipated launch in July. Mugenya elaborated on the scope of the two programs, emphasizing their shared vision of building a more informed, supported, entrepreneurial, and success-focused human capital base within Samia.</p>
+
+      <p style=" font-size:1.25rem;">As part of the engagement, Mugenya also extended an offer to the Busia County Government to provide technical and training support in key areas including finance, technology, taxation, leadership, and marketing, aimed at strengthening capacity within county structures at accessible rates.</p>
+
+      <p style=" font-size:1.25rem;">On the political front, Mugenya addressed ongoing discussions around his positioning as a possible ODM-backed broad-based candidate. He maintained that his immediate focus remains on engaging the people on the ground.</p>
+
+      <p style=" font-size:1.25rem;">“Leadership must begin with understanding the people’s footing first. The rest will follow,” he said.</p>
+
+      <p style=" font-size:1.25rem;">The meeting reflects a continued alignment of development initiatives and leadership engagement, as stakeholders in Busia increasingly focus on practical solutions to drive economic growth and community empowerment.</p>
       
       </div>`
   },
