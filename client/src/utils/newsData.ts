@@ -297,4 +297,40 @@ Hon. Mugenya’s approach reflects a commitment to planned engagement, where emp
       
       </div>`
   },
+  {
+    id: 10,
+    // date: 'June 13, 2025',
+    title: 'First Samia Women Business Expo a Resounding Success as Mugenya Champions Grassroots Empowerment',
+    link: '/news/fpfp10',
+    content: ` 
+      <div>
+
+      <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/expo.jpeg" alt="First Samia Women Business Expo a Resounding Success as Mugenya Champions Grassroots Empowerment" class="m-0 h-auto w-full" />
+
+      <p style=" font-size:1.25rem;">Funyula, Busia County: The inaugural Samia Women Business Expo marked a powerful and inspiring milestone for grassroots economic empowerment in Funyula Constituency, drawing an overwhelming turnout and setting the tone for a new era of inclusive development.</p>
+
+      <p style=" font-size:1.25rem;">At the heart of the event stood Mheshimiwa Michael Mugenya, the aspirant and incoming Member of Parliament for Funyula, who joined an over 400 strong multitude of women group members drawn from across the constituency’s wards. The gathering brought together representatives from 20 women groups — four from each ward. Standing side-by-side with part of the leadership of the groups as captured above, Mheshimiwa Mugenya presented the grants worth over KES 200, 000 to the groups, making them the first beneficiaries of the community uplifting activities of the Michael Trufosa Clarice Mugenya Foundation.</p>
+
+      <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/expo2.jpeg" alt="First Samia Women Business Expo a Resounding Success as Mugenya Champions Grassroots Empowerment" class="m-0 h-auto w-full" />
+
+      <p style=" font-size:1.25rem;">In a symbolic and unifying moment captured during the event, Mheshimiwa Mugenya stood alongside the women leaders on stage, making his commitment to uplifting women-led enterprises known. The groups, clad in coordinated attire bearing campaign insignia, reflected both unity and purpose; a visual testament to the growing momentum behind women’s economic empowerment in Funyula.</p>
+
+      <p style=" font-size:1.25rem;">The Expo was not only a celebration of progress but also a platform for engagement. Women turned up in large numbers, filling the venue to capacity, eager to listen, learn, and share ideas on how to expand their businesses and strengthen their financial independence. The atmosphere was vibrant, with active participation and candid discussions shaping the day’s proceedings.</p>
+
+      <p style=" font-size:1.25rem;">Beyond the stage, smaller breakout interactions highlighted the practical impact of the foundation’s support. Women could be seen engaging directly with facilitators and fellow entrepreneurs: exchanging ideas, reviewing documents, and exploring opportunities for collaboration and growth. These sessions reinforced the Expo’s core mission: building sustainable, community-driven enterprises.</p>
+
+      <p style=" font-size:1.25rem;">Mheshimiwa Mugenya, addressing the gathering, emphasized the critical role women play in transforming households and communities. He reiterated his commitment to expanding access to funding, training, and market linkages for women groups across all wards.</p>
+
+      <p style=" font-size:1.25rem;">“This is just the beginning,” he noted. “When we empower women, we empower entire communities. The success we are witnessing here today is proof that Funyula is ready to rise, ready for a new future.”</p>
+
+      <p style=" font-size:1.25rem;">The event also served as a feedback forum, with participants openly sharing their experiences, challenges, and aspirations. Their enthusiasm and readiness to engage signaled a strong foundation for future initiatives under the foundation’s programs.</p>
+
+      <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/expo3.jpeg" alt="First Samia Women Business Expo a Resounding Success as Mugenya Champions Grassroots Empowerment" class="m-0 h-auto w-full" />
+
+      <p style=" font-size:1.25rem;">As the sun set on a day filled with promise and purpose, one message stood clear: the women of Funyula are organized, motivated, and ready to take charge of their economic destiny, with Mheshimiwa Michael Mugenya positioning himself as a steadfast partner in that journey.</p>
+
+      <p style=" font-size:1.25rem;">The success of the First Samia Women Business Expo not only demonstrated the impact of targeted grassroots support but also reinforced a growing movement centered on empowerment, unity, and sustainable development across Funyula Constituency.</p>
+      
+      </div>`
+  },
 ];
