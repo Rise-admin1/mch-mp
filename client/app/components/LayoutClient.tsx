@@ -29,7 +29,7 @@ function StickyBar() {
           className="flex w-max items-center gap-3 px-4 py-3 whitespace-nowrap will-change-transform"
           style={{ animation: 'stickyMarquee 14s linear infinite' }}
         >
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={openModal}
@@ -44,7 +44,7 @@ function StickyBar() {
             >
               Register
             </button>
-          </div>
+          </div> */}
           {/* duplicate for seamless loop */}
           <div className="flex items-center gap-3" aria-hidden="true">
             <button
@@ -68,7 +68,7 @@ function StickyBar() {
       </div>
 
       {/* Desktop: static layout */}
-      <div className="hidden md:flex container mx-auto px-4 py-2 flex-wrap items-center justify-center gap-2 sm:gap-3">
+      {/* <div className="hidden md:flex container mx-auto px-4 py-2 flex-wrap items-center justify-center gap-2 sm:gap-3">
         <p className="text-sm sm:text-base text-gray-700">
           Samia Women Business Expo
         </p>
@@ -79,7 +79,7 @@ function StickyBar() {
         >
           Register
         </button>
-      </div>
+      </div> */}
     </div>
   )
 }
