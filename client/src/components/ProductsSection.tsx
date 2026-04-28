@@ -12,19 +12,19 @@ const ProductShowcase = () => {
     {
       id: 1,
       name: '',
-      image: 'https://dubaianalytica.com/wp-content/uploads/2025/03/89_1.47.1.jpg',
+      image: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_1.jpeg',
       url: ''
     },
     {
       id: 2,
       name: '',
-      image: 'https://dubaianalytica.com/wp-content/uploads/2025/03/news.jpg',
+      image: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_2.jpeg',
       url: ''
     },
     {
       id: 3,
       name: '',
-      image: 'https://dubaianalytica.com/wp-content/uploads/2025/03/get_involved.jpg',
+      image: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_3.jpeg',
       url: ''
     },
     
