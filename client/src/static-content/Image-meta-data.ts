@@ -10,249 +10,249 @@ export const videos: Video[] = [
   id: '1',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_1.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_1.jpeg'
 },
 {
   id: '2',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_2.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_2.jpeg'
 },
 {
   id: '3',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_3.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_3.jpeg'
 },
 {
   id: '4',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_4.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_4.jpeg'
 },
 {
   id: '5',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_5.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_5.jpeg'
 },
 {
   id: '6',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_6.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_6.jpeg'
 },
 {
   id: '7',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_7.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_7.jpeg'
 },
 {
   id: '8',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_8.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_8.jpeg'
 },
 {
   id: '9',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_9.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_9.jpeg'
 },
 {
   id: '10',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_10.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_10.jpeg'
 },
 {
   id: '11',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_11.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_11.jpeg'
 },
 {
   id: '12',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_12.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_12.jpeg'
 },
 {
   id: '13',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_13.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_13.jpeg'
 },
 {
   id: '14',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_14.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_14.jpeg'
 },
 {
   id: '15',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_15.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_15.jpeg'
 },
 {
   id: '16',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_16.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_16.jpeg'
 },
 {
   id: '17',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_17.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_17.jpeg'
 },
 {
   id: '18',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_18.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_18.jpeg'
 },
 {
   id: '19',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_19.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_19.jpeg'
 },
 {
   id: '20',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_20.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_20.jpeg'
 },
  {
   id: '21',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_21.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_21.jpeg'
 },
 {
   id: '22',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_22.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_22.jpeg'
 },
 {
   id: '23',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_23.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_23.jpeg'
 },
 {
   id: '24',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_24.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_24.jpeg'
 },
 {
   id: '25',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_25.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_25.jpeg'
 },
 {
   id: '26',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_26.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_26.jpeg'
 },
 {
   id: '27',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_27.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_27.jpeg'
 },
 {
   id: '28',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_28.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_28.jpeg'
 },
 {
   id: '29',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_29.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_29.jpeg'
 },
 {
   id: '30',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_30.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_30.jpeg'
 },
 {
   id: '31',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_31.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_31.jpeg'
 },
 {
   id: '32',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_32.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_32.jpeg'
 },
 {
   id: '33',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_33.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_33.jpeg'
 },
 {
   id: '34',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_34.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_34.jpeg'
 },
 {
   id: '35',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_35.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_35.jpeg'
 },
  {
   id: '36',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_36.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_36.jpeg'
 },
 {
   id: '37',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_37.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_37.jpeg'
 },
 {
   id: '38',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_38.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_38.jpeg'
 },
 {
   id: '39',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_39.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_39.jpeg'
 },
 
 {
   id: '40',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_40.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_40.jpeg'
 },
 
 {
   id: '41',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_41.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_41.jpeg'
 },
 
 
@@ -260,7 +260,7 @@ export const videos: Video[] = [
   id: '42',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_42.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_42.jpeg'
 },
 
 
@@ -268,7 +268,7 @@ export const videos: Video[] = [
   id: '43',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_43.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_43.jpeg'
 },
 
 
@@ -276,123 +276,123 @@ export const videos: Video[] = [
   id: '44',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_44.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_44.jpeg'
 },
  {
   id: '45',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_45.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_45.jpeg'
 },
 {
   id: '46',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_46.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_46.jpeg'
 },
 {
   id: '47',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_47.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_47.jpeg'
 },
 {
   id: '48',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_48.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_48.jpeg'
 },
 {
   id: '49',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_49.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_49.jpeg'
 },
 {
   id: '50',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_50.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_50.jpeg'
 },
 {
   id: '51',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_51.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_51.jpeg'
 },
 {
   id: '52',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_52.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_52.jpeg'
 },
 {
   id: '53',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_53.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_53.jpeg'
 },
 {
   id: '54',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_54.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_54.jpeg'
 },
 {
   id: '55',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_55.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_55.jpeg'
 },
 {
   id: '56',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_56.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_56.jpeg'
 },
  {
   id: '57',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_57.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_57.jpeg'
 },
 {
   id: '58',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_58.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_58.jpeg'
 },
 {
   id: '59',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_59.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_59.jpeg'
 },
 {
   id: '60',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_60.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_60.jpeg'
 },
 {
   id: '61',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_61.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_61.jpeg'
 },
 
 {
   id: '62',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_62.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_62.jpeg'
 },  
 
 {
   id: '63',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_63.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_63.jpeg'
 },
 
 
@@ -400,7 +400,7 @@ export const videos: Video[] = [
   id: '64',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_64.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_64.jpeg'
 },
 
 
@@ -408,7 +408,7 @@ export const videos: Video[] = [
   id: '65',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_65.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_65.jpeg'
 },
 
 
@@ -416,7 +416,7 @@ export const videos: Video[] = [
   id: '66',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_66.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_66.jpeg'
 },
 
 
@@ -424,7 +424,7 @@ export const videos: Video[] = [
   id: '67',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_67.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_67.jpeg'
 },
 
 
@@ -433,7 +433,7 @@ export const videos: Video[] = [
   id: '68',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_68.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_68.jpeg'
 },
 
 
@@ -441,7 +441,7 @@ export const videos: Video[] = [
   id: '69',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_69.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_69.jpeg'
 },
 
 
@@ -449,7 +449,7 @@ export const videos: Video[] = [
   id: '70',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_70.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_70.jpeg'
 },
 
 
@@ -457,7 +457,7 @@ export const videos: Video[] = [
   id: '71',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_71.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_71.jpeg'
 },
 
 
@@ -465,7 +465,7 @@ export const videos: Video[] = [
   id: '72',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_72.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_72.jpeg'
 },
 
 
@@ -473,7 +473,7 @@ export const videos: Video[] = [
   id: '73',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_73.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_73.jpeg'
 },
 
 
@@ -482,7 +482,7 @@ export const videos: Video[] = [
   id: '74',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_74.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_74.jpeg'
 },
 
 
@@ -490,7 +490,7 @@ export const videos: Video[] = [
   id: '75',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_75.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_75.jpeg'
 },
 
 
@@ -498,7 +498,7 @@ export const videos: Video[] = [
   id: '76',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_76.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_76.jpeg'
 },
 
 
@@ -506,7 +506,7 @@ export const videos: Video[] = [
   id: '77',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_77.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_77.jpeg'
 },
 
 
@@ -514,7 +514,7 @@ export const videos: Video[] = [
   id: '78',
   title: 'Title Here',
   description: 'Description of what he is doing or what he promises here',
-  imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_78.jpeg'
+  imageUrl: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_78.jpeg'
 },
 {
   id: '79',

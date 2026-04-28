@@ -12,19 +12,19 @@ const ProductShowcase = () => {
     {
       id: 1,
       name: '',
-      image: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_1.jpeg',
+      image: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_1.jpeg',
       url: ''
     },
     {
       id: 2,
       name: '',
-      image: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_2.jpeg',
+      image: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_2.jpeg',
       url: ''
     },
     {
       id: 3,
       name: '',
-      image: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/image_3.jpeg',
+      image: 'https://d177n02wywg7h2.cloudfront.net/funyula-images/image_3.jpeg',
       url: ''
     },
     
