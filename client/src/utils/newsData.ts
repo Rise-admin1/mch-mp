@@ -333,4 +333,50 @@ Hon. Mugenya’s approach reflects a commitment to planned engagement, where emp
       
       </div>`
   },
+  {
+    id: 11,
+    // date: 'June 13, 2025',
+    title: 'Joy, Song and Testimony: Samia Women Celebrate Transformative Support After Historic Expo',
+    link: '/news/fpfp11',
+    content: ` 
+      <div>
+
+      <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/news-1.jpeg" alt="Joy, Song and Testimony: Samia Women Celebrate Transformative Support After Historic Expo" class="m-0 h-auto w-full" />
+
+      <p style=" font-size:1.25rem;">Funyula, Busia County: Days after the curtains fell on the landmark Samia Women Business Expo, one thing remains unmistakably clear across Funyula: the joy it sparked among women is still alive, echoing in songs, testimonies, and renewed hope.</p>
+
+      <p style=" font-size:1.25rem;">From the packed tents to the open fields where women broke into dance, the Expo was more than just an event, it was a turning point.
+</p>
+
+      <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/news-2.jpeg" alt="First Samia Women Business Expo a Resounding Success as Mugenya Champions Grassroots Empowerment" class="m-0 h-auto w-full" />
+
+      <p style=" font-size:1.25rem;">Under a fully occupied marquee, hundreds of women sat shoulder to shoulder, attentively following proceedings with a sense of purpose rarely witnessed in past gatherings. Their faces reflected not just curiosity, but belief–belief that this time, something tangible had reached them.</p>
+
+      <p style=" font-size:1.25rem;">And when the formal sessions paused, the mood shifted into celebration.</p>
+
+      <p style=" font-size:1.25rem;">In spontaneous bursts of song and dance, women expressed gratitude in the most authentic way they knew how. Groups clad in vibrant traditional attire circled together, singing in unison as others joined in, clapping and moving rhythmically under the bright Funyula sun. At the center of it all was Hon. Michael Mugenya, who moved among them, not as a distant leader, but as a present and engaged partner in their journey.</p>
+
+      <p style=" font-size:1.25rem;">What stood out most, however, were the voices of the women themselves.</p>
+
+      <p style=" font-size:1.25rem;">One after another, they shared a common sentiment: for many, this was the first time they had received direct, structured support aimed at growing their businesses.</p>
+
+      <p style=" font-size:1.25rem;">“We have attended many meetings before,” one participant noted during a post-event interaction, “but no sitting or aspiring Member of Parliament has ever come through for us like this.”</p>
+
+      <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/news-3.jpeg" alt="First Samia Women Business Expo a Resounding Success as Mugenya Champions Grassroots Empowerment" class="m-0 h-auto w-full" />
+
+      <p style=" font-size:1.25rem;">That sentiment was echoed widely across the groups. The grants issued through the Michael Trufosa Clarice Mugenya Foundation were not seen as handouts, but as a long-overdue recognition of the role women play in sustaining households and driving local economies.</p>
+
+      <p style=" font-size:1.25rem;">In smaller circles after the main event, women gathered under trees and in open spaces, continuing discussions, reviewing documents, and planning next steps. The energy was unmistakable–this was a community already thinking ahead.</p>
+      <p style=" font-size:1.25rem;"For many, the Expo was not just about what they received, but what they felt: seen, heard, and included.
+</p>
+      <p style=" font-size:1.25rem;">Hon. Mugenya, reflecting on the event, emphasized that the celebrations were a sign of something deeper.
+</p>
+      <p style=" font-size:1.25rem;">“When women begin to celebrate opportunities, it means hope has been restored,” he said. “Our work is to ensure that this hope translates into lasting economic empowerment.”</p>
+      <p style=" font-size:1.25rem;">The scenes captured, of women dancing, engaging, and standing proudly together, tell a story that statistics alone cannot. It is a story of a constituency awakening to possibility, led by women who are ready to build, grow, and uplift one another.
+</p>
+      <p style=" font-size:1.25rem;">As Funyula looks ahead, the legacy of the Samia Women Business Expo will not be measured only by attendance or speeches, but by the renewed spirit it ignited; a spirit carried forward in every song sung, every business started, and every woman who now believes that her voice, and her effort, truly matter.
+</p>
+      
+      </div>`
+  },
 ];
