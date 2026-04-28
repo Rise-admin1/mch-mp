@@ -73,6 +73,24 @@ const ProductShowcase = () => {
       youtubeId: 'gz-pnHsCoFg',
       thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/20250416_145512000_iOS.jpg`
     },
+    {
+      id: 8,
+      title: 'Samia Women Business Expo (SWOBE #3)',
+      youtubeId: '8NPHTbvtScM',
+      thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/mqdefault_6s.webp`
+    },
+    {
+      id: 9,
+      title: 'Samia Women Business Expo (SWOBE #1)',
+      youtubeId: 'g-Jgsgpvsek',
+      thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/mqdefault_6s1.webp`
+    },
+    {
+      id: 10,
+      title: 'Samia Women Business Expo (SWOBE #2)',
+      youtubeId: '8NPHTbvtScM',
+      thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/mqdefault_6s2.webp`
+    },
   ];
 
   const handleNextImage = () => {
