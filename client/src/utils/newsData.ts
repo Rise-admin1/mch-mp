@@ -341,14 +341,14 @@ Hon. Mugenya’s approach reflects a commitment to planned engagement, where emp
     content: ` 
       <div>
 
-      <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/news-1.jpeg" alt="Joy, Song and Testimony: Samia Women Celebrate Transformative Support After Historic Expo" class="m-0 h-auto w-full" />
+      <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/news-2.jpeg" alt="Joy, Song and Testimony: Samia Women Celebrate Transformative Support After Historic Expo" class="m-0 h-auto w-full" />
 
       <p style=" font-size:1.25rem;">Funyula, Busia County: Days after the curtains fell on the landmark Samia Women Business Expo, one thing remains unmistakably clear across Funyula: the joy it sparked among women is still alive, echoing in songs, testimonies, and renewed hope.</p>
 
       <p style=" font-size:1.25rem;">From the packed tents to the open fields where women broke into dance, the Expo was more than just an event, it was a turning point.
 </p>
 
-      <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/news-2.jpeg" alt="First Samia Women Business Expo a Resounding Success as Mugenya Champions Grassroots Empowerment" class="m-0 h-auto w-full" />
+      <img src="https://d177n02wywg7h2.cloudfront.net/funyula-images/news-1.jpeg" alt="First Samia Women Business Expo a Resounding Success as Mugenya Champions Grassroots Empowerment" class="m-0 h-auto w-full" />
 
       <p style=" font-size:1.25rem;">Under a fully occupied marquee, hundreds of women sat shoulder to shoulder, attentively following proceedings with a sense of purpose rarely witnessed in past gatherings. Their faces reflected not just curiosity, but belief–belief that this time, something tangible had reached them.</p>
 
