@@ -33,64 +33,65 @@ const ProductShowcase = () => {
   const videos = [
     {
       id: 1,
-      title: 'Campaign Rally Highlights',
-      youtubeId: 'AZot_17N5ho',
-      thumbnail: `https://dubaianalytica.com/wp-content/uploads/2025/03/98_1.4.1.jpg`
-    },
-    {
-      id: 2,
-      title: 'Policy Speech Clip',
-      youtubeId: 'unqIDomyhI4',
-      thumbnail: `https://dubaianalytica.com/wp-content/uploads/2025/03/10_1.6.2.jpg`
-    },
-    {
-      id: 3,
-      title: 'Campaign Commercial',
-      youtubeId: 'zoWirgI4Jkg',
-      thumbnail: `https://dubaianalytica.com/wp-content/uploads/2025/03/platform.jpg`
-    },
-    {
-      id: 4,
-      title: 'Campaign Commercial',
-      youtubeId: 'aqj36JUZuy4',
-      thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/20250416_013911000_iOS.jpg`
-    },
-    {
-      id: 5,
-      title: 'Campaign Commercial',
-      youtubeId: '1f9Z9llnVvw',
-      thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/20250416_145500000_iOS.jpg`
-    },
-    {
-      id: 6,
-      title: 'Campaign Commercial',
-      youtubeId: 'ONE_NcJZqCc',
-      thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/20250416_145509000_iOS.jpg`
-    },
-    {
-      id: 7,
-      title: 'Campaign Commercial',
-      youtubeId: 'gz-pnHsCoFg',
-      thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/20250416_145512000_iOS.jpg`
-    },
-    {
-      id: 8,
       title: 'Samia Women Business Expo (SWOBE #3)',
       youtubeId: '8NPHTbvtScM',
       thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/mqdefault_6s.webp`
     },
     {
-      id: 9,
+      id: 2,
       title: 'Samia Women Business Expo (SWOBE #1)',
       youtubeId: 'g-Jgsgpvsek',
       thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/mqdefault_6s1.webp`
     },
     {
-      id: 10,
+      id: 3,
       title: 'Samia Women Business Expo (SWOBE #2)',
       youtubeId: '8NPHTbvtScM',
       thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/mqdefault_6s2.webp`
     },
+    {
+      id: 4,
+      title: 'Campaign Rally Highlights',
+      youtubeId: 'AZot_17N5ho',
+      thumbnail: `https://dubaianalytica.com/wp-content/uploads/2025/03/98_1.4.1.jpg`
+    },
+    {
+      id: 5,
+      title: 'Policy Speech Clip',
+      youtubeId: 'unqIDomyhI4',
+      thumbnail: `https://dubaianalytica.com/wp-content/uploads/2025/03/10_1.6.2.jpg`
+    },
+    {
+      id: 6,
+      title: 'Campaign Commercial',
+      youtubeId: 'zoWirgI4Jkg',
+      thumbnail: `https://dubaianalytica.com/wp-content/uploads/2025/03/platform.jpg`
+    },
+    {
+      id: 7,
+      title: 'Campaign Commercial',
+      youtubeId: 'aqj36JUZuy4',
+      thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/20250416_013911000_iOS.jpg`
+    },
+    {
+      id: 8,
+      title: 'Campaign Commercial',
+      youtubeId: '1f9Z9llnVvw',
+      thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/20250416_145500000_iOS.jpg`
+    },
+    {
+      id: 9,
+      title: 'Campaign Commercial',
+      youtubeId: 'ONE_NcJZqCc',
+      thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/20250416_145509000_iOS.jpg`
+    },
+    {
+      id: 10,
+      title: 'Campaign Commercial',
+      youtubeId: 'gz-pnHsCoFg',
+      thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/20250416_145512000_iOS.jpg`
+    },
+    
   ];
 
   const handleNextImage = () => {
