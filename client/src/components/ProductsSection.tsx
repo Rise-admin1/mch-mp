@@ -33,20 +33,20 @@ const ProductShowcase = () => {
   const videos = [
     {
       id: 1,
-      title: 'Samia Women Business Expo (SWOBE #3)',
-      youtubeId: '8NPHTbvtScM',
+      title: 'Samia Women Business Expo (SWOBE #1)',
+      youtubeId: 'g-Jgsgpvsek',
       thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/mqdefault_6s.webp`
     },
     {
       id: 2,
-      title: 'Samia Women Business Expo (SWOBE #1)',
-      youtubeId: 'g-Jgsgpvsek',
+      title: 'Samia Women Business Expo (SWOBE #2)',
+      youtubeId: '8NPHTbvtScM',
       thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/mqdefault_6s1.webp`
     },
     {
       id: 3,
-      title: 'Samia Women Business Expo (SWOBE #2)',
-      youtubeId: '8NPHTbvtScM',
+      title: 'Samia Women Business Expo (SWOBE #3)',
+      youtubeId: '3SjiyLNJ4zE',
       thumbnail: `https://d177n02wywg7h2.cloudfront.net/funyula-images/mqdefault_6s2.webp`
     },
     {
