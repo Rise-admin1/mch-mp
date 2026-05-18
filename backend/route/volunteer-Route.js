@@ -10,9 +10,11 @@ import {
     getAllExpoRegistrations,
     deleteVolunteerById,
     deleteExpoRegistrationById,
+    getManifestoUsers,
 } from '../controller/volunteer-controller.js';
 
 volunteerRouter.post('/check-firebase-phone', checkVolunteerFirebasePhone);
+volunteerRouter.get('/get-manifesto-users', getManifestoUsers);
 volunteerRouter.post('/submit', volunteerSubmitForm);
 volunteerRouter.get('/all', getAllVolunteers);
 volunteerRouter.get('/expo-register/all', getAllExpoRegistrations);

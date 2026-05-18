@@ -444,3 +444,23 @@ export const deleteExpoRegistrationById = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' })
     }
 }
+
+export const getManifestoUsers = async (res) => {
+    try {
+        const manifestoUsers = await prisma.user.findMany({
+            where: {
+                isVerified: true,
+            },
+            select: {
+                id: true,
+                fullName: true,
+                phone: true,
+                createdAt: true,
+            }
+        })
+        return res.status(200).json({ message: 'Manifesto users fetched successfully', data: manifestoUsers })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ message: 'Internal server error' })
+    }
+}
