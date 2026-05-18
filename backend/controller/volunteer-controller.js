@@ -445,7 +445,7 @@ export const deleteExpoRegistrationById = async (req, res) => {
     }
 }
 
-export const getManifestoUsers = async (res) => {
+export const getManifestoUsers = async (req, res) => {
     try {
         const manifestoUsers = await prisma.user.findMany({
             where: {
