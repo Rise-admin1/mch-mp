@@ -17,6 +17,7 @@ const VOLUNTEER_RECAPTCHA_ID = 'volunteer-recaptcha-container'
 
 const VOLUNTEER_ROLES = ['POLLING_AGENT', 'BLOGGING_TEAM', 'VOTER'] as const
 type VolunteerRole = (typeof VOLUNTEER_ROLES)[number]
+const DISABLED_VOLUNTEER_ROLES: VolunteerRole[] = ['POLLING_AGENT', 'BLOGGING_TEAM']
 
 const VOLUNTEER_GENDERS = ['MALE', 'FEMALE'] as const
 type VolunteerGender = (typeof VOLUNTEER_GENDERS)[number]
@@ -154,7 +155,7 @@ const VolunteerPage = () => {
     privacyPolicy: boolean
   }>({
     fullName: '',
-    role: 'POLLING_AGENT',
+    role: 'VOTER',
     gender: 'MALE',
     ward: '',
     location: null,
@@ -306,7 +307,7 @@ const VolunteerPage = () => {
   const resetAfterSuccess = () => {
     setFormData({
       fullName: '',
-      role: 'POLLING_AGENT',
+      role: 'VOTER',
       gender: 'MALE',
       ward: '',
       location: null,
@@ -483,21 +484,24 @@ const VolunteerPage = () => {
             <div className="min-w-0 flex-1">
               <span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-600">Role</span>
               <div className="flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-8 lg:gap-y-2">
-                {VOLUNTEER_ROLES.map((r) => (
-                  <label key={r} className={`flex items-center gap-2 text-sm ${isSubmitting ? 'text-gray-500' : ''}`}>
+                {VOLUNTEER_ROLES.map((r) => {
+                  const roleDisabled = isSubmitting || DISABLED_VOLUNTEER_ROLES.includes(r)
+                  return (
+                  <label key={r} className={`flex items-center gap-2 text-sm ${roleDisabled ? 'text-gray-500' : ''}`}>
                     <input
                       type="checkbox"
                       checked={formData.role === r}
                       onChange={(e) => {
-                        if (!e.target.checked) return
+                        if (!e.target.checked || roleDisabled) return
                         setFormData((prev) => ({ ...prev, role: r }))
                       }}
-                      disabled={isSubmitting}
-                      className={isSubmitting ? 'cursor-not-allowed' : ''}
+                      disabled={roleDisabled}
+                      className={roleDisabled ? 'cursor-not-allowed' : ''}
                     />
                     <span>{ROLE_LABELS[r]}</span>
                   </label>
-                ))}
+                  )
+                })}
               </div>
             </div>
 
