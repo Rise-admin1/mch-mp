@@ -35,7 +35,7 @@ const Footer = () => {
     <Link href="/get-involved" className="hover:text-trump-light-accent transition-colors text-left">Get Involved</Link>
     <Link href="/news" className="hover:text-trump-light-accent transition-colors text-left">News</Link>
     <Link href="/" className="hover:text-trump-light-accent transition-colors text-left">Terms & Conditions</Link>
-    <Link href="/" className="hover:text-trump-light-accent transition-colors text-left">Privacy Policy</Link>
+    <Link href="/privacy-policy" className="hover:text-trump-light-accent transition-colors text-left">Privacy Policy</Link>
   </div>
 </div>
 </div>

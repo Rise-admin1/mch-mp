@@ -127,4 +127,20 @@ html {
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  .privacy-policy h1 {
+    @apply text-2xl sm:text-3xl font-bold text-trump-light-navy mb-6;
+  }
+
+  .privacy-policy h2 {
+    @apply text-xl font-bold text-trump-light-navy mt-8 mb-4;
+  }
+
+  .privacy-policy h3 {
+    @apply text-lg font-semibold text-trump-light-navy mt-6 mb-3;
+  }
+
+  .privacy-policy a {
+    @apply text-trump-light-accent hover:underline;
+  }
 }

@@ -696,7 +696,7 @@ const VolunteerPage = () => {
               />
               <span className={`text-sm sm:text-base ${isSubmitting ? 'text-gray-500' : ''}`}>
                 By providing this information you are acknowledging and agreeing to the{' '}
-                <a href="#" className="font-bold text-[#d61936]">
+                <a href="/privacy-policy" className="font-bold text-[#d61936]">
                   PRIVACY POLICY
                 </a>
               </span>
