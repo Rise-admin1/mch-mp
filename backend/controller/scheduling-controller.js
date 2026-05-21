@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import Stripe from 'stripe'
 import dotenv from 'dotenv';
+import { assertSlotAvailable, activeBookingWhere, HOLD_DURATION_MS, releaseExpiredHolds, slotStartKey } from '../utils/schedulingHolds.js';
 dotenv.config();
 const prisma = new PrismaClient();
 
@@ -56,19 +57,6 @@ function ceilToNextHourUtc(instant) {
     return hourStart;
 }
 
-function isActiveBooking(booking, nowInstant) {
-    if (booking.status === 'confirmed') return true;
-    if (booking.status === 'pending') {
-        if (!booking.expiresAt) return true;
-        return booking.expiresAt.getTime() > nowInstant.getTime();
-    }
-    return false;
-}
-
-function bookingSlotKey(availabilityId, startTime) {
-    return `${availabilityId}:${startTime.getTime()}`;
-}
-
 export const getAvailability = async (req, res, next) => {
     try {
         const { date, now } = req.query;
@@ -85,6 +73,8 @@ export const getAvailability = async (req, res, next) => {
         if (Number.isNaN(dateInstant.getTime()) || Number.isNaN(nowInstant.getTime())) {
             return res.status(400).json({ message: 'Invalid date/now query params (must be ISO datetimes)' });
         }
+
+        await releaseExpiredHolds(prisma, nowInstant);
 
         const targetDayStartUtc = new Date(Date.UTC(
             dateInstant.getUTCFullYear(),
@@ -124,20 +114,18 @@ export const getAvailability = async (req, res, next) => {
         const bookings = await prisma.schedulingBooking.findMany({
             where: {
                 startTime: { gte: targetDayStartUtc, lt: targetDayEndUtc },
-                status: { in: ['confirmed', 'pending'] }
+                ...activeBookingWhere(nowInstant),
             },
-            select: { startTime: true, status: true, expiresAt: true, availabilityId: true }
+            select: { startTime: true }
         });
 
-        const bookedSlotKeys = new Set(
-            bookings
-                .filter((booking) => isActiveBooking(booking, nowInstant))
-                .map((booking) => bookingSlotKey(booking.availabilityId, booking.startTime))
+        const blockedSlotStarts = new Set(
+            bookings.map((booking) => slotStartKey(booking.startTime))
         );
 
         const seenStartTimes = new Set();
         const slots = candidateSlots
-            .filter((slot) => !bookedSlotKeys.has(bookingSlotKey(slot.availabilityId, slot.startTime)))
+            .filter((slot) => !blockedSlotStarts.has(slotStartKey(slot.startTime)))
             .filter((slot) => {
                 const startIso = slot.startTime.toISOString();
                 if (seenStartTimes.has(startIso)) return false;
@@ -193,7 +181,7 @@ export const createCheckout = async (req, res, next) => {
         const end = new Date(start.getTime() + 60 * 60 * 1000);
 
         const now = new Date();
-        const expiresAt = new Date(now.getTime() + 10 * 60 * 1000);
+        const expiresAt = new Date(now.getTime() + HOLD_DURATION_MS);
 
         const booking = await prisma.$transaction(async (tx) => {
             // Ensure availability exists
@@ -207,7 +195,12 @@ export const createCheckout = async (req, res, next) => {
                 throw err;
             }
 
-            // Create the hold (unique constraint prevents double-holds on same slot)
+            await assertSlotAvailable(tx, {
+                availabilityId: availabilityId.trim(),
+                startTime: start,
+                now,
+            });
+
             const created = await tx.schedulingBooking.create({
                 data: {
                     name: name.trim(),

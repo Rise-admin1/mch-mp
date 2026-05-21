@@ -12,6 +12,7 @@ import chalk from 'chalk';
 import schedulingRouter from './route/scheduling-route.js';
 import Stripe from 'stripe';
 import { getGoogleAuthUrl, exchangeCodeForTokens, upsertGoogleRefreshToken, createMeetEventForBooking } from './utils/googleCalendar.js';
+import { releaseExpiredHolds } from './utils/schedulingHolds.js';
 dotenv.config();
 const app = express();
 
@@ -73,28 +74,33 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
       if (!booking) return;
 
       const now = new Date();
-      if (booking.status === 'pending' && booking.expiresAt && booking.expiresAt.getTime() <= now.getTime()) {
-        await tx.schedulingBooking.update({
-          where: { id: booking.id },
-          data: { status: 'expired' }
-        });
+      await releaseExpiredHolds(tx, now);
+
+      const refreshedBooking = await tx.schedulingBooking.findUnique({ where: { id: booking.id } });
+      if (!refreshedBooking) return;
+
+      if (
+        refreshedBooking.status === 'pending' &&
+        refreshedBooking.expiresAt &&
+        refreshedBooking.expiresAt.getTime() <= now.getTime()
+      ) {
         return;
       }
 
       await tx.schedulingBooking.update({
-        where: { id: booking.id },
+        where: { id: refreshedBooking.id },
         data: {
           status: 'confirmed',
-          stripeSessionId: booking.stripeSessionId || stripeSessionId,
+          stripeSessionId: refreshedBooking.stripeSessionId || stripeSessionId,
           expiresAt: null,
         }
       });
 
       // Record payment (amount is fixed at 38500 minor units) for phd success scheduling
       await tx.schedulingPayment.upsert({
-        where: { bookingId: booking.id },
+        where: { bookingId: refreshedBooking.id },
         create: {
-          bookingId: booking.id,
+          bookingId: refreshedBooking.id,
           stripeId: String(paymentIntentId || stripeSessionId || ''),
           amount: 38500,
           status: 'paid',
@@ -106,7 +112,7 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
         }
       });
 
-      return booking.id;
+      return refreshedBooking.id;
     });
 
     if (updatedBookingId) {
