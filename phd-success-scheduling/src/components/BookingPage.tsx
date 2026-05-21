@@ -85,7 +85,7 @@ export function BookingPage() {
             {!sessionType ? (
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-lg font-semibold text-foreground">Choose a session</h2>
+                  <h2 className="text-lg font-semibold text-foreground">Book a Consultative session</h2>
                   <p className="text-sm text-muted-foreground mt-1">
                     Select the type of session you’d like to book.
                   </p>

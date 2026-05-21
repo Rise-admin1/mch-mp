@@ -14,7 +14,7 @@ export function ClientInfo({ sessionType }: ClientInfoProps) {
       {/* Avatar and name */}
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-full bg-foreground text-primary-foreground flex items-center justify-center text-lg font-semibold">
-          MH
+          <img src="/logo.jpg" alt="Rise Ltd." className="w-12 h-12 object-contain" />
         </div>
         <div>
           <p className="text-sm text-muted-foreground">RISE Ltd.</p>
