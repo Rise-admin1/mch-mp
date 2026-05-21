@@ -7,6 +7,7 @@ interface BookingFormProps {
   date: Date
   time: string
   availabilityId: string
+  initialEmail?: string
   onBack: () => void
   onConfirm: (data: BookingData) => void
 }
@@ -17,9 +18,9 @@ function formatUtcIsoToLocalTime(utcIso: string): string {
   return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
 }
 
-export function BookingForm({ date, time, availabilityId, onBack, onConfirm }: BookingFormProps) {
+export function BookingForm({ date, time, availabilityId, initialEmail = '', onBack, onConfirm }: BookingFormProps) {
   const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(initialEmail)
   const [notes, setNotes] = useState('')
   const [errors, setErrors] = useState<{ name?: string; email?: string }>({})
   const [submitting, setSubmitting] = useState(false)

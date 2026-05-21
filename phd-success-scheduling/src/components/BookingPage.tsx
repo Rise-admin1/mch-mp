@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { ClientInfo } from './ClientInfo'
 import { Calendar } from './Calendar'
 import { TimeSlots } from './TimeSlots'
 import { BookingForm } from './BookingForm'
 import { ConfirmationScreen } from './ConfirmationScreen'
+import { Toast } from './Toast'
 import type { SessionType } from '@/types/session'
 
 export interface BookingData {
@@ -15,6 +17,14 @@ export interface BookingData {
 }
 
 export function BookingPage() {
+  const [searchParams] = useSearchParams()
+  const formType = searchParams.get('formType')
+  const emailFromUrl = searchParams.get('email') ?? ''
+  const showSuccessToast = searchParams.get('success') === 'true'
+
+  const showConsultative = formType !== 'dri'
+  const showDri = formType !== 'consultation'
+
   const [sessionType, setSessionType] = useState<SessionType | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
@@ -22,6 +32,15 @@ export function BookingPage() {
   const [showForm, setShowForm] = useState(false)
   const [confirmed, setConfirmed] = useState(false)
   const [bookingData, setBookingData] = useState<BookingData | null>(null)
+  const [toastVisible, setToastVisible] = useState(showSuccessToast)
+
+  useEffect(() => {
+    if (!showSuccessToast) return
+
+    setToastVisible(true)
+    const timer = setTimeout(() => setToastVisible(false), 5000)
+    return () => clearTimeout(timer)
+  }, [showSuccessToast])
 
   const handleSessionSelect = (type: SessionType) => {
     setSessionType(type)
@@ -48,6 +67,12 @@ export function BookingPage() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      {toastVisible && (
+        <Toast
+          message="Your submission has been sent successfully"
+          onDismiss={() => setToastVisible(false)}
+        />
+      )}
       <div className="w-full max-w-4xl bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
         <div className="flex flex-col lg:flex-row">
           {/* Left sidebar - Client info */}
@@ -67,27 +92,31 @@ export function BookingPage() {
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <button
-                    type="button"
-                    onClick={() => handleSessionSelect('consultative')}
-                    className="text-left p-4 rounded-xl border border-border bg-card hover:border-foreground transition-colors"
-                  >
-                    <div className="text-sm font-semibold text-foreground">Consultative Sessions</div>
-                    <div className="text-sm text-muted-foreground mt-1">
-                      PhD, Business and select postgraduate clients.
-                    </div>
-                  </button>
+                  {showConsultative && (
+                    <button
+                      type="button"
+                      onClick={() => handleSessionSelect('consultative')}
+                      className="text-left p-4 rounded-xl border border-border bg-card hover:border-foreground transition-colors"
+                    >
+                      <div className="text-sm font-semibold text-foreground">Consultative Sessions</div>
+                      <div className="text-sm text-muted-foreground mt-1">
+                        PhD, Business and select postgraduate clients.
+                      </div>
+                    </button>
+                  )}
 
-                  <button
-                    type="button"
-                    onClick={() => handleSessionSelect('consult-dri')}
-                    className="text-left p-4 rounded-xl border border-border bg-card hover:border-foreground transition-colors"
-                  >
-                    <div className="text-sm font-semibold text-foreground">Consult DRI Services</div>
-                    <div className="text-sm text-muted-foreground mt-1">
-                      DRI services for PhD, Business and select postgraduate clients.
-                    </div>
-                  </button>
+                  {showDri && (
+                    <button
+                      type="button"
+                      onClick={() => handleSessionSelect('consult-dri')}
+                      className="text-left p-4 rounded-xl border border-border bg-card hover:border-foreground transition-colors"
+                    >
+                      <div className="text-sm font-semibold text-foreground">Consult DRI Services</div>
+                      <div className="text-sm text-muted-foreground mt-1">
+                        DRI services for PhD, Business and select postgraduate clients.
+                      </div>
+                    </button>
+                  )}
                 </div>
               </div>
             ) : showForm && selectedDate && selectedTime && selectedAvailabilityId ? (
@@ -95,6 +124,7 @@ export function BookingPage() {
                 date={selectedDate}
                 time={selectedTime}
                 availabilityId={selectedAvailabilityId}
+                initialEmail={emailFromUrl}
                 onBack={handleBack}
                 onConfirm={handleConfirm}
               />
