@@ -11,6 +11,64 @@ const stripeCancelUrl = process.env.STRIPE_CANCEL_URL;
 
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
 
+const SLOT_DURATION_MS = 60 * 60 * 1000;
+
+function parseHm(hm) {
+    const match = /^(\d{1,2}):(\d{2})$/.exec(hm);
+    if (!match) return null;
+    const h = Number(match[1]);
+    const m = Number(match[2]);
+    if (!Number.isInteger(h) || !Number.isInteger(m) || h < 0 || h > 23 || m < 0 || m > 59) return null;
+    return { h, m };
+}
+
+function toUtcOnTargetDay(targetDayStartUtc, hm) {
+    const parsed = parseHm(hm);
+    if (!parsed) return null;
+    return new Date(Date.UTC(
+        targetDayStartUtc.getUTCFullYear(),
+        targetDayStartUtc.getUTCMonth(),
+        targetDayStartUtc.getUTCDate(),
+        parsed.h,
+        parsed.m,
+        0,
+        0
+    ));
+}
+
+function ceilToNextHourUtc(instant) {
+    const hourStart = new Date(Date.UTC(
+        instant.getUTCFullYear(),
+        instant.getUTCMonth(),
+        instant.getUTCDate(),
+        instant.getUTCHours(),
+        0,
+        0,
+        0
+    ));
+    if (
+        instant.getUTCMinutes() !== 0 ||
+        instant.getUTCSeconds() !== 0 ||
+        instant.getUTCMilliseconds() !== 0
+    ) {
+        return new Date(hourStart.getTime() + SLOT_DURATION_MS);
+    }
+    return hourStart;
+}
+
+function isActiveBooking(booking, nowInstant) {
+    if (booking.status === 'confirmed') return true;
+    if (booking.status === 'pending') {
+        if (!booking.expiresAt) return true;
+        return booking.expiresAt.getTime() > nowInstant.getTime();
+    }
+    return false;
+}
+
+function bookingSlotKey(availabilityId, startTime) {
+    return `${availabilityId}:${startTime.getTime()}`;
+}
+
 export const getAvailability = async (req, res, next) => {
     try {
         const { date, now } = req.query;
@@ -42,98 +100,55 @@ export const getAvailability = async (req, res, next) => {
             select: { id: true, startTime: true, endTime: true }
         });
 
-        const parseHm = (hm) => {
-            const match = /^(\d{1,2}):(\d{2})$/.exec(hm);
-            if (!match) return null;
-            const h = Number(match[1]);
-            const m = Number(match[2]);
-            if (!Number.isInteger(h) || !Number.isInteger(m) || h < 0 || h > 23 || m < 0 || m > 59) return null;
-            return { h, m };
-        };
-
-        const toUtcOnTargetDay = (hm) => {
-            const parsed = parseHm(hm);
-            if (!parsed) return null;
-            return new Date(Date.UTC(
-                targetDayStartUtc.getUTCFullYear(),
-                targetDayStartUtc.getUTCMonth(),
-                targetDayStartUtc.getUTCDate(),
-                parsed.h,
-                parsed.m,
-                0,
-                0
-            ));
-        };
-
         const generatedSlots = [];
 
         for (const row of availabilityRows) {
-            const windowStart = toUtcOnTargetDay(row.startTime);
-            const windowEnd = toUtcOnTargetDay(row.endTime);
+            const windowStart = toUtcOnTargetDay(targetDayStartUtc, row.startTime);
+            const windowEnd = toUtcOnTargetDay(targetDayStartUtc, row.endTime);
             if (!windowStart || !windowEnd) continue;
             if (windowEnd.getTime() <= windowStart.getTime()) continue;
 
             for (let slotStart = new Date(windowStart);;) {
-                const slotEnd = new Date(slotStart.getTime() + 60 * 60 * 1000);
+                const slotEnd = new Date(slotStart.getTime() + SLOT_DURATION_MS);
                 if (slotEnd.getTime() > windowEnd.getTime()) break;
                 generatedSlots.push({ startTime: slotStart, endTime: slotEnd, availabilityId: row.id });
-                slotStart = new Date(slotStart.getTime() + 60 * 60 * 1000);
+                slotStart = new Date(slotStart.getTime() + SLOT_DURATION_MS);
             }
         }
 
-        const sameUtcDayAsNow =
-            targetDayStartUtc.getUTCFullYear() === nowInstant.getUTCFullYear() &&
-            targetDayStartUtc.getUTCMonth() === nowInstant.getUTCMonth() &&
-            targetDayStartUtc.getUTCDate() === nowInstant.getUTCDate();
-
-        let ceilNowToHourUtc = null;
-        if (sameUtcDayAsNow) {
-            ceilNowToHourUtc = new Date(Date.UTC(
-                nowInstant.getUTCFullYear(),
-                nowInstant.getUTCMonth(),
-                nowInstant.getUTCDate(),
-                nowInstant.getUTCHours(),
-                0,
-                0,
-                0
-            ));
-            if (
-                nowInstant.getUTCMinutes() !== 0 ||
-                nowInstant.getUTCSeconds() !== 0 ||
-                nowInstant.getUTCMilliseconds() !== 0
-            ) {
-                ceilNowToHourUtc = new Date(ceilNowToHourUtc.getTime() + 60 * 60 * 1000);
-            }
-        }
-
-        let candidateSlots = generatedSlots;
-        if (ceilNowToHourUtc) {
-            candidateSlots = candidateSlots.filter(s => s.startTime.getTime() >= ceilNowToHourUtc.getTime());
-        }
+        const minSlotStartUtc = ceilToNextHourUtc(nowInstant);
+        const candidateSlots = generatedSlots.filter(
+            (slot) => slot.startTime.getTime() >= minSlotStartUtc.getTime()
+        );
 
         const bookings = await prisma.schedulingBooking.findMany({
             where: {
-                startTime: { gte: targetDayStartUtc, lt: targetDayEndUtc }
+                startTime: { gte: targetDayStartUtc, lt: targetDayEndUtc },
+                status: { in: ['confirmed', 'pending'] }
             },
-            select: { startTime: true, status: true, expiresAt: true }
+            select: { startTime: true, status: true, expiresAt: true, availabilityId: true }
         });
 
-        const bookedStarts = new Set(
+        const bookedSlotKeys = new Set(
             bookings
-                .filter(b => {
-                    if (b.status === 'confirmed') return true;
-                    if (b.status === 'pending' && b.expiresAt && b.expiresAt.getTime() > nowInstant.getTime()) return true;
-                    return false;
-                })
-                .map(b => b.startTime.toISOString())
+                .filter((booking) => isActiveBooking(booking, nowInstant))
+                .map((booking) => bookingSlotKey(booking.availabilityId, booking.startTime))
         );
 
+        const seenStartTimes = new Set();
         const slots = candidateSlots
-            .filter(s => !bookedStarts.has(s.startTime.toISOString()))
-            .map(s => ({
-                availabilityId: s.availabilityId,
-                startTime: s.startTime.toISOString(),
-                endTime: s.endTime.toISOString()
+            .filter((slot) => !bookedSlotKeys.has(bookingSlotKey(slot.availabilityId, slot.startTime)))
+            .filter((slot) => {
+                const startIso = slot.startTime.toISOString();
+                if (seenStartTimes.has(startIso)) return false;
+                seenStartTimes.add(startIso);
+                return true;
+            })
+            .sort((a, b) => a.startTime.getTime() - b.startTime.getTime())
+            .map((slot) => ({
+                availabilityId: slot.availabilityId,
+                startTime: slot.startTime.toISOString(),
+                endTime: slot.endTime.toISOString()
             }));
 
         const dateYmd = `${targetDayStartUtc.getUTCFullYear()}-${String(targetDayStartUtc.getUTCMonth() + 1).padStart(2, '0')}-${String(targetDayStartUtc.getUTCDate()).padStart(2, '0')}`;
