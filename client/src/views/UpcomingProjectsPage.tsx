@@ -34,7 +34,7 @@ const Upcomingprojectspage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <div className="flex-1">
-        <div className="relative h-screen flex items-center justify-center bg-[url('https://dubaianalytica.com/wp-content/uploads/2025/03/89_1.47.1.jpg')] bg-cover bg-center bg-no-repeat">
+        <div className="relative h-screen flex items-center justify-center bg-[url('https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/89_1.47.1.jpg')] bg-cover bg-center bg-no-repeat">
           <div className="absolute inset-0 flex flex-col justify-center items-center text-white z-10">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center px-4 mb-2 sm:mb-4">Upcoming Projects</h1>
           </div>

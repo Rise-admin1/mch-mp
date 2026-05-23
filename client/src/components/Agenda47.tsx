@@ -35,7 +35,7 @@ const Agenda47 = () => {
           </div>
           <div className="lg:w-1/2">
             <img
-              src="https://dubaianalytica.com/wp-content/uploads/2025/03/platform.jpg"
+              src="https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/platform.jpg"
               alt="Funyula Constituency"
               className="w-full h-auto rounded-md shadow-md"
             />

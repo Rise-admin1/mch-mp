@@ -520,145 +520,145 @@ export const videos: Video[] = [
   id: '79',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/138_1.26.1.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/138_1.26.1.jpg'
     },
     {
       id: '80',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/130_1.24.9.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/130_1.24.9.jpg'
     },
     {
       id: '81',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/125_1.24.4.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/125_1.24.4.jpg'
     },
     {
       id: '82',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/112_1.15.2.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/112_1.15.2.jpg'
     },
     {
       id: '83',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/107_1.11.1.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/107_1.11.1.jpg'
     },
     {
       id: '84',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/98_1.4.1.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/98_1.4.1.jpg'
     },
     {
       id: '85',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/97_1.3.1.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/97_1.3.1.jpg'
     },
     {
       id: '86',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/89_1.47.1.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/89_1.47.1.jpg'
     },
     {
       id: '87',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/82_1.40.3.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/82_1.40.3.jpg'
     },
     {
       id: '88',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/56_1.52.1.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/56_1.52.1.jpg'
     },
     {
       id: '89',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/48_1.14.1.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/48_1.14.1.jpg'
     },
     {
       id: '90',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/41_1.10.13.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/41_1.10.13.jpg'
     },
     // {
     //   id: '13',
     //   title: 'Title Here',
     //   description: 'Description of what he is doing or what he promises here',
-    //   imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/39_1.41.1.jpg'
+    //   imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/39_1.41.1.jpg'
     // },
     {
       id: '91',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/33_1.10.5.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/33_1.10.5.jpg'
     },
     {
       id: '92',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/32_1.32.1.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/32_1.32.1.jpg'
     },
     {
       id: '93',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/29_1.10.1.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/29_1.10.1.jpg'
     },
     {
       id: '94',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/26_1.9.1.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/26_1.9.1.jpg'
     },
     {
       id: '95',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/19_1.8.5.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/19_1.8.5.jpg'
     },
     {
       id: '96',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/10_1.6.2.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/10_1.6.2.jpg'
     },
     {
       id: '97',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/6_1.4.1.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/6_1.4.1.jpg'
     },
     {
       id: '98',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/5_1.5.2.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/5_1.5.2.jpg'
     },
     {
       id: '99',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/5_1.3.1.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/5_1.3.1.jpg'
     },
     {
       id: '100',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/4_1.5.1.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/4_1.5.1.jpg'
     },
     {
       id: '101',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://dubaianalytica.com/wp-content/uploads/2025/03/4_1.2.1-2.jpg'
+      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/4_1.2.1-2.jpg'
     },
      {
       id: '102',
