@@ -123,7 +123,7 @@ const NewsPage = () => {
       {/* Main content */}
       <div className="flex-1">
         {/* Background hero image with overlay text */}
-        <div className="relative h-screen flex items-center justify-center bg-[url('https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/news.jpg')] bg-cover bg-center bg-no-repeat">
+        <div className="relative h-screen flex items-center justify-center bg-[url('https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/news_header.avif')] bg-cover bg-center bg-no-repeat">
         <div className="absolute inset-0 flex flex-col justify-center items-center text-white z-10">
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center px-4 mb-2 sm:mb-4">RECENT NEWS</h1>
         </div>

@@ -520,73 +520,73 @@ export const videos: Video[] = [
   id: '79',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/138_1.26.1.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_79.avif'
     },
     {
       id: '80',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/130_1.24.9.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_80.avif'
     },
     {
       id: '81',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/125_1.24.4.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_81.avif'
     },
     {
       id: '82',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/112_1.15.2.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_82.avif'
     },
     {
       id: '83',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/107_1.11.1.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_83.avif'
     },
     {
       id: '84',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/98_1.4.1.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_84.avif'
     },
     {
       id: '85',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/97_1.3.1.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_85.avif'
     },
     {
       id: '86',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/89_1.47.1.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_86.avif'
     },
     {
       id: '87',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/82_1.40.3.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_87.avif'
     },
     {
       id: '88',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/56_1.52.1.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_88.avif'
     },
     {
       id: '89',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/48_1.14.1.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_89.avif'
     },
     {
       id: '90',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/41_1.10.13.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_90.avif'
     },
     // {
     //   id: '13',
@@ -598,67 +598,67 @@ export const videos: Video[] = [
       id: '91',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/33_1.10.5.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_91.avif'
     },
     {
       id: '92',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/32_1.32.1.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_92.avif'
     },
     {
       id: '93',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/29_1.10.1.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_93.avif'
     },
     {
       id: '94',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/26_1.9.1.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_94.avif'
     },
     {
       id: '95',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/19_1.8.5.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_95.avif'
     },
     {
       id: '96',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/10_1.6.2.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_96.avif'
     },
     {
       id: '97',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/6_1.4.1.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_97.avif'
     },
     {
       id: '98',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/5_1.5.2.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_98.avif'
     },
     {
       id: '99',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/5_1.3.1.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_99.avif'
     },
     {
       id: '100',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/4_1.5.1.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_100.avif'
     },
     {
       id: '101',
       title: 'Title Here',
       description: 'Description of what he is doing or what he promises here',
-      imageUrl: 'https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/4_1.2.1-2.jpg'
+      imageUrl: 'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/gallery_101.avif'
     },
      {
       id: '102',

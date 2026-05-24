@@ -433,7 +433,7 @@ const VolunteerPage = () => {
         <div
           className="relative h-[300px] w-full bg-cover bg-center sm:h-[400px]"
           style={{
-            backgroundImage: `url(https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/get_involved.jpg)`,
+            backgroundImage: `url(https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/volunteer_page_header.avif)`,
           }}
         >
           <div className="absolute left-0 right-0 top-[230px] mx-auto w-11/12 bg-[#d61936] px-4 py-4 text-center text-white sm:top-80 sm:w-3/5 sm:py-8">

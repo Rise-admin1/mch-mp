@@ -26,7 +26,7 @@ const Header = () => {
             <div className="flex-shrink-0">
               <Link href="/" onClick={closeMobileMenu}>
                 <img
-                  src="https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/logo.png"
+                  src="https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/logo_funyula.avif"
                   alt="Funyula Logo"
                   className="h-10 md:h-24"
                 />

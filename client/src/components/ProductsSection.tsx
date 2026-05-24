@@ -53,19 +53,19 @@ const ProductShowcase = () => {
       id: 4,
       title: 'Campaign Rally Highlights',
       youtubeId: 'AZot_17N5ho',
-      thumbnail: `https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/98_1.4.1.jpg`
+      thumbnail: `https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/video_4.avif`
     },
     {
       id: 5,
       title: 'Policy Speech Clip',
       youtubeId: 'unqIDomyhI4',
-      thumbnail: `https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/10_1.6.2.jpg`
+      thumbnail: `https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/video_5.avif`
     },
     {
       id: 6,
       title: 'Campaign Commercial',
       youtubeId: 'zoWirgI4Jkg',
-      thumbnail: `https://vqj.umo.mybluehost.me/website_6d79077b/wp-content/uploads/2025/03/platform.jpg`
+      thumbnail: `https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/photo-convert/video_6.avif`
     },
     {
       id: 7,
