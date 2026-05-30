@@ -145,6 +145,7 @@ function SearchableSelect({
 const VolunteerPage = () => {
   const [formData, setFormData] = useState<{
     fullName: string
+    idNumber: string
     role: VolunteerRole
     gender: VolunteerGender
     ward: string
@@ -155,6 +156,7 @@ const VolunteerPage = () => {
     privacyPolicy: boolean
   }>({
     fullName: '',
+    idNumber: '',
     role: 'VOTER',
     gender: 'MALE',
     ward: '',
@@ -221,6 +223,10 @@ const VolunteerPage = () => {
 
     if (formData.fullName.trim().length < 2) {
       errors.fullName = 'Full name must be at least 2 characters'
+      isValid = false
+    }
+    if (!formData.idNumber.trim()) {
+      errors.idNumber = 'ID number is required'
       isValid = false
     }
     if (!formData.ward.trim() || !WARD_OPTIONS.includes(formData.ward)) {
@@ -292,6 +298,7 @@ const VolunteerPage = () => {
     const phoneE164 = formatPhoneToE164(formData.phone)
     return axios.post(`${BACKEND_URL}/api/volunteer/submit`, {
       fullName: formData.fullName.trim(),
+      idNumber: formData.idNumber.trim(),
       role: formData.role,
       gender: formData.gender,
       ward: formData.ward.trim(),
@@ -307,6 +314,7 @@ const VolunteerPage = () => {
   const resetAfterSuccess = () => {
     setFormData({
       fullName: '',
+      idNumber: '',
       role: 'VOTER',
       gender: 'MALE',
       ward: '',
@@ -478,6 +486,26 @@ const VolunteerPage = () => {
               } ${isSubmitting ? 'cursor-not-allowed bg-gray-100' : ''}`}
             />
             {fieldErrors.fullName ? <p className="mt-1 text-sm text-red-500">{fieldErrors.fullName}</p> : null}
+          </div>
+
+          <div>
+            <label htmlFor="idNumber" className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-600">
+              ID number *
+            </label>
+            <input
+              id="idNumber"
+              type="text"
+              name="idNumber"
+              placeholder="ID NUMBER *"
+              value={formData.idNumber}
+              onChange={handleChange}
+              required
+              disabled={isSubmitting}
+              className={`w-full border p-2 sm:p-3 focus:outline-none focus:ring-1 ${
+                fieldErrors.idNumber ? 'border-red-500 focus:ring-red-300' : 'border-gray-300 focus:ring-gray-300'
+              } ${isSubmitting ? 'cursor-not-allowed bg-gray-100' : ''}`}
+            />
+            {fieldErrors.idNumber ? <p className="mt-1 text-sm text-red-500">{fieldErrors.idNumber}</p> : null}
           </div>
 
           <div className="flex flex-col gap-6 lg:flex-row lg:gap-10">
