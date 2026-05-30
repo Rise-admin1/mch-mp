@@ -37,6 +37,7 @@ export const volunteerSubmitForm = async (req, res, next) => {
     try {
         const {
             fullName,
+            idNumber,
             role: roleRaw,
             gender: genderRaw,
             ward,
@@ -68,9 +69,15 @@ export const volunteerSubmitForm = async (req, res, next) => {
             return res.status(phoneGate.status).json({ message: phoneGate.message })
         }
 
+        const trimmedIdNumber = typeof idNumber === 'string' ? idNumber.trim() : ''
+        if (!trimmedIdNumber) {
+            return res.status(400).json({ message: 'ID number is required' })
+        }
+
         const newVolunteer = await prisma.userVolunteer.create({
             data: {
                 fullName: typeof fullName === 'string' ? fullName.trim() : '',
+                idNumber: trimmedIdNumber,
                 role,
                 gender,
                 ward: typeof ward === 'string' ? ward.trim() : '',
@@ -292,6 +299,7 @@ export const getAllVolunteers = async (req, res) => {
       select: {
         id: true,
         fullName: true,
+        idNumber: true,
         role: true,
         gender: true,
         ward: true,
