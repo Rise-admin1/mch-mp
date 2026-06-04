@@ -28,7 +28,7 @@ export function ConfirmationScreen({ booking }: ConfirmationScreenProps) {
         {/* Booking details card */}
         <div className="bg-card rounded-xl border border-border p-6 text-left">
           <h2 className="font-semibold text-foreground mb-4">
-            1 Hour Meeting with RISE Ltd.
+            1 Hour Meeting with PhD Success AE
           </h2>
 
           <div className="space-y-3">
