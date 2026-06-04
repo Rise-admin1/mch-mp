@@ -49,7 +49,7 @@ export async function exchangeCodeForTokens(code) {
   return tokens
 }
 
-export async function createMeetEventForBooking(booking) {
+async function getCalendarClient() {
   const refreshToken = await getGoogleRefreshToken()
   if (!refreshToken) {
     throw new Error('Google Calendar is not connected (missing refresh token)')
@@ -57,8 +57,11 @@ export async function createMeetEventForBooking(booking) {
 
   const oauth2 = getOAuth2Client()
   oauth2.setCredentials({ refresh_token: refreshToken })
+  return google.calendar({ version: 'v3', auth: oauth2 })
+}
 
-  const calendar = google.calendar({ version: 'v3', auth: oauth2 })
+export async function createMeetEventForBooking(booking) {
+  const calendar = await getCalendarClient()
 
   const requestId = `booking-${booking.id}`
   const start = booking.startTime.toISOString()
@@ -93,5 +96,56 @@ export async function createMeetEventForBooking(booking) {
     meetLink,
     htmlLink: created?.htmlLink || null,
   }
+}
+
+export async function updateMeetEventForBooking(booking) {
+  if (!booking.googleEventId) {
+    throw new Error('Booking has no Google Calendar event to update')
+  }
+
+  const calendar = await getCalendarClient()
+  const start = booking.startTime.toISOString()
+  const end = booking.endTime.toISOString()
+
+  const event = await calendar.events.patch({
+    calendarId: 'primary',
+    eventId: booking.googleEventId,
+    sendUpdates: 'all',
+    requestBody: {
+      summary: 'PhD Success Scheduling Session',
+      description: `Booking ID: ${booking.id}\nClient: ${booking.name} <${booking.email}>`,
+      start: { dateTime: start, timeZone: 'UTC' },
+      end: { dateTime: end, timeZone: 'UTC' },
+      attendees: [{ email: booking.email }],
+    },
+  })
+
+  const updated = event.data
+  const meetLink =
+    updated?.conferenceData?.entryPoints?.find((e) => e.entryPointType === 'video')?.uri ||
+    updated?.hangoutLink ||
+    booking.meetLink ||
+    null
+
+  return {
+    googleEventId: updated?.id || booking.googleEventId,
+    meetLink,
+    htmlLink: updated?.htmlLink || null,
+  }
+}
+
+export async function deleteMeetEventForBooking(booking) {
+  if (!booking.googleEventId) {
+    return { deleted: false }
+  }
+
+  const calendar = await getCalendarClient()
+  await calendar.events.delete({
+    calendarId: 'primary',
+    eventId: booking.googleEventId,
+    sendUpdates: 'all',
+  })
+
+  return { deleted: true }
 }
 

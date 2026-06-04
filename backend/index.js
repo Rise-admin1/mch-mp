@@ -13,6 +13,8 @@ import schedulingRouter from './route/scheduling-route.js';
 import Stripe from 'stripe';
 import { getGoogleAuthUrl, exchangeCodeForTokens, upsertGoogleRefreshToken, createMeetEventForBooking } from './utils/googleCalendar.js';
 import { releaseExpiredHolds } from './utils/schedulingHolds.js';
+import { sendMeetingScheduledEmails } from './utils/meetingEmails.js';
+import { purgeBookingAttachments } from './utils/schedulingUploads.js';
 dotenv.config();
 const app = express();
 
@@ -56,8 +58,10 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
     }
 
     const bookingId = session?.metadata?.bookingId || session?.client_reference_id;
+    const inviteId = session?.metadata?.inviteId;
     const stripeSessionId = session?.id;
     const paymentIntentId = session?.payment_intent;
+    const amountPaid = typeof session?.amount_total === 'number' ? session.amount_total : 38500;
 
     if (!bookingId && !stripeSessionId) {
       return res.status(400).send('Missing booking identifier');
@@ -66,15 +70,15 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
     const { PrismaClient } = await import('@prisma/client');
     const prisma = new PrismaClient();
 
+    const now = new Date();
+    await releaseExpiredHolds(prisma, now);
+
     const updatedBookingId = await prisma.$transaction(async (tx) => {
       const booking = bookingId
         ? await tx.schedulingBooking.findUnique({ where: { id: bookingId } })
         : await tx.schedulingBooking.findUnique({ where: { stripeSessionId } });
 
       if (!booking) return;
-
-      const now = new Date();
-      await releaseExpiredHolds(tx, now);
 
       const refreshedBooking = await tx.schedulingBooking.findUnique({ where: { id: booking.id } });
       if (!refreshedBooking) return;
@@ -102,21 +106,31 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
         create: {
           bookingId: refreshedBooking.id,
           stripeId: String(paymentIntentId || stripeSessionId || ''),
-          amount: 38500,
+          amount: amountPaid,
           status: 'paid',
         },
         update: {
           stripeId: String(paymentIntentId || stripeSessionId || ''),
-          amount: 38500,
+          amount: amountPaid,
           status: 'paid',
         }
       });
+
+      if (inviteId) {
+        await tx.schedulingInvite.updateMany({
+          where: { id: inviteId, usedAt: null },
+          data: {
+            usedAt: now,
+            bookingId: refreshedBooking.id,
+          },
+        });
+      }
 
       return refreshedBooking.id;
     });
 
     if (updatedBookingId) {
-      const booking = await prisma.schedulingBooking.findUnique({ where: { id: updatedBookingId } });
+      let booking = await prisma.schedulingBooking.findUnique({ where: { id: updatedBookingId } });
       if (booking && booking.status === 'confirmed' && !booking.meetLink) {
         try {
           const { googleEventId, meetLink } = await createMeetEventForBooking(booking);
@@ -125,9 +139,31 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async
               where: { id: booking.id, meetLink: null },
               data: { meetLink, googleEventId },
             });
+            booking = await prisma.schedulingBooking.findUnique({ where: { id: updatedBookingId } });
           }
         } catch (e) {
           console.error('Failed to create Google Meet link:', e?.message || e);
+        }
+      }
+
+      if (booking && booking.status === 'confirmed' && !booking.emailsSentAt) {
+        try {
+          const bookingForEmail = await prisma.schedulingBooking.findUnique({
+            where: { id: booking.id },
+            include: { attachments: true },
+          });
+          if (bookingForEmail) {
+            const emailResult = await sendMeetingScheduledEmails(bookingForEmail);
+            if (!emailResult.skipped) {
+              await purgeBookingAttachments(prisma, booking.id);
+              await prisma.schedulingBooking.update({
+                where: { id: booking.id },
+                data: { emailsSentAt: new Date() },
+              });
+            }
+          }
+        } catch (e) {
+          console.error('Failed to send meeting scheduled emails:', e?.message || e);
         }
       }
     }

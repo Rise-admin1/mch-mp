@@ -3,3 +3,6 @@ node_modules
 .env
 
 service-account.json
+
+storage/scheduling-uploads/*
+!storage/scheduling-uploads/.gitkeep

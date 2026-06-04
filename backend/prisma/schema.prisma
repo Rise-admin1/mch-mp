@@ -106,6 +106,7 @@ model SchedulingBooking {
   id             String   @id @default(uuid())
   name           String
   email          String
+  notes          String?  @db.Text
   startTime      DateTime // UTC
   endTime        DateTime // UTC, always 1 hour after startTime
   meetLink       String?
@@ -117,10 +118,38 @@ model SchedulingBooking {
   availabilityId String
   availability   SchedulingAvailability @relation("AvailabilityBookings", fields: [availabilityId], references: [id])
 
-  payment   SchedulingPayment?
-  createdAt DateTime @default(now())
+  payment      SchedulingPayment?
+  invite       SchedulingInvite?
+  attachments  SchedulingBookingAttachment[]
+  createdAt    DateTime @default(now())
+  emailsSentAt DateTime?
 
   @@unique([availabilityId, startTime])
+}
+
+model SchedulingBookingAttachment {
+  id           String    @id @default(uuid())
+  bookingId    String?
+  booking      SchedulingBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  uploadToken  String?   @unique
+  originalName String
+  mimeType     String
+  sizeBytes    Int
+  storagePath  String
+  expiresAt    DateTime?
+  createdAt    DateTime  @default(now())
+}
+
+model SchedulingInvite {
+  id        String    @id @default(uuid())
+  email     String
+  type      String    // paid | free
+  expiresAt DateTime?
+  usedAt    DateTime?
+  bookingId String?   @unique
+  createdAt DateTime  @default(now())
+
+  booking   SchedulingBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
 }
 
 model SchedulingPayment {
