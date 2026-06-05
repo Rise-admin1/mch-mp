@@ -187,6 +187,7 @@ export function BookingForm({
             notes: notes.trim(),
             startTime: time,
             availabilityId,
+            appSource: 'phd-success',
             ...(inviteId ? { inviteId } : {}),
             ...(uploadToken ? { uploadToken } : {}),
           }),
