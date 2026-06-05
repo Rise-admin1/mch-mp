@@ -186,3 +186,25 @@ model Task {
   @@index([createdAt])
 }
 
+model VaultDocument {
+  id           String   @id @default(uuid())
+  title        String?
+  originalName String
+  mimeType     String
+  sizeBytes    Int
+  storagePath  String
+  url          String   @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([createdAt])
+}
+
+model VaultUser {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

@@ -4,6 +4,7 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 const DEFAULT_PREFIX = 'scheduling-uploads';
 
@@ -82,6 +83,26 @@ export function isSchedulingS3Key(storagePath) {
   if (!storagePath || typeof storagePath !== 'string') return false;
   const prefix = getSchedulingS3Prefix();
   return storagePath.startsWith(`${prefix}/`);
+}
+
+const DEFAULT_PRESIGN_SECONDS = 3600;
+
+export async function getSchedulingPresignedGetUrl(
+  key,
+  { expiresIn = DEFAULT_PRESIGN_SECONDS, responseContentType } = {}
+) {
+  const bucket = getSchedulingS3Bucket();
+  if (!bucket) {
+    throw new Error('SCHEDULING_S3_BUCKET is not configured');
+  }
+
+  const command = new GetObjectCommand({
+    Bucket: bucket,
+    Key: key.replace(/^\/+/, ''),
+    ...(responseContentType ? { ResponseContentType: responseContentType } : {}),
+  });
+
+  return getSignedUrl(getS3Client(), command, { expiresIn });
 }
 
 export function getSchedulingUploadUrl(key) {

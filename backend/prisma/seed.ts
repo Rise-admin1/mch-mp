@@ -1,6 +1,10 @@
 // prisma/seed.ts
 import { PrismaClient } from "@prisma/client";
+
 const prisma = new PrismaClient();
+
+const DEFAULT_VAULT_USERNAME = "vault";
+const DEFAULT_VAULT_PASSWORD = "Vault@RISE2027";
 
 async function main() {
   await prisma.schedulingAvailability.createMany({
@@ -11,6 +15,19 @@ async function main() {
     ],
     skipDuplicates: true
   });
+
+  await prisma.vaultUser.upsert({
+    where: { username: DEFAULT_VAULT_USERNAME },
+    update: {
+      password: DEFAULT_VAULT_PASSWORD,
+    },
+    create: {
+      username: DEFAULT_VAULT_USERNAME,
+      password: DEFAULT_VAULT_PASSWORD,
+    },
+  });
+
+  console.log(`Vault user seeded: username="${DEFAULT_VAULT_USERNAME}"`);
 }
 
 main()
