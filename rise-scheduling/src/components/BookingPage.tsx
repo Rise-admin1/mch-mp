@@ -25,13 +25,9 @@ type InviteInfo = {
 
 export function BookingPage() {
   const [searchParams] = useSearchParams()
-  const formType = searchParams.get('formType')
   const inviteParam = searchParams.get('invite') ?? ''
   const emailFromUrl = searchParams.get('email') ?? ''
   const showSuccessToast = searchParams.get('success') === 'true'
-
-  const showConsultative = formType !== 'dri'
-  const showDri = formType !== 'consultation'
 
   const [sessionType, setSessionType] = useState<SessionType | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
@@ -190,31 +186,16 @@ export function BookingPage() {
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {showConsultative && (
-                    <button
-                      type="button"
-                      onClick={() => handleSessionSelect('consultative')}
-                      className="text-left p-4 rounded-xl border border-border bg-card hover:border-foreground transition-colors"
-                    >
-                      <div className="text-sm font-semibold text-foreground">Consultative Sessions</div>
-                      <div className="text-sm text-muted-foreground mt-1">
-                        PhD, Business and select postgraduate clients.
-                      </div>
-                    </button>
-                  )}
-
-                  {showDri && (
-                    <button
-                      type="button"
-                      onClick={() => handleSessionSelect('consult-dri')}
-                      className="text-left p-4 rounded-xl border border-border bg-card hover:border-foreground transition-colors"
-                    >
-                      <div className="text-sm font-semibold text-foreground">Consult DRI Services</div>
-                      <div className="text-sm text-muted-foreground mt-1">
-                        DRI services for PhD, Business and select postgraduate clients.
-                      </div>
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleSessionSelect('consultative')}
+                    className="text-left p-4 rounded-xl border border-border bg-card hover:border-foreground transition-colors"
+                  >
+                    <div className="text-sm font-semibold text-foreground">Consultative Sessions</div>
+                    <div className="text-sm text-muted-foreground mt-1">
+                      PhD, Business and select postgraduate clients.
+                    </div>
+                  </button>
                 </div>
               </div>
             ) : showForm && selectedDate && selectedTime && selectedAvailabilityId ? (

@@ -1,23 +1,15 @@
-export type SessionType = 'consultative' | 'consult-dri'
+export type SessionType = 'consultative'
 
 export const SESSION_TYPE_STORAGE_KEY = 'rise_scheduler:selectedSessionType' as const
 
 export function isSessionType(value: unknown): value is SessionType {
-  return value === 'consultative' || value === 'consult-dri'
+  return value === 'consultative'
 }
 
 export function getSessionCopy(sessionType: SessionType): { title: string; description: string } {
-  switch (sessionType) {
-    case 'consultative':
-      return {
-        title: 'Consultative Sessions',
-        description: 'Consultative sessions for PhD, Business and select postgraduate clients.',
-      }
-    case 'consult-dri':
-      return {
-        title: 'Consult DRI Services',
-        description: 'Consult DRI services session for PhD, Business and select postgraduate clients.',
-      }
+  return {
+    title: 'Consultative Sessions',
+    description: 'Consultative sessions for PhD, Business and select postgraduate clients.',
   }
 }
 
