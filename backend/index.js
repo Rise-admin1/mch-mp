@@ -10,170 +10,34 @@ import { corsOptions } from './utils/corsFe.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import chalk from 'chalk';
 import schedulingRouter from './route/scheduling-route.js';
-import Stripe from 'stripe';
-import { getGoogleAuthUrl, exchangeCodeForTokens, upsertGoogleRefreshToken, createMeetEventForBooking } from './utils/googleCalendar.js';
-import { releaseExpiredHolds } from './utils/schedulingHolds.js';
-import { sendMeetingScheduledEmails } from './utils/meetingEmails.js';
-import { purgeBookingAttachments } from './utils/schedulingUploads.js';
+import { getGoogleAuthUrl, exchangeCodeForTokens, upsertGoogleRefreshToken } from './utils/googleCalendar.js';
+import { getSchedulingStripeConfig } from './utils/schedulingStripe.js';
+import { handleSchedulingStripeWebhook } from './utils/schedulingWebhook.js';
 dotenv.config();
 const app = express();
 
 app.use(cors(corsOptions));
 
-const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY) : null;
-const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+const phdStripeConfig = getSchedulingStripeConfig('phd-success');
+const riseStripeConfig = getSchedulingStripeConfig('rise');
 
-// Stripe webhook for phd success scheduling
-app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
-  try {
-    if (!stripe || !stripeWebhookSecret) {
-      return res.status(500).send('Stripe is not configured in webhook check');
-    }
+// Stripe webhook for PhD Success scheduling
+app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), (req, res) =>
+  handleSchedulingStripeWebhook(req, res, {
+    stripe: phdStripeConfig.stripe,
+    webhookSecret: phdStripeConfig.webhookSecret,
+    defaultAppSource: 'phd-success',
+  })
+);
 
-    const sig = req.headers['stripe-signature'];
-    if (!sig) {
-      return res.status(400).send('Missing stripe-signature header');
-    }
-
-    let event;
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig, stripeWebhookSecret);
-    } catch (err) {
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-
-    const relevantTypes = new Set([
-      'checkout.session.completed',
-      'checkout.session.async_payment_succeeded',
-    ]);
-    if (!relevantTypes.has(event.type)) {
-      return res.json({ received: true });
-    }
-
-    const session = event.data.object;
-    // For some payment methods, "completed" can happen before funds are captured.
-    // Only treat it as paid when payment_status is "paid" (or async_payment_succeeded fires).
-    if (event.type === 'checkout.session.completed' && session?.payment_status !== 'paid') {
-      return res.json({ received: true });
-    }
-
-    const bookingId = session?.metadata?.bookingId || session?.client_reference_id;
-    const inviteId = session?.metadata?.inviteId;
-    const stripeSessionId = session?.id;
-    const paymentIntentId = session?.payment_intent;
-    const amountPaid = typeof session?.amount_total === 'number' ? session.amount_total : 38500;
-
-    if (!bookingId && !stripeSessionId) {
-      return res.status(400).send('Missing booking identifier');
-    }
-
-    const { PrismaClient } = await import('@prisma/client');
-    const prisma = new PrismaClient();
-
-    const now = new Date();
-    await releaseExpiredHolds(prisma, now);
-
-    const updatedBookingId = await prisma.$transaction(async (tx) => {
-      const booking = bookingId
-        ? await tx.schedulingBooking.findUnique({ where: { id: bookingId } })
-        : await tx.schedulingBooking.findUnique({ where: { stripeSessionId } });
-
-      if (!booking) return;
-
-      const refreshedBooking = await tx.schedulingBooking.findUnique({ where: { id: booking.id } });
-      if (!refreshedBooking) return;
-
-      if (
-        refreshedBooking.status === 'pending' &&
-        refreshedBooking.expiresAt &&
-        refreshedBooking.expiresAt.getTime() <= now.getTime()
-      ) {
-        return;
-      }
-
-      await tx.schedulingBooking.update({
-        where: { id: refreshedBooking.id },
-        data: {
-          status: 'confirmed',
-          stripeSessionId: refreshedBooking.stripeSessionId || stripeSessionId,
-          expiresAt: null,
-        }
-      });
-
-      // Record payment (amount is fixed at 38500 minor units) for phd success scheduling
-      await tx.schedulingPayment.upsert({
-        where: { bookingId: refreshedBooking.id },
-        create: {
-          bookingId: refreshedBooking.id,
-          stripeId: String(paymentIntentId || stripeSessionId || ''),
-          amount: amountPaid,
-          status: 'paid',
-        },
-        update: {
-          stripeId: String(paymentIntentId || stripeSessionId || ''),
-          amount: amountPaid,
-          status: 'paid',
-        }
-      });
-
-      if (inviteId) {
-        await tx.schedulingInvite.updateMany({
-          where: { id: inviteId, usedAt: null },
-          data: {
-            usedAt: now,
-            bookingId: refreshedBooking.id,
-          },
-        });
-      }
-
-      return refreshedBooking.id;
-    });
-
-    if (updatedBookingId) {
-      let booking = await prisma.schedulingBooking.findUnique({ where: { id: updatedBookingId } });
-      if (booking && booking.status === 'confirmed' && !booking.meetLink) {
-        try {
-          const { googleEventId, meetLink } = await createMeetEventForBooking(booking);
-          if (meetLink) {
-            await prisma.schedulingBooking.updateMany({
-              where: { id: booking.id, meetLink: null },
-              data: { meetLink, googleEventId },
-            });
-            booking = await prisma.schedulingBooking.findUnique({ where: { id: updatedBookingId } });
-          }
-        } catch (e) {
-          console.error('Failed to create Google Meet link:', e?.message || e);
-        }
-      }
-
-      if (booking && booking.status === 'confirmed' && !booking.emailsSentAt) {
-        try {
-          const bookingForEmail = await prisma.schedulingBooking.findUnique({
-            where: { id: booking.id },
-            include: { attachments: true },
-          });
-          if (bookingForEmail) {
-            const emailResult = await sendMeetingScheduledEmails(bookingForEmail);
-            if (!emailResult.skipped) {
-              await purgeBookingAttachments(prisma, booking.id);
-              await prisma.schedulingBooking.update({
-                where: { id: booking.id },
-                data: { emailsSentAt: new Date() },
-              });
-            }
-          }
-        } catch (e) {
-          console.error('Failed to send meeting scheduled emails:', e?.message || e);
-        }
-      }
-    }
-
-    return res.json({ received: true });
-  } catch (e) {
-    console.error(e);
-    return res.status(500).send('Internal server error');
-  }
-});
+// Stripe webhook for RISE Scheduler
+app.post('/api/stripe/rise/webhook', express.raw({ type: 'application/json' }), (req, res) =>
+  handleSchedulingStripeWebhook(req, res, {
+    stripe: riseStripeConfig.stripe,
+    webhookSecret: riseStripeConfig.webhookSecret,
+    defaultAppSource: 'rise',
+  })
+);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

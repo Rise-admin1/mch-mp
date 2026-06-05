@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client'
-import Stripe from 'stripe'
 import dotenv from 'dotenv';
 import { assertSlotAvailable, activeBookingWhere, HOLD_DURATION_MS, releaseExpiredHolds, slotStartKey } from '../utils/schedulingHolds.js';
 import {
@@ -27,18 +26,12 @@ import {
     saveUploadedFile,
 } from '../utils/schedulingUploads.js';
 import { isSchedulingS3Enabled } from '../utils/schedulingS3.js';
+import {
+    getSchedulingStripeConfig,
+    normalizeAppSource,
+} from '../utils/schedulingStripe.js';
 dotenv.config();
 const prisma = new PrismaClient();
-
-
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-const stripeSuccessUrl = process.env.STRIPE_SUCCESS_URL;
-const stripeCancelUrl = process.env.STRIPE_CANCEL_URL;
-const stripeFreeCouponId = process.env.STRIPE_FREE_COUPON_ID;
-const stripePriceId = process.env.STRIPE_PRICE_ID;
-const schedulingAppUrl = (process.env.SCHEDULING_APP_URL || 'http://localhost:5173').replace(/\/$/, '');
-
-const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
 
 const SLOT_DURATION_MS = 60 * 60 * 1000;
 
@@ -182,12 +175,15 @@ export const getAvailability = async (req, res, next) => {
 
 export const createCheckout = async (req, res, next) => {
     try {
+        const { name, email, notes, startTime, availabilityId, inviteId, uploadToken, appSource: rawAppSource } = req.body || {};
+
+        const appSource = normalizeAppSource(rawAppSource) || 'phd-success';
+        const stripeConfig = getSchedulingStripeConfig(appSource);
+        const { stripe, successUrl: stripeSuccessUrl, cancelUrl: stripeCancelUrl, freeCouponId: stripeFreeCouponId, priceId: stripePriceId, productName, defaultAmount } = stripeConfig;
 
         if (!stripe || !stripeSuccessUrl || !stripeCancelUrl) {
             return res.status(500).json({ message: 'Stripe is not configured' });
         }
-
-        const { name, email, notes, startTime, availabilityId, inviteId, uploadToken } = req.body || {};
 
         if (typeof name !== 'string' || !name.trim()) {
             return res.status(400).json({ message: 'name is required' });
@@ -254,6 +250,7 @@ export const createCheckout = async (req, res, next) => {
                     status: 'pending',
                     expiresAt,
                     availabilityId: availabilityId.trim(),
+                    appSource,
                 },
                 select: { id: true }
             });
@@ -272,9 +269,9 @@ export const createCheckout = async (req, res, next) => {
                     quantity: 1,
                     price_data: {
                         currency: 'aed',
-                        unit_amount: 38500,
+                        unit_amount: defaultAmount,
                         product_data: {
-                            name: 'PhD Success Scheduling Session',
+                            name: productName,
                             description: 'One-hour consultative session',
                         },
                     },
@@ -287,6 +284,7 @@ export const createCheckout = async (req, res, next) => {
             client_reference_id: created.id,
             metadata: {
                 bookingId: created.id,
+                appSource,
                 sessionStartTime: start.toISOString(),
                 ...(invite ? { inviteId: invite.id } : {}),
             },
@@ -415,13 +413,38 @@ function parseOffsetPagination(query) {
     return { completedOffset, upcomingOffset, limit };
 }
 
+function parseAppSourceQuery(query) {
+    const appSource = normalizeAppSource(query?.appSource);
+    if (!appSource) {
+        return { error: 'appSource query param is required (phd-success or rise)' };
+    }
+    return { appSource };
+}
+
+function parseAppSourceBody(body) {
+    const appSource = normalizeAppSource(body?.appSource);
+    if (!appSource) {
+        return { error: 'appSource is required (phd-success or rise)' };
+    }
+    return { appSource };
+}
+
+function confirmedBookingsWhere(appSource, extra = {}) {
+    return { status: 'confirmed', appSource, ...extra };
+}
+
 export const getMetrics = async (req, res, next) => {
     try {
+        const parsedAppSource = parseAppSourceQuery(req.query);
+        if (parsedAppSource.error) {
+            return res.status(400).json({ message: parsedAppSource.error });
+        }
+
         const now = new Date();
         const { completedOffset, upcomingOffset, limit } = parseOffsetPagination(req.query);
 
-        const completedWhere = { status: 'confirmed', endTime: { lte: now } };
-        const upcomingWhere = { status: 'confirmed', endTime: { gt: now } };
+        const completedWhere = confirmedBookingsWhere(parsedAppSource.appSource, { endTime: { lte: now } });
+        const upcomingWhere = confirmedBookingsWhere(parsedAppSource.appSource, { endTime: { gt: now } });
         const eventSelect = {
             name: true,
             email: true,
@@ -489,6 +512,11 @@ function isValidEmail(email) {
 
 export const getBookingStatsByEmail = async (req, res, next) => {
     try {
+        const parsedAppSource = parseAppSourceQuery(req.query);
+        if (parsedAppSource.error) {
+            return res.status(400).json({ message: parsedAppSource.error });
+        }
+
         const rawEmail = req.query?.email;
         if (typeof rawEmail !== 'string' || !rawEmail.trim()) {
             return res.status(400).json({ message: 'email query param is required' });
@@ -502,7 +530,7 @@ export const getBookingStatsByEmail = async (req, res, next) => {
         const now = new Date();
 
         const bookings = await prisma.schedulingBooking.findMany({
-            where: { status: 'confirmed' },
+            where: confirmedBookingsWhere(parsedAppSource.appSource),
             select: {
                 name: true,
                 email: true,
@@ -759,13 +787,18 @@ export const deleteAvailabilitySetting = async (req, res, next) => {
     }
 };
 
-function buildInviteShareUrl(inviteId) {
+function buildInviteShareUrl(inviteId, appSource = 'phd-success') {
+    const { schedulingAppUrl } = getSchedulingStripeConfig(appSource);
     return `${schedulingAppUrl}/?invite=${encodeURIComponent(inviteId)}`;
 }
 
 export const createSchedulingInvite = async (req, res, next) => {
     try {
-        const { email, type } = req.body || {};
+        const { email, type, appSource: rawAppSource } = req.body || {};
+        const appSource = normalizeAppSource(rawAppSource);
+        if (!appSource) {
+            return res.status(400).json({ message: 'appSource is required (phd-success or rise)' });
+        }
 
         if (typeof email !== 'string' || !isValidInviteEmail(email)) {
             return res.status(400).json({ message: 'Valid email is required' });
@@ -789,7 +822,7 @@ export const createSchedulingInvite = async (req, res, next) => {
         });
 
         res.status(201).json({
-            invite: toInviteDto(invite, buildInviteShareUrl(invite.id)),
+            invite: toInviteDto(invite, buildInviteShareUrl(invite.id, appSource)),
         });
     } catch (error) {
         console.error(error);
@@ -876,6 +909,11 @@ async function resolveAvailabilityIdForStartTime(db, startTime) {
 
 export const getManageableMeetings = async (req, res, next) => {
     try {
+        const parsedAppSource = parseAppSourceQuery(req.query);
+        if (parsedAppSource.error) {
+            return res.status(400).json({ message: parsedAppSource.error });
+        }
+
         const now = new Date();
         const parsedOffset = parseInt(req.query.offset, 10);
         const parsedLimit = parseInt(req.query.limit, 10);
@@ -883,7 +921,7 @@ export const getManageableMeetings = async (req, res, next) => {
         const limitCandidate = Number.isNaN(parsedLimit) ? 20 : parsedLimit;
         const limit = Math.min(100, limitCandidate <= 0 ? 20 : limitCandidate);
 
-        const where = { status: 'confirmed', endTime: { gt: now } };
+        const where = confirmedBookingsWhere(parsedAppSource.appSource, { endTime: { gt: now } });
         const [totalCount, meetings] = await Promise.all([
             prisma.schedulingBooking.count({ where }),
             prisma.schedulingBooking.findMany({
@@ -911,13 +949,18 @@ export const getManageableMeetings = async (req, res, next) => {
 
 export const cancelMeeting = async (req, res, next) => {
     try {
+        const parsedAppSource = parseAppSourceQuery(req.query);
+        if (parsedAppSource.error) {
+            return res.status(400).json({ message: parsedAppSource.error });
+        }
+
         const { id } = req.params;
         if (typeof id !== 'string' || !id.trim()) {
             return res.status(400).json({ message: 'Meeting id is required' });
         }
 
-        const booking = await prisma.schedulingBooking.findUnique({
-            where: { id: id.trim() },
+        const booking = await prisma.schedulingBooking.findFirst({
+            where: { id: id.trim(), appSource: parsedAppSource.appSource },
         });
 
         if (!booking) {
@@ -965,7 +1008,11 @@ export const cancelMeeting = async (req, res, next) => {
 export const rescheduleMeeting = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { startTime, availabilityId: bodyAvailabilityId } = req.body || {};
+        const { startTime, availabilityId: bodyAvailabilityId, appSource: rawAppSource } = req.body || {};
+        const parsedAppSource = parseAppSourceBody({ appSource: rawAppSource });
+        if (parsedAppSource.error) {
+            return res.status(400).json({ message: parsedAppSource.error });
+        }
 
         if (typeof id !== 'string' || !id.trim()) {
             return res.status(400).json({ message: 'Meeting id is required' });
@@ -974,8 +1021,8 @@ export const rescheduleMeeting = async (req, res, next) => {
             return res.status(400).json({ message: 'startTime must be a UTC ISO string ending with Z' });
         }
 
-        const booking = await prisma.schedulingBooking.findUnique({
-            where: { id: id.trim() },
+        const booking = await prisma.schedulingBooking.findFirst({
+            where: { id: id.trim(), appSource: parsedAppSource.appSource },
         });
 
         if (!booking) {

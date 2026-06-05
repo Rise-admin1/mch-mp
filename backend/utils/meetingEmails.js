@@ -5,13 +5,7 @@ import {
 } from '../templates/meetingScheduledEmail.js';
 import { readAttachmentContent } from './schedulingUploads.js';
 import { isResendConfigured, sendEmail } from './resend.js';
-
-const DEFAULT_EMAIL_LOGO_URL =
-  'https://amzn-s3-rightintellectual.s3.ap-south-1.amazonaws.com/phd_logo.png';
-
-function getLogoUrl() {
-  return process.env.SCHEDULING_EMAIL_LOGO_URL?.trim() || DEFAULT_EMAIL_LOGO_URL;
-}
+import { getEmailBranding } from './schedulingEmailBranding.js';
 
 function getStaticNotifyEmail() {
   return process.env.SCHEDULING_HOST_EMAIL?.trim() || null;
@@ -39,9 +33,9 @@ function getRecipients(bookingEmail) {
   );
 }
 
-async function dispatchMeetingEmail(emailContent, bookingEmail, emailAttachments = []) {
-  if (!isResendConfigured()) {
-    console.warn('Resend not configured. Skipping meeting email.');
+async function dispatchMeetingEmail(emailContent, bookingEmail, appSource, emailAttachments = []) {
+  if (!isResendConfigured(appSource)) {
+    console.warn(`Resend not configured for ${appSource}. Skipping meeting email.`);
     return { skipped: true, sent: [] };
   }
 
@@ -60,6 +54,7 @@ async function dispatchMeetingEmail(emailContent, bookingEmail, emailAttachments
       html: emailContent.html,
       text: emailContent.text,
       attachments: emailAttachments.length ? emailAttachments : undefined,
+      appSource,
     });
 
     if (!result.skipped) {
@@ -90,6 +85,7 @@ async function buildEmailAttachments(booking) {
 }
 
 export async function sendMeetingScheduledEmails(booking) {
+  const brand = getEmailBranding(booking.appSource);
   const attachmentNames = (booking.attachments || []).map((item) => item.originalName);
   const emailAttachments = await buildEmailAttachments(booking);
   const emailContent = buildMeetingScheduledEmail({
@@ -99,28 +95,30 @@ export async function sendMeetingScheduledEmails(booking) {
     endTime: booking.endTime,
     meetLink: booking.meetLink || null,
     bookingId: booking.id,
-    logoUrl: getLogoUrl(),
+    brand,
     notes: booking.notes || null,
     attachmentNames,
   });
 
-  return dispatchMeetingEmail(emailContent, booking.email, emailAttachments);
+  return dispatchMeetingEmail(emailContent, booking.email, booking.appSource, emailAttachments);
 }
 
 export async function sendMeetingCancelledEmails(booking) {
+  const brand = getEmailBranding(booking.appSource);
   const emailContent = buildMeetingCancelledEmail({
     clientName: booking.name,
     clientEmail: booking.email,
     startTime: booking.startTime,
     endTime: booking.endTime,
     bookingId: booking.id,
-    logoUrl: getLogoUrl(),
+    brand,
   });
 
-  return dispatchMeetingEmail(emailContent, booking.email);
+  return dispatchMeetingEmail(emailContent, booking.email, booking.appSource);
 }
 
 export async function sendMeetingRescheduledEmails(booking, previousTimes) {
+  const brand = getEmailBranding(booking.appSource);
   const emailContent = buildMeetingRescheduledEmail({
     clientName: booking.name,
     clientEmail: booking.email,
@@ -130,8 +128,8 @@ export async function sendMeetingRescheduledEmails(booking, previousTimes) {
     endTime: booking.endTime,
     meetLink: booking.meetLink || null,
     bookingId: booking.id,
-    logoUrl: getLogoUrl(),
+    brand,
   });
 
-  return dispatchMeetingEmail(emailContent, booking.email);
+  return dispatchMeetingEmail(emailContent, booking.email, booking.appSource);
 }

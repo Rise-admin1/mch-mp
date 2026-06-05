@@ -114,6 +114,7 @@ model SchedulingBooking {
   status         String   // pending | confirmed | expired | cancelled
   expiresAt      DateTime?
   stripeSessionId String? @unique
+  appSource      String   @default("phd-success") // phd-success | rise
 
   availabilityId String
   availability   SchedulingAvailability @relation("AvailabilityBookings", fields: [availabilityId], references: [id])

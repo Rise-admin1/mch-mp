@@ -7,6 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
+    "stripe:listen:phd": "stripe listen --forward-to localhost:3001/api/stripe/webhook",
+    "stripe:listen:rise": "stripe listen --forward-to localhost:3001/api/stripe/rise/webhook",
     "start": "node index.js",
     "seed": "node --loader ts-node/esm prisma/seed.ts"
   },
