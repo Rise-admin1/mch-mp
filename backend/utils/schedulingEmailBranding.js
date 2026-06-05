@@ -26,7 +26,7 @@ const BRANDING_BY_APP = {
   rise: {
     name: 'RISE Scheduler',
     logoUrl: () =>
-      process.env.SCHEDULING_RISE_EMAIL_LOGO_URL?.trim() || DEFAULT_RISE_LOGO_URL,
+      process.env.SCHEDULING_RISE_EMAIL_LOGO_URL?.trim() || "https://phd-success.s3.ap-south-1.amazonaws.com/1-7ffa7b50.png",
   },
 };
 
