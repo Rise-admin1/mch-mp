@@ -4,7 +4,7 @@ const DEFAULT_PHD_LOGO_URL =
   'https://amzn-s3-rightintellectual.s3.ap-south-1.amazonaws.com/phd_logo.png';
 
 const DEFAULT_RISE_LOGO_URL =
-  'https://phd-success.s3.ap-south-1.amazonaws.com/1-7ffa7b50.png';
+  'https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/1-7ffa7b50.png';
 
 const SHARED_COLORS = {
   primary: '#C8102E',
@@ -26,7 +26,7 @@ const BRANDING_BY_APP = {
   rise: {
     name: 'RISE Scheduler',
     logoUrl: () =>
-      process.env.SCHEDULING_RISE_EMAIL_LOGO_URL?.trim() || "https://phd-success.s3.ap-south-1.amazonaws.com/1-7ffa7b50.png",
+      process.env.SCHEDULING_RISE_EMAIL_LOGO_URL?.trim() || "https://funyula.s3.ap-south-1.amazonaws.com/funyula-images/1-7ffa7b50.png",
   },
 };
 
