@@ -15,12 +15,15 @@ import {
   cancelMeeting,
   rescheduleMeeting,
   uploadBookingAttachment,
+  grantSessionCredits,
+  getSessionCredits,
 } from "../controller/scheduling-controller.js";
 import { schedulingUploadMiddleware } from "../middleware/schedulingUpload.js";
 
 schedulingRouter.get("/get-availability", getAvailability);
 schedulingRouter.get("/metrics", getMetrics);
 schedulingRouter.get("/booking-stats", getBookingStatsByEmail);
+schedulingRouter.get("/session-credits", getSessionCredits);
 schedulingRouter.get("/availability-settings", getAvailabilitySettings);
 schedulingRouter.get("/invites/:id", getSchedulingInvite);
 schedulingRouter.get("/meetings", getManageableMeetings);
@@ -38,6 +41,7 @@ schedulingRouter.post("/booking-uploads", (req, res, next) => {
   });
 });
 schedulingRouter.post("/invites", createSchedulingInvite);
+schedulingRouter.post("/session-credits/grant", grantSessionCredits);
 schedulingRouter.post("/availability-settings", createAvailabilitySetting);
 schedulingRouter.post("/meetings/:id/cancel", cancelMeeting);
 schedulingRouter.put("/availability-settings/:id", updateAvailabilitySetting);

@@ -8,7 +8,7 @@ interface BookingFormProps {
   availabilityId: string
   initialEmail?: string
   inviteId?: string
-  inviteType?: 'paid' | 'free'
+  inviteType?: 'paid' | 'free' | 'package'
   emailLocked?: boolean
   onBack: () => void
 }
@@ -392,7 +392,7 @@ export function BookingForm({
         >
           {submitting
             ? 'Redirecting…'
-            : inviteType === 'free'
+            : inviteType === 'free' || inviteType === 'package'
               ? 'Continue to checkout (100% off)'
               : inviteId
                 ? 'Continue to checkout'

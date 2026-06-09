@@ -96,17 +96,51 @@ export async function handleSchedulingStripeWebhook(req, res, { stripe, webhookS
             });
 
             if (inviteId) {
-                await tx.schedulingInvite.updateMany({
-                    where: { id: inviteId, usedAt: null },
-                    data: {
-                        usedAt: now,
-                        bookingId: refreshedBooking.id,
-                    },
+                const invite = await tx.schedulingInvite.findUnique({
+                    where: { id: inviteId },
+                    select: { id: true, type: true },
                 });
+
+                if (invite?.type === 'package') {
+                    const credit = await tx.schedulingSessionCredit.findUnique({
+                        where: { inviteId },
+                    });
+
+                    if (credit) {
+                        const remaining = credit.totalSessions - credit.usedSessions;
+                        if (remaining > 0) {
+                            await tx.schedulingSessionCredit.update({
+                                where: { id: credit.id },
+                                data: { usedSessions: { increment: 1 } },
+                            });
+                            await tx.schedulingSessionCreditUsage.create({
+                                data: {
+                                    creditId: credit.id,
+                                    bookingId: refreshedBooking.id,
+                                },
+                            });
+
+                            if (credit.usedSessions + 1 >= credit.totalSessions) {
+                                await tx.schedulingInvite.updateMany({
+                                    where: { id: inviteId, usedAt: null },
+                                    data: { usedAt: now },
+                                });
+                            }
+                        }
+                    }
+                } else {
+                    await tx.schedulingInvite.updateMany({
+                        where: { id: inviteId, usedAt: null },
+                        data: {
+                            usedAt: now,
+                            bookingId: refreshedBooking.id,
+                        },
+                    });
+                }
             }
 
             return refreshedBooking.id;
-        });
+        }, { maxWait: 10000, timeout: 20000 });
 
         if (updatedBookingId) {
             let booking = await prisma.schedulingBooking.findUnique({ where: { id: updatedBookingId } });

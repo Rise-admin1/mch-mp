@@ -8,8 +8,17 @@ export function isValidInviteEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizeInviteEmail(email));
 }
 
-export function getInviteStatus(invite, now = new Date()) {
+export function getInviteStatus(invite, now = new Date(), sessionCredit = null) {
   if (!invite) return 'not_found';
+  if (invite.type === 'package') {
+    if (sessionCredit) {
+      const remaining = sessionCredit.totalSessions - sessionCredit.usedSessions;
+      if (remaining <= 0) return 'used';
+      return 'active';
+    }
+    if (invite.usedAt) return 'used';
+    return 'active';
+  }
   if (invite.usedAt) return 'used';
   if (invite.type === 'free' && invite.expiresAt && invite.expiresAt.getTime() <= now.getTime()) {
     return 'expired';
@@ -17,8 +26,8 @@ export function getInviteStatus(invite, now = new Date()) {
   return 'active';
 }
 
-export function assertInviteUsable(invite, email, now = new Date()) {
-  const status = getInviteStatus(invite, now);
+export function assertInviteUsable(invite, email, now = new Date(), sessionCredit = null) {
+  const status = getInviteStatus(invite, now, sessionCredit);
   if (status === 'not_found') {
     const err = new Error('Invite not found');
     err.statusCode = 404;
@@ -41,7 +50,12 @@ export function assertInviteUsable(invite, email, now = new Date()) {
   }
 }
 
-export function toInviteDto(invite, shareUrl) {
+export function toInviteDto(invite, shareUrl, sessionCredit = null) {
+  const remainingSessions =
+    invite.type === 'package' && sessionCredit
+      ? Math.max(0, sessionCredit.totalSessions - sessionCredit.usedSessions)
+      : null;
+
   return {
     id: invite.id,
     email: invite.email,
@@ -50,6 +64,7 @@ export function toInviteDto(invite, shareUrl) {
     usedAt: invite.usedAt ? invite.usedAt.toISOString() : null,
     createdAt: invite.createdAt.toISOString(),
     shareUrl,
-    status: getInviteStatus(invite),
+    status: getInviteStatus(invite, new Date(), sessionCredit),
+    ...(remainingSessions != null ? { remainingSessions } : {}),
   };
 }

@@ -18,9 +18,10 @@ export interface BookingData {
 type InviteInfo = {
   id: string
   email: string
-  type: 'paid' | 'free'
+  type: 'paid' | 'free' | 'package'
   expiresAt: string | null
   status: string
+  remainingSessions?: number
 }
 
 export function BookingPage() {
@@ -154,7 +155,17 @@ export function BookingPage() {
           <div className="flex-1 p-6 lg:p-8">
             {invite && (
               <div className="mb-6 rounded-lg border border-border bg-muted/40 p-4 text-sm">
-                {invite.type === 'free' ? (
+                {invite.type === 'package' ? (
+                  <>
+                    <p className="font-medium text-foreground">Session package</p>
+                    <p className="text-muted-foreground mt-1">
+                      {typeof invite.remainingSessions === 'number'
+                        ? `You have ${invite.remainingSessions} complimentary session${invite.remainingSessions === 1 ? '' : 's'} remaining.`
+                        : 'You have complimentary sessions available on this link.'}{' '}
+                      A 100% discount is applied at Stripe checkout.
+                    </p>
+                  </>
+                ) : invite.type === 'free' ? (
                   <>
                     <p className="font-medium text-foreground">Complimentary session</p>
                     <p className="text-muted-foreground mt-1">

@@ -18,6 +18,11 @@ import {
     toInviteDto,
 } from '../utils/schedulingInvites.js';
 import {
+    parseSessionGrantCount,
+    toSessionCreditDto,
+} from '../utils/schedulingSessionCredits.js';
+import { sendSessionPackageGrantedEmail } from '../utils/sessionPackageEmails.js';
+import {
     claimUploadForBooking,
     cleanupExpiredOrphanUploads,
     createUploadToken,
@@ -203,13 +208,16 @@ export const createCheckout = async (req, res, next) => {
             if (typeof inviteId !== 'string' || !inviteId.trim()) {
                 return res.status(400).json({ message: 'inviteId must be a valid string' });
             }
-            invite = await prisma.schedulingInvite.findUnique({ where: { id: inviteId.trim() } });
+            invite = await prisma.schedulingInvite.findUnique({
+                where: { id: inviteId.trim() },
+                include: { sessionCredit: true },
+            });
             try {
-                assertInviteUsable(invite, email.trim(), new Date());
+                assertInviteUsable(invite, email.trim(), new Date(), invite?.sessionCredit ?? null);
             } catch (err) {
                 return res.status(err.statusCode || 400).json({ message: err.message });
             }
-            if (invite.type === 'free' && !stripeFreeCouponId) {
+            if ((invite.type === 'free' || invite.type === 'package') && !stripeFreeCouponId) {
                 return res.status(500).json({ message: 'Free checkout is not configured (missing STRIPE_FREE_COUPON_ID)' });
             }
         }
@@ -293,7 +301,7 @@ export const createCheckout = async (req, res, next) => {
             line_items: lineItems,
         };
 
-        if (invite?.type === 'free') {
+        if (invite?.type === 'free' || invite?.type === 'package') {
             sessionParams.discounts = [{ coupon: stripeFreeCouponId }];
         }
 
@@ -839,16 +847,19 @@ export const getSchedulingInvite = async (req, res, next) => {
 
         const invite = await prisma.schedulingInvite.findUnique({
             where: { id: id.trim() },
+            include: { sessionCredit: true },
         });
 
         if (!invite) {
             return res.status(404).json({ message: 'Invite not found' });
         }
 
-        const status = getInviteStatus(invite);
+        const sessionCredit = invite.sessionCredit ?? null;
+        const appSource = sessionCredit?.appSource ?? 'phd-success';
+        const status = getInviteStatus(invite, new Date(), sessionCredit);
         res.status(200).json({
             invite: {
-                ...toInviteDto(invite, buildInviteShareUrl(invite.id)),
+                ...toInviteDto(invite, buildInviteShareUrl(invite.id, appSource), sessionCredit),
                 status,
             },
         });
@@ -1124,6 +1135,217 @@ export const rescheduleMeeting = async (req, res, next) => {
 
         res.status(200).json({
             meeting: toMeetingDto(updatedBooking),
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const grantSessionCredits = async (req, res, next) => {
+    try {
+        const { email, sessions: rawSessions, appSource: rawAppSource, notes, sendEmail } = req.body || {};
+        const appSource = normalizeAppSource(rawAppSource);
+        if (!appSource) {
+            return res.status(400).json({ message: 'appSource is required (phd-success or rise)' });
+        }
+
+        if (typeof email !== 'string' || !isValidInviteEmail(email)) {
+            return res.status(400).json({ message: 'Valid email is required' });
+        }
+
+        const parsedSessions = parseSessionGrantCount(rawSessions);
+        if (parsedSessions.error) {
+            return res.status(400).json({ message: parsedSessions.error });
+        }
+
+        const normalizedEmail = normalizeInviteEmail(email);
+        const trimmedNotes =
+            typeof notes === 'string' && notes.trim() ? notes.trim() : null;
+        const shouldSendEmail = sendEmail !== false;
+
+        const result = await prisma.$transaction(async (tx) => {
+            let credit = await tx.schedulingSessionCredit.findUnique({
+                where: {
+                    email_appSource: {
+                        email: normalizedEmail,
+                        appSource,
+                    },
+                },
+            });
+
+            const isTopUp = Boolean(credit);
+            let invite;
+
+            if (credit) {
+                credit = await tx.schedulingSessionCredit.update({
+                    where: { id: credit.id },
+                    data: {
+                        totalSessions: { increment: parsedSessions.sessions },
+                        ...(trimmedNotes
+                            ? {
+                                  notes: credit.notes
+                                      ? `${credit.notes}\n${trimmedNotes}`
+                                      : trimmedNotes,
+                              }
+                            : {}),
+                    },
+                });
+
+                if (credit.inviteId) {
+                    invite = await tx.schedulingInvite.findUnique({
+                        where: { id: credit.inviteId },
+                    });
+                    if (invite?.usedAt) {
+                        invite = await tx.schedulingInvite.update({
+                            where: { id: invite.id },
+                            data: { usedAt: null },
+                        });
+                    }
+                }
+            } else {
+                invite = await tx.schedulingInvite.create({
+                    data: {
+                        email: normalizedEmail,
+                        type: 'package',
+                        expiresAt: null,
+                    },
+                });
+
+                credit = await tx.schedulingSessionCredit.create({
+                    data: {
+                        email: normalizedEmail,
+                        appSource,
+                        totalSessions: parsedSessions.sessions,
+                        notes: trimmedNotes,
+                        inviteId: invite.id,
+                    },
+                });
+            }
+
+            if (!invite && credit.inviteId) {
+                invite = await tx.schedulingInvite.findUnique({
+                    where: { id: credit.inviteId },
+                });
+            }
+
+            if (!invite) {
+                invite = await tx.schedulingInvite.create({
+                    data: {
+                        email: normalizedEmail,
+                        type: 'package',
+                        expiresAt: null,
+                    },
+                });
+                credit = await tx.schedulingSessionCredit.update({
+                    where: { id: credit.id },
+                    data: { inviteId: invite.id },
+                });
+            }
+
+            return { credit, invite, isTopUp };
+        });
+
+        const shareUrl = buildInviteShareUrl(result.invite.id, appSource);
+        let emailResult = { skipped: true, emailSent: false };
+
+        if (shouldSendEmail) {
+            try {
+                emailResult = await sendSessionPackageGrantedEmail({
+                    email: normalizedEmail,
+                    sessionsGranted: parsedSessions.sessions,
+                    totalRemaining: result.credit.totalSessions - result.credit.usedSessions,
+                    shareUrl,
+                    isTopUp: result.isTopUp,
+                    appSource,
+                });
+            } catch (emailError) {
+                console.error('Failed to send session package email:', emailError);
+                emailResult = { skipped: true, emailSent: false, error: emailError.message };
+            }
+        }
+
+        res.status(201).json({
+            credit: toSessionCreditDto(result.credit, shareUrl),
+            invite: toInviteDto(result.invite, shareUrl, result.credit),
+            emailSent: emailResult.emailSent,
+            emailSkipped: emailResult.skipped,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const getSessionCredits = async (req, res, next) => {
+    try {
+        const parsedAppSource = parseAppSourceQuery(req.query);
+        if (parsedAppSource.error) {
+            return res.status(400).json({ message: parsedAppSource.error });
+        }
+
+        const rawEmail = req.query?.email;
+        if (typeof rawEmail !== 'string' || !rawEmail.trim()) {
+            return res.status(400).json({ message: 'email query param is required' });
+        }
+
+        const normalizedEmail = normalizeInviteEmail(rawEmail);
+        if (!isValidInviteEmail(normalizedEmail)) {
+            return res.status(400).json({ message: 'Valid email is required' });
+        }
+
+        const credit = await prisma.schedulingSessionCredit.findUnique({
+            where: {
+                email_appSource: {
+                    email: normalizedEmail,
+                    appSource: parsedAppSource.appSource,
+                },
+            },
+            include: {
+                invite: true,
+                usages: {
+                    orderBy: { createdAt: 'desc' },
+                    take: 10,
+                    include: {
+                        booking: {
+                            select: {
+                                id: true,
+                                startTime: true,
+                                endTime: true,
+                                status: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        if (!credit) {
+            return res.status(404).json({ message: 'No session credits found for this email' });
+        }
+
+        const shareUrl = credit.inviteId
+            ? buildInviteShareUrl(credit.inviteId, parsedAppSource.appSource)
+            : null;
+
+        res.status(200).json({
+            credit: toSessionCreditDto(credit, shareUrl),
+            invite: credit.invite
+                ? toInviteDto(credit.invite, shareUrl, credit)
+                : null,
+            recentUsages: credit.usages.map((usage) => ({
+                id: usage.id,
+                bookingId: usage.bookingId,
+                createdAt: usage.createdAt.toISOString(),
+                booking: usage.booking
+                    ? {
+                          id: usage.booking.id,
+                          startTime: usage.booking.startTime.toISOString(),
+                          endTime: usage.booking.endTime.toISOString(),
+                          status: usage.booking.status,
+                      }
+                    : null,
+            })),
         });
     } catch (error) {
         console.error(error);
