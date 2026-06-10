@@ -20,10 +20,13 @@ async function main() {
     where: { username: DEFAULT_VAULT_USERNAME },
     update: {
       password: DEFAULT_VAULT_PASSWORD,
+      role: "ADMIN",
+      expiresAt: null,
     },
     create: {
       username: DEFAULT_VAULT_USERNAME,
       password: DEFAULT_VAULT_PASSWORD,
+      role: "ADMIN",
     },
   });
 

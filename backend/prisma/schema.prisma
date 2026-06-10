@@ -217,6 +217,11 @@ model Task {
   @@index([createdAt])
 }
 
+enum VaultRole {
+  ADMIN
+  GUEST
+}
+
 model VaultDocument {
   id           String   @id @default(uuid())
   title        String?
@@ -228,14 +233,49 @@ model VaultDocument {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  assignments VaultUserDocument[]
+
   @@index([createdAt])
 }
 
 model VaultUser {
-  id        String   @id @default(uuid())
-  username  String   @unique
+  id        String    @id @default(uuid())
+  username  String    @unique
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role      VaultRole @default(ADMIN)
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  assignments VaultUserDocument[]
+  sessions    VaultSession[]
+}
+
+model VaultSession {
+  id          String   @id @default(uuid())
+  token       String   @unique
+  vaultUserId String
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  vaultUser VaultUser @relation(fields: [vaultUserId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([expiresAt])
+  @@index([vaultUserId])
+}
+
+model VaultUserDocument {
+  id          String   @id @default(uuid())
+  vaultUserId String
+  documentId  String
+  assignedAt  DateTime @default(now())
+
+  vaultUser VaultUser     @relation(fields: [vaultUserId], references: [id], onDelete: Cascade)
+  document  VaultDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([vaultUserId, documentId])
+  @@index([vaultUserId])
+  @@index([documentId])
 }
 

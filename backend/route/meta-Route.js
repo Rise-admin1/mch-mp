@@ -7,7 +7,13 @@ import {
   getVaultDocuments,
   uploadVaultDocument,
 } from '../controller/vault-controller.js';
-import { vaultLogin } from '../controller/vault-auth-controller.js';
+import { vaultLogin, vaultLogout, vaultMe } from '../controller/vault-auth-controller.js';
+import {
+  createVaultGuestAccess,
+  listVaultGuestAccess,
+  revokeVaultGuestAccess,
+} from '../controller/vault-guest-controller.js';
+import { requireVaultAdmin, requireVaultAuth } from '../middleware/vaultAuth.js';
 import { schedulingUploadMiddleware } from '../middleware/schedulingUpload.js';
 
 const router = express.Router();
@@ -21,10 +27,12 @@ router.get('/get-tasks', getTasks);
 router.get('/news/:id', getMetaTags);
 
 router.post('/vault/auth/login', vaultLogin);
+router.get('/vault/auth/me', requireVaultAuth, vaultMe);
+router.post('/vault/auth/logout', requireVaultAuth, vaultLogout);
 
-router.get('/vault/documents', getVaultDocuments);
-router.get('/vault/documents/:id/view-url', getVaultDocumentViewUrl);
-router.post('/vault/documents', (req, res, next) => {
+router.get('/vault/documents', requireVaultAuth, getVaultDocuments);
+router.get('/vault/documents/:id/view-url', requireVaultAuth, getVaultDocumentViewUrl);
+router.post('/vault/documents', requireVaultAuth, requireVaultAdmin, (req, res, next) => {
   schedulingUploadMiddleware(req, res, (err) => {
     if (err) {
       if (err.code === 'LIMIT_FILE_SIZE') {
@@ -41,6 +49,10 @@ router.post('/vault/documents', (req, res, next) => {
     return uploadVaultDocument(req, res, next);
   });
 });
-router.delete('/vault/documents', deleteVaultDocument);
+router.delete('/vault/documents', requireVaultAuth, requireVaultAdmin, deleteVaultDocument);
+
+router.post('/vault/guest-access', requireVaultAuth, requireVaultAdmin, createVaultGuestAccess);
+router.get('/vault/guest-access', requireVaultAuth, requireVaultAdmin, listVaultGuestAccess);
+router.delete('/vault/guest-access/:id', requireVaultAuth, requireVaultAdmin, revokeVaultGuestAccess);
 
 export default router;

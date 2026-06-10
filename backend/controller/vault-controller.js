@@ -20,15 +20,22 @@ function normalizeVaultDocument(doc) {
 export const getVaultDocuments = async (req, res) => {
   try {
     const { page = '1', limit = '20' } = req.query || {};
+    const { vaultUser } = req;
 
     const pageNum = Math.max(1, parseInt(String(page), 10) || 1);
     const MAX_LIMIT = 50;
     const limitNum = Math.min(MAX_LIMIT, Math.max(1, parseInt(String(limit), 10) || 20));
     const skip = (pageNum - 1) * limitNum;
 
+    const where =
+      vaultUser.role === 'GUEST'
+        ? { id: { in: vaultUser.documentIds } }
+        : undefined;
+
     const [totalCount, documents] = await Promise.all([
-      prisma.vaultDocument.count(),
+      prisma.vaultDocument.count({ where }),
       prisma.vaultDocument.findMany({
+        where,
         orderBy: { createdAt: 'desc' },
         skip,
         take: limitNum,
@@ -125,6 +132,13 @@ export const getVaultDocumentViewUrl = async (req, res) => {
     const existing = await prisma.vaultDocument.findUnique({ where: { id: id.trim() } });
     if (!existing) {
       return res.status(404).json({ success: false, message: 'Document not found' });
+    }
+
+    if (
+      req.vaultUser.role === 'GUEST' &&
+      !req.vaultUser.documentIds.includes(existing.id)
+    ) {
+      return res.status(403).json({ success: false, message: 'Access denied' });
     }
 
     const { viewUrl, expiresIn } = await getVaultPresignedViewUrl(

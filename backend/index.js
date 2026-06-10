@@ -13,6 +13,7 @@ import schedulingRouter from './route/scheduling-route.js';
 import { getGoogleAuthUrl, exchangeCodeForTokens, upsertGoogleRefreshToken } from './utils/googleCalendar.js';
 import { getSchedulingStripeConfig } from './utils/schedulingStripe.js';
 import { handleSchedulingStripeWebhook } from './utils/schedulingWebhook.js';
+import { deleteExpiredGuestUsers, deleteExpiredVaultSessions } from './middleware/vaultAuth.js';
 dotenv.config();
 const app = express();
 
@@ -88,4 +89,14 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(chalk.blue.bgRed(`Backend running at port ${PORT}`));
+  const cleanupVault = () =>
+    Promise.all([deleteExpiredVaultSessions(), deleteExpiredGuestUsers()]);
+  cleanupVault().catch((err) => {
+    console.error('Failed to clean up expired vault sessions/guests:', err);
+  });
+  setInterval(() => {
+    cleanupVault().catch((err) => {
+      console.error('Failed to clean up expired vault sessions/guests:', err);
+    });
+  }, 60 * 60 * 1000);
 })
