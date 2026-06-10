@@ -14,7 +14,8 @@ import {
   revokeVaultGuestAccess,
 } from '../controller/vault-guest-controller.js';
 import { requireVaultAdmin, requireVaultAuth } from '../middleware/vaultAuth.js';
-import { schedulingUploadMiddleware } from '../middleware/schedulingUpload.js';
+import { vaultUploadMiddleware } from '../middleware/vaultUpload.js';
+import { getVaultMaxUploadLabel } from '../utils/vaultUploads.js';
 
 const router = express.Router();
 
@@ -33,12 +34,12 @@ router.post('/vault/auth/logout', requireVaultAuth, vaultLogout);
 router.get('/vault/documents', requireVaultAuth, getVaultDocuments);
 router.get('/vault/documents/:id/view-url', requireVaultAuth, getVaultDocumentViewUrl);
 router.post('/vault/documents', requireVaultAuth, requireVaultAdmin, (req, res, next) => {
-  schedulingUploadMiddleware(req, res, (err) => {
+  vaultUploadMiddleware(req, res, (err) => {
     if (err) {
       if (err.code === 'LIMIT_FILE_SIZE') {
         return res.status(400).json({
           success: false,
-          message: 'File is too large. Maximum size is 10 MB.',
+          message: `File is too large. Maximum size is ${getVaultMaxUploadLabel()}.`,
         });
       }
       return res.status(400).json({

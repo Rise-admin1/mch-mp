@@ -10,6 +10,15 @@ import {
 import { isAllowedUploadMimeType } from './schedulingUploads.js';
 
 const DEFAULT_VAULT_PREFIX = 'vault';
+const DEFAULT_VAULT_MAX_UPLOAD_MB = 50;
+
+export const VAULT_MAX_UPLOAD_BYTES =
+  Number(process.env.VAULT_MAX_UPLOAD_MB || DEFAULT_VAULT_MAX_UPLOAD_MB) * 1024 * 1024;
+
+export function getVaultMaxUploadLabel() {
+  const mb = Number(process.env.VAULT_MAX_UPLOAD_MB || DEFAULT_VAULT_MAX_UPLOAD_MB);
+  return `${mb} MB`;
+}
 
 /** S3 key prefix for Vault documents (separate from SCHEDULING_S3_PREFIX). */
 export function getVaultS3Prefix() {
