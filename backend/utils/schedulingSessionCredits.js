@@ -31,3 +31,33 @@ export function toSessionCreditDto(credit, shareUrl = null) {
     updatedAt: credit.updatedAt.toISOString(),
   };
 }
+
+export async function resolvePackageInviteForCredit(tx, credit, normalizedEmail) {
+  let currentCredit = credit;
+  let invite = currentCredit.inviteId
+    ? await tx.schedulingInvite.findUnique({ where: { id: currentCredit.inviteId } })
+    : null;
+
+  if (invite?.usedAt) {
+    invite = await tx.schedulingInvite.update({
+      where: { id: invite.id },
+      data: { usedAt: null },
+    });
+  }
+
+  if (!invite) {
+    invite = await tx.schedulingInvite.create({
+      data: {
+        email: normalizedEmail,
+        type: 'package',
+        expiresAt: null,
+      },
+    });
+    currentCredit = await tx.schedulingSessionCredit.update({
+      where: { id: currentCredit.id },
+      data: { inviteId: invite.id },
+    });
+  }
+
+  return { credit: currentCredit, invite };
+}

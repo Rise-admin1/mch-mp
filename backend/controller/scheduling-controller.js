@@ -20,6 +20,7 @@ import {
 import {
     getRemainingSessions,
     parseSessionGrantCount,
+    resolvePackageInviteForCredit,
     toSessionCreditDto,
 } from '../utils/schedulingSessionCredits.js';
 import { sendSessionPackageGrantedEmail } from '../utils/sessionPackageEmails.js';
@@ -840,13 +841,44 @@ export const createSchedulingInvite = async (req, res, next) => {
             return res.status(400).json({ message: 'type must be "paid" or "free"' });
         }
 
+        const normalizedEmail = normalizeInviteEmail(email);
+
+        if (inviteType === 'free') {
+            const sessionCredit = await prisma.schedulingSessionCredit.findUnique({
+                where: {
+                    email_appSource: {
+                        email: normalizedEmail,
+                        appSource,
+                    },
+                },
+            });
+
+            if (sessionCredit && getRemainingSessions(sessionCredit) > 0) {
+                const packageResult = await prisma.$transaction(async (tx) => {
+                    const credit = await tx.schedulingSessionCredit.findUnique({
+                        where: { id: sessionCredit.id },
+                    });
+                    return resolvePackageInviteForCredit(tx, credit, normalizedEmail);
+                });
+
+                return res.status(201).json({
+                    invite: toInviteDto(
+                        packageResult.invite,
+                        buildInviteShareUrl(packageResult.invite.id, appSource),
+                        packageResult.credit
+                    ),
+                    usedPackageCredit: true,
+                });
+            }
+        }
+
         const now = new Date();
         const expiresAt =
             inviteType === 'free' ? new Date(now.getTime() + FREE_INVITE_DURATION_MS) : null;
 
         const invite = await prisma.schedulingInvite.create({
             data: {
-                email: normalizeInviteEmail(email),
+                email: normalizedEmail,
                 type: inviteType,
                 expiresAt,
             },
@@ -854,6 +886,7 @@ export const createSchedulingInvite = async (req, res, next) => {
 
         res.status(201).json({
             invite: toInviteDto(invite, buildInviteShareUrl(invite.id, appSource)),
+            usedPackageCredit: false,
         });
     } catch (error) {
         console.error(error);
