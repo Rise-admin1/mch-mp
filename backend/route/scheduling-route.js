@@ -17,12 +17,14 @@ import {
   uploadBookingAttachment,
   grantSessionCredits,
   getSessionCredits,
+  listSessionCredits,
 } from "../controller/scheduling-controller.js";
 import { schedulingUploadMiddleware } from "../middleware/schedulingUpload.js";
 
 schedulingRouter.get("/get-availability", getAvailability);
 schedulingRouter.get("/metrics", getMetrics);
 schedulingRouter.get("/booking-stats", getBookingStatsByEmail);
+schedulingRouter.get("/session-credits/list", listSessionCredits);
 schedulingRouter.get("/session-credits", getSessionCredits);
 schedulingRouter.get("/availability-settings", getAvailabilitySettings);
 schedulingRouter.get("/invites/:id", getSchedulingInvite);

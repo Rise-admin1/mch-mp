@@ -18,6 +18,7 @@ import {
     toInviteDto,
 } from '../utils/schedulingInvites.js';
 import {
+    getRemainingSessions,
     parseSessionGrantCount,
     toSessionCreditDto,
 } from '../utils/schedulingSessionCredits.js';
@@ -400,6 +401,7 @@ export const uploadBookingAttachment = async (req, res) => {
 
 function toEventDto(booking) {
     return {
+        id: booking.id,
         name: booking.name,
         email: booking.email,
         startTime: booking.startTime.toISOString(),
@@ -454,6 +456,7 @@ export const getMetrics = async (req, res, next) => {
         const completedWhere = confirmedBookingsWhere(parsedAppSource.appSource, { endTime: { lte: now } });
         const upcomingWhere = confirmedBookingsWhere(parsedAppSource.appSource, { endTime: { gt: now } });
         const eventSelect = {
+            id: true,
             name: true,
             email: true,
             startTime: true,
@@ -575,6 +578,23 @@ export const getBookingStatsByEmail = async (req, res, next) => {
             .filter((booking) => booking.endTime.getTime() <= now.getTime())
             .sort((a, b) => b.endTime.getTime() - a.endTime.getTime())[0] || null;
 
+        const sessionCredit = await prisma.schedulingSessionCredit.findUnique({
+            where: {
+                email_appSource: {
+                    email: normalizedEmail,
+                    appSource: parsedAppSource.appSource,
+                },
+            },
+            select: {
+                totalSessions: true,
+                usedSessions: true,
+            },
+        });
+
+        const packageSessionsLeft = getRemainingSessions(sessionCredit);
+        const packageSessionsTotal = sessionCredit?.totalSessions ?? 0;
+        const packageSessionsUsed = sessionCredit?.usedSessions ?? 0;
+
         res.status(200).json({
             email: normalizedEmail,
             name: matched.length > 0 ? matched[matched.length - 1].name : null,
@@ -584,6 +604,9 @@ export const getBookingStatsByEmail = async (req, res, next) => {
             completedHours,
             upcomingBookings,
             upcomingHours,
+            packageSessionsTotal,
+            packageSessionsUsed,
+            packageSessionsLeft,
             firstBookingAt: matched.length > 0 ? matched[0].startTime.toISOString() : null,
             lastBookingAt: matched.length > 0 ? matched[matched.length - 1].startTime.toISOString() : null,
             lastCompletedMeeting: lastCompleted
@@ -1270,6 +1293,37 @@ export const grantSessionCredits = async (req, res, next) => {
             invite: toInviteDto(result.invite, shareUrl, result.credit),
             emailSent: emailResult.emailSent,
             emailSkipped: emailResult.skipped,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const listSessionCredits = async (req, res, next) => {
+    try {
+        const parsedAppSource = parseAppSourceQuery(req.query);
+        if (parsedAppSource.error) {
+            return res.status(400).json({ message: parsedAppSource.error });
+        }
+
+        const credits = await prisma.schedulingSessionCredit.findMany({
+            where: { appSource: parsedAppSource.appSource },
+            orderBy: { email: 'asc' },
+            select: {
+                email: true,
+                totalSessions: true,
+                usedSessions: true,
+            },
+        });
+
+        res.status(200).json({
+            credits: credits.map((credit) => ({
+                email: credit.email,
+                totalSessions: credit.totalSessions,
+                usedSessions: credit.usedSessions,
+                remainingSessions: getRemainingSessions(credit),
+            })),
         });
     } catch (error) {
         console.error(error);

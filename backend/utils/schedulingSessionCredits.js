@@ -1,5 +1,4 @@
 export const SESSION_GRANT_MIN = 1;
-export const SESSION_GRANT_MAX = 20;
 
 export function getRemainingSessions(credit) {
   if (!credit) return 0;
@@ -8,9 +7,9 @@ export function getRemainingSessions(credit) {
 
 export function parseSessionGrantCount(value) {
   const sessions = Number(value);
-  if (!Number.isInteger(sessions) || sessions < SESSION_GRANT_MIN || sessions > SESSION_GRANT_MAX) {
+  if (!Number.isInteger(sessions) || sessions < SESSION_GRANT_MIN) {
     return {
-      error: `sessions must be an integer between ${SESSION_GRANT_MIN} and ${SESSION_GRANT_MAX}`,
+      error: `sessions must be an integer of at least ${SESSION_GRANT_MIN}`,
     };
   }
   return { sessions };
