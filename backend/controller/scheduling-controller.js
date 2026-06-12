@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { assertSlotAvailable, activeBookingWhere, HOLD_DURATION_MS, releaseExpiredHolds, slotStartKey } from '../utils/schedulingHolds.js';
 import {
     deleteMeetEventForBooking,
+    isGoogleCalendarAuthError,
     updateMeetEventForBooking,
 } from '../utils/googleCalendar.js';
 import {
@@ -1037,14 +1038,15 @@ export const cancelMeeting = async (req, res, next) => {
             return res.status(409).json({ message: 'Only confirmed meetings can be cancelled' });
         }
 
+        let calendarWarning = null;
         if (booking.googleEventId) {
             try {
                 await deleteMeetEventForBooking(booking);
             } catch (calendarError) {
                 console.error('Failed to delete Google Calendar event:', calendarError);
-                return res.status(502).json({
-                    message: 'Failed to remove Google Calendar event. Meeting was not cancelled.',
-                });
+                calendarWarning = isGoogleCalendarAuthError(calendarError)
+                    ? 'Google Calendar access has expired. Reconnect at /auth/google. The meeting was cancelled in the system, but you may need to remove the calendar event manually.'
+                    : 'Could not remove the Google Calendar event. The meeting was cancelled in the system, but the calendar event may still exist.';
             }
         }
 
@@ -1065,6 +1067,7 @@ export const cancelMeeting = async (req, res, next) => {
 
         res.status(200).json({
             meeting: toMeetingDto(updated),
+            ...(calendarWarning ? { warning: calendarWarning } : {}),
         });
     } catch (error) {
         console.error(error);

@@ -5,6 +5,13 @@ const prisma = new PrismaClient()
 
 const GOOGLE_PROVIDER = 'google'
 
+const MEET_GUEST_RESTRICTIONS = {
+  guestsCanInviteOthers: true,
+  guestsCanSeeOtherGuests: true,
+  guestsCanModify: false,
+  anyoneCanAddSelf: true,
+}
+
 function requireEnv(name) {
   const v = process.env[name]
   if (!v) throw new Error(`Missing required env var: ${name}`)
@@ -32,6 +39,17 @@ export async function getGoogleRefreshToken() {
     select: { refreshToken: true },
   })
   return row?.refreshToken || null
+}
+
+export function isGoogleCalendarAuthError(error) {
+  const message = String(error?.message || error?.cause?.message || '').toLowerCase()
+  const responseError = String(error?.response?.data?.error || '').toLowerCase()
+  return (
+    message.includes('invalid_grant') ||
+    responseError === 'invalid_grant' ||
+    message.includes('missing refresh token') ||
+    message.includes('not connected')
+  )
 }
 
 export function getGoogleAuthUrl() {
@@ -76,6 +94,7 @@ export async function createMeetEventForBooking(booking) {
       start: { dateTime: start, timeZone: 'UTC' },
       end: { dateTime: end, timeZone: 'UTC' },
       attendees: [{ email: booking.email }],
+      ...MEET_GUEST_RESTRICTIONS,
       conferenceData: {
         createRequest: {
           requestId,
@@ -117,6 +136,7 @@ export async function updateMeetEventForBooking(booking) {
       start: { dateTime: start, timeZone: 'UTC' },
       end: { dateTime: end, timeZone: 'UTC' },
       attendees: [{ email: booking.email }],
+      ...MEET_GUEST_RESTRICTIONS,
     },
   })
 
