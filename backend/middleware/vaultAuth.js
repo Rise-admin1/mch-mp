@@ -4,17 +4,20 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 const GUEST_ACCESS_DAYS = 14;
-const ADMIN_SESSION_HOURS = 24;
+const VAULT_SESSION_SECONDS = 60;
 
 export function getGuestExpiresAt() {
   return new Date(Date.now() + GUEST_ACCESS_DAYS * 24 * 60 * 60 * 1000);
 }
 
 function getSessionExpiresAt(user) {
-  if (user.role === 'GUEST') {
+  const sessionExpiry = new Date(Date.now() + VAULT_SESSION_SECONDS * 1000);
+
+  if (user.role === 'GUEST' && user.expiresAt && user.expiresAt < sessionExpiry) {
     return user.expiresAt;
   }
-  return new Date(Date.now() + ADMIN_SESSION_HOURS * 60 * 60 * 1000);
+
+  return sessionExpiry;
 }
 
 export async function deleteExpiredVaultSessions() {
@@ -112,6 +115,7 @@ export const requireVaultAuth = async (req, res, next) => {
 
     req.vaultUser = vaultUser;
     req.vaultSessionToken = token;
+    req.vaultSessionExpiresAt = session.expiresAt.toISOString();
     next();
   } catch (error) {
     console.error('Vault auth middleware error:', error);

@@ -54,7 +54,7 @@ export const vaultLogin = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid username or password' });
     }
 
-    const { token } = await createVaultSession(user);
+    const { token, expiresAt: sessionExpiresAt } = await createVaultSession(user);
     const documentIds = user.assignments.map((a) => a.documentId);
 
     res.status(200).json({
@@ -64,6 +64,7 @@ export const vaultLogin = async (req, res) => {
         username: user.username,
         role: user.role,
         expiresAt: user.expiresAt ? user.expiresAt.toISOString() : null,
+        sessionExpiresAt,
         documentIds,
       },
     });
@@ -87,6 +88,7 @@ export const vaultMe = async (req, res) => {
       username: req.vaultUser.username,
       role: req.vaultUser.role,
       expiresAt: req.vaultUser.expiresAt,
+      sessionExpiresAt: req.vaultSessionExpiresAt,
       documentIds: req.vaultUser.documentIds,
     },
   });
