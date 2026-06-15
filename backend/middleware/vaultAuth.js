@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 const GUEST_ACCESS_DAYS = 14;
-const VAULT_SESSION_SECONDS = 60;
+const VAULT_SESSION_SECONDS = 60 * 60;
 
 export function getGuestExpiresAt() {
   return new Date(Date.now() + GUEST_ACCESS_DAYS * 24 * 60 * 60 * 1000);
