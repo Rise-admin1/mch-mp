@@ -158,6 +158,104 @@ export const listVaultGuestAccess = async (req, res) => {
   }
 };
 
+export const addVaultGuestDocuments = async (req, res) => {
+  try {
+    const { id } = req.params || {};
+    const ids = parseDocumentIds(req.body);
+
+    if (typeof id !== 'string' || !id.trim()) {
+      return res.status(400).json({ success: false, message: 'id is required' });
+    }
+
+    if (ids.length === 0) {
+      return res.status(400).json({ success: false, message: 'At least one documentId is required' });
+    }
+
+    const guest = await prisma.vaultUser.findUnique({
+      where: { id: id.trim() },
+      include: {
+        assignments: { include: { document: true } },
+      },
+    });
+
+    if (!guest || guest.role !== 'GUEST') {
+      return res.status(404).json({ success: false, message: 'Guest access not found' });
+    }
+
+    if (guest.expiresAt && guest.expiresAt <= new Date()) {
+      return res.status(400).json({ success: false, message: 'Guest access has expired' });
+    }
+
+    const existingDocIds = new Set(guest.assignments.map((assignment) => assignment.documentId));
+    const newIds = ids.filter((documentId) => !existingDocIds.has(documentId));
+
+    if (newIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'All selected documents are already assigned to this guest',
+      });
+    }
+
+    const documents = await prisma.vaultDocument.findMany({
+      where: { id: { in: newIds } },
+    });
+
+    if (documents.length !== newIds.length) {
+      return res.status(404).json({ success: false, message: 'One or more documents were not found' });
+    }
+
+    const activeAssignments = await prisma.vaultUserDocument.findMany({
+      where: {
+        documentId: { in: newIds },
+        vaultUserId: { not: guest.id },
+        vaultUser: {
+          role: 'GUEST',
+          expiresAt: { gt: new Date() },
+        },
+      },
+      include: {
+        document: { select: { originalName: true, title: true } },
+      },
+    });
+
+    if (activeAssignments.length > 0) {
+      const names = activeAssignments.map((a) => a.document.title || a.document.originalName);
+      return res.status(409).json({
+        success: false,
+        message: `These documents already have active guest access: ${names.join(', ')}`,
+      });
+    }
+
+    await prisma.vaultUserDocument.createMany({
+      data: newIds.map((documentId) => ({
+        vaultUserId: guest.id,
+        documentId,
+      })),
+    });
+
+    const updatedGuest = await prisma.vaultUser.findUnique({
+      where: { id: guest.id },
+      include: {
+        assignments: {
+          include: { document: true },
+        },
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: normalizeGuestAccess(updatedGuest),
+    });
+  } catch (error) {
+    console.error('Error adding vault guest documents:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error adding documents to guest access',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+    });
+  }
+};
+
 export const revokeVaultGuestAccess = async (req, res) => {
   try {
     const { id } = req.params || {};

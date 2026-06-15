@@ -9,6 +9,7 @@ import {
 } from '../controller/vault-controller.js';
 import { vaultLogin, vaultLogout, vaultMe } from '../controller/vault-auth-controller.js';
 import {
+  addVaultGuestDocuments,
   createVaultGuestAccess,
   listVaultGuestAccess,
   revokeVaultGuestAccess,
@@ -54,6 +55,7 @@ router.delete('/vault/documents', requireVaultAuth, requireVaultAdmin, deleteVau
 
 router.post('/vault/guest-access', requireVaultAuth, requireVaultAdmin, createVaultGuestAccess);
 router.get('/vault/guest-access', requireVaultAuth, requireVaultAdmin, listVaultGuestAccess);
+router.post('/vault/guest-access/:id/documents', requireVaultAuth, requireVaultAdmin, addVaultGuestDocuments);
 router.delete('/vault/guest-access/:id', requireVaultAuth, requireVaultAdmin, revokeVaultGuestAccess);
 
 export default router;
