@@ -15,6 +15,58 @@ export function parseSessionGrantCount(value) {
   return { sessions };
 }
 
+export function parseUsedSessionsCount(value) {
+  if (value === undefined || value === null || value === '') {
+    return { usedSessions: 0 };
+  }
+  const usedSessions = Number(value);
+  if (!Number.isInteger(usedSessions) || usedSessions < 0) {
+    return { error: 'usedSessions must be a non-negative integer' };
+  }
+  return { usedSessions };
+}
+
+export function validateSessionCreditCounts({ totalSessions, usedSessions, platformUsageCount = 0 }) {
+  if (!Number.isInteger(totalSessions) || totalSessions < SESSION_GRANT_MIN) {
+    return {
+      error: `totalSessions must be an integer of at least ${SESSION_GRANT_MIN}`,
+    };
+  }
+  if (!Number.isInteger(usedSessions) || usedSessions < 0) {
+    return { error: 'usedSessions must be a non-negative integer' };
+  }
+  if (usedSessions > totalSessions) {
+    return { error: 'usedSessions cannot exceed totalSessions' };
+  }
+  if (usedSessions < platformUsageCount) {
+    return {
+      error: `Cannot set fulfilled below ${platformUsageCount} — that many sessions were booked through the platform`,
+    };
+  }
+  return { totalSessions, usedSessions };
+}
+
+export async function syncInviteForCredit(tx, credit, invite) {
+  if (!invite) {
+    return invite;
+  }
+
+  const remaining = getRemainingSessions(credit);
+  if (remaining === 0 && !invite.usedAt) {
+    return tx.schedulingInvite.update({
+      where: { id: invite.id },
+      data: { usedAt: new Date() },
+    });
+  }
+  if (remaining > 0 && invite.usedAt) {
+    return tx.schedulingInvite.update({
+      where: { id: invite.id },
+      data: { usedAt: null },
+    });
+  }
+  return invite;
+}
+
 export function toSessionCreditDto(credit, shareUrl = null) {
   const remainingSessions = getRemainingSessions(credit);
   return {

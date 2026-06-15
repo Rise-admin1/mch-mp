@@ -21,8 +21,11 @@ import {
 import {
     getRemainingSessions,
     parseSessionGrantCount,
+    parseUsedSessionsCount,
     resolvePackageInviteForCredit,
+    syncInviteForCredit,
     toSessionCreditDto,
+    validateSessionCreditCounts,
 } from '../utils/schedulingSessionCredits.js';
 import { sendSessionPackageGrantedEmail } from '../utils/sessionPackageEmails.js';
 import {
@@ -1203,7 +1206,14 @@ export const rescheduleMeeting = async (req, res, next) => {
 
 export const grantSessionCredits = async (req, res, next) => {
     try {
-        const { email, sessions: rawSessions, appSource: rawAppSource, notes, sendEmail } = req.body || {};
+        const {
+            email,
+            sessions: rawSessions,
+            usedSessions: rawUsedSessions,
+            appSource: rawAppSource,
+            notes,
+            sendEmail,
+        } = req.body || {};
         const appSource = normalizeAppSource(rawAppSource);
         if (!appSource) {
             return res.status(400).json({ message: 'appSource is required (phd-success or rise)' });
@@ -1223,15 +1233,38 @@ export const grantSessionCredits = async (req, res, next) => {
             typeof notes === 'string' && notes.trim() ? notes.trim() : null;
         const shouldSendEmail = sendEmail !== false;
 
-        const result = await prisma.$transaction(async (tx) => {
-            let credit = await tx.schedulingSessionCredit.findUnique({
-                where: {
-                    email_appSource: {
-                        email: normalizedEmail,
-                        appSource,
-                    },
+        const existingCredit = await prisma.schedulingSessionCredit.findUnique({
+            where: {
+                email_appSource: {
+                    email: normalizedEmail,
+                    appSource,
                 },
+            },
+        });
+
+        let initialUsedSessions = 0;
+        if (!existingCredit) {
+            const parsedUsed = parseUsedSessionsCount(rawUsedSessions);
+            if (parsedUsed.error) {
+                return res.status(400).json({ message: parsedUsed.error });
+            }
+            const validation = validateSessionCreditCounts({
+                totalSessions: parsedSessions.sessions,
+                usedSessions: parsedUsed.usedSessions,
+                platformUsageCount: 0,
             });
+            if (validation.error) {
+                return res.status(400).json({ message: validation.error });
+            }
+            initialUsedSessions = parsedUsed.usedSessions;
+        }
+
+        const result = await prisma.$transaction(async (tx) => {
+            let credit = existingCredit
+                ? await tx.schedulingSessionCredit.findUnique({
+                      where: { id: existingCredit.id },
+                  })
+                : null;
 
             const isTopUp = Boolean(credit);
             let invite;
@@ -1255,12 +1288,7 @@ export const grantSessionCredits = async (req, res, next) => {
                     invite = await tx.schedulingInvite.findUnique({
                         where: { id: credit.inviteId },
                     });
-                    if (invite?.usedAt) {
-                        invite = await tx.schedulingInvite.update({
-                            where: { id: invite.id },
-                            data: { usedAt: null },
-                        });
-                    }
+                    invite = await syncInviteForCredit(tx, credit, invite);
                 }
             } else {
                 invite = await tx.schedulingInvite.create({
@@ -1276,10 +1304,13 @@ export const grantSessionCredits = async (req, res, next) => {
                         email: normalizedEmail,
                         appSource,
                         totalSessions: parsedSessions.sessions,
+                        usedSessions: initialUsedSessions,
                         notes: trimmedNotes,
                         inviteId: invite.id,
                     },
                 });
+
+                invite = await syncInviteForCredit(tx, credit, invite);
             }
 
             if (!invite && credit.inviteId) {
@@ -1436,6 +1467,203 @@ export const getSessionCredits = async (req, res, next) => {
                       }
                     : null,
             })),
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const updateSessionCredits = async (req, res, next) => {
+    try {
+        const parsedAppSource = parseAppSourceQuery(req.query);
+        if (parsedAppSource.error) {
+            return res.status(400).json({ message: parsedAppSource.error });
+        }
+
+        const rawEmail = req.query?.email;
+        if (typeof rawEmail !== 'string' || !rawEmail.trim()) {
+            return res.status(400).json({ message: 'email query param is required' });
+        }
+
+        const normalizedEmail = normalizeInviteEmail(rawEmail);
+        if (!isValidInviteEmail(normalizedEmail)) {
+            return res.status(400).json({ message: 'Valid email is required' });
+        }
+
+        const { totalSessions: rawTotalSessions, usedSessions: rawUsedSessions, notes } = req.body || {};
+        const hasTotalSessions = rawTotalSessions !== undefined && rawTotalSessions !== null;
+        const hasUsedSessions = rawUsedSessions !== undefined && rawUsedSessions !== null;
+        const hasNotes = typeof notes === 'string';
+
+        if (!hasTotalSessions && !hasUsedSessions && !hasNotes) {
+            return res.status(400).json({
+                message: 'At least one of totalSessions, usedSessions, or notes is required',
+            });
+        }
+
+        const credit = await prisma.schedulingSessionCredit.findUnique({
+            where: {
+                email_appSource: {
+                    email: normalizedEmail,
+                    appSource: parsedAppSource.appSource,
+                },
+            },
+            include: {
+                _count: { select: { usages: true } },
+            },
+        });
+
+        if (!credit) {
+            return res.status(404).json({ message: 'No session credits found for this email' });
+        }
+
+        const nextTotalSessions = hasTotalSessions ? Number(rawTotalSessions) : credit.totalSessions;
+        const nextUsedSessions = hasUsedSessions ? Number(rawUsedSessions) : credit.usedSessions;
+
+        if (hasTotalSessions && !Number.isInteger(nextTotalSessions)) {
+            return res.status(400).json({ message: 'totalSessions must be an integer' });
+        }
+        if (hasUsedSessions && !Number.isInteger(nextUsedSessions)) {
+            return res.status(400).json({ message: 'usedSessions must be an integer' });
+        }
+
+        const validation = validateSessionCreditCounts({
+            totalSessions: nextTotalSessions,
+            usedSessions: nextUsedSessions,
+            platformUsageCount: credit._count.usages,
+        });
+        if (validation.error) {
+            return res.status(400).json({ message: validation.error });
+        }
+
+        const trimmedNotes = hasNotes && notes.trim() ? notes.trim() : hasNotes ? null : undefined;
+
+        const result = await prisma.$transaction(async (tx) => {
+            let updatedCredit = await tx.schedulingSessionCredit.update({
+                where: { id: credit.id },
+                data: {
+                    ...(hasTotalSessions ? { totalSessions: nextTotalSessions } : {}),
+                    ...(hasUsedSessions ? { usedSessions: nextUsedSessions } : {}),
+                    ...(trimmedNotes !== undefined ? { notes: trimmedNotes } : {}),
+                },
+            });
+
+            let invite = updatedCredit.inviteId
+                ? await tx.schedulingInvite.findUnique({ where: { id: updatedCredit.inviteId } })
+                : null;
+
+            invite = await syncInviteForCredit(tx, updatedCredit, invite);
+
+            const fullCredit = await tx.schedulingSessionCredit.findUnique({
+                where: { id: updatedCredit.id },
+                include: {
+                    invite: true,
+                    usages: {
+                        orderBy: { createdAt: 'desc' },
+                        take: 10,
+                        include: {
+                            booking: {
+                                select: {
+                                    id: true,
+                                    startTime: true,
+                                    endTime: true,
+                                    status: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+
+            return { credit: fullCredit, invite };
+        });
+
+        const shareUrl = result.credit.inviteId
+            ? buildInviteShareUrl(result.credit.inviteId, parsedAppSource.appSource)
+            : null;
+
+        res.status(200).json({
+            credit: toSessionCreditDto(result.credit, shareUrl),
+            invite: result.credit.invite
+                ? toInviteDto(result.credit.invite, shareUrl, result.credit)
+                : null,
+            recentUsages: result.credit.usages.map((usage) => ({
+                id: usage.id,
+                bookingId: usage.bookingId,
+                createdAt: usage.createdAt.toISOString(),
+                booking: usage.booking
+                    ? {
+                          id: usage.booking.id,
+                          startTime: usage.booking.startTime.toISOString(),
+                          endTime: usage.booking.endTime.toISOString(),
+                          status: usage.booking.status,
+                      }
+                    : null,
+            })),
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+export const deleteSessionCredits = async (req, res, next) => {
+    try {
+        const parsedAppSource = parseAppSourceQuery(req.query);
+        if (parsedAppSource.error) {
+            return res.status(400).json({ message: parsedAppSource.error });
+        }
+
+        const rawEmail = req.query?.email;
+        if (typeof rawEmail !== 'string' || !rawEmail.trim()) {
+            return res.status(400).json({ message: 'email query param is required' });
+        }
+
+        const normalizedEmail = normalizeInviteEmail(rawEmail);
+        if (!isValidInviteEmail(normalizedEmail)) {
+            return res.status(400).json({ message: 'Valid email is required' });
+        }
+
+        const credit = await prisma.schedulingSessionCredit.findUnique({
+            where: {
+                email_appSource: {
+                    email: normalizedEmail,
+                    appSource: parsedAppSource.appSource,
+                },
+            },
+            select: {
+                id: true,
+                inviteId: true,
+            },
+        });
+
+        if (!credit) {
+            return res.status(404).json({ message: 'No session credits found for this email' });
+        }
+
+        await prisma.$transaction(async (tx) => {
+            await tx.schedulingSessionCreditUsage.deleteMany({
+                where: { creditId: credit.id },
+            });
+
+            const inviteId = credit.inviteId;
+
+            await tx.schedulingSessionCredit.delete({
+                where: { id: credit.id },
+            });
+
+            if (inviteId) {
+                await tx.schedulingInvite.delete({
+                    where: { id: inviteId },
+                });
+            }
+        });
+
+        res.status(200).json({
+            success: true,
+            email: normalizedEmail,
+            appSource: parsedAppSource.appSource,
         });
     } catch (error) {
         console.error(error);

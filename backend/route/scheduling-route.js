@@ -18,6 +18,8 @@ import {
   grantSessionCredits,
   getSessionCredits,
   listSessionCredits,
+  updateSessionCredits,
+  deleteSessionCredits,
 } from "../controller/scheduling-controller.js";
 import { schedulingUploadMiddleware } from "../middleware/schedulingUpload.js";
 
@@ -44,6 +46,8 @@ schedulingRouter.post("/booking-uploads", (req, res, next) => {
 });
 schedulingRouter.post("/invites", createSchedulingInvite);
 schedulingRouter.post("/session-credits/grant", grantSessionCredits);
+schedulingRouter.patch("/session-credits", updateSessionCredits);
+schedulingRouter.delete("/session-credits", deleteSessionCredits);
 schedulingRouter.post("/availability-settings", createAvailabilitySetting);
 schedulingRouter.post("/meetings/:id/cancel", cancelMeeting);
 schedulingRouter.put("/availability-settings/:id", updateAvailabilitySetting);
