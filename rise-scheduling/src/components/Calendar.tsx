@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import {
   format,
   startOfMonth,
@@ -22,27 +22,17 @@ interface CalendarProps {
   onDateSelect: (date: Date) => void
 }
 
-// Generate available dates (weekdays only, excluding past dates)
-function getAvailableDates(): Set<string> {
-  const available = new Set<string>()
+// Any day of the week (Sun–Sat) within the next 60 days, excluding past dates.
+function isDateSelectable(date: Date): boolean {
   const today = startOfDay(new Date())
-  
-  // Make dates available for the next 60 days (weekdays only)
-  for (let i = 0; i < 60; i++) {
-    const date = addDays(today, i)
-    const dayOfWeek = date.getDay()
-    // Only weekdays (Monday = 1 to Friday = 5)
-    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-      available.add(format(date, 'yyyy-MM-dd'))
-    }
-  }
-  
-  return available
+  const day = startOfDay(date)
+  if (isBefore(day, today)) return false
+  if (!isBefore(day, addDays(today, 60))) return false
+  return true
 }
 
 export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date())
-  const availableDates = useMemo(() => getAvailableDates(), [])
 
   const monthStart = startOfMonth(currentMonth)
   const monthEnd = endOfMonth(currentMonth)
@@ -73,9 +63,7 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
     setCurrentMonth(addMonths(currentMonth, 1))
   }
 
-  const isDateAvailable = (date: Date) => {
-    return availableDates.has(format(date, 'yyyy-MM-dd'))
-  }
+  const isDateAvailable = (date: Date) => isDateSelectable(date)
 
   const isPastMonth = isBefore(subMonths(currentMonth, 1), startOfMonth(new Date()))
 
@@ -139,9 +127,9 @@ export function Calendar({ selectedDate, onDateSelect }: CalendarProps) {
                   disabled={!isAvailable}
                   className={cn(
                     "relative aspect-square flex items-center justify-center text-sm rounded-lg transition-all",
-                    !isCurrentMonth && "text-muted-foreground/30",
-                    isCurrentMonth && !isAvailable && "text-muted-foreground/40 cursor-not-allowed",
-                    isCurrentMonth && isAvailable && !isSelected && "text-foreground hover:bg-muted cursor-pointer",
+                    !isAvailable && "text-muted-foreground/40 cursor-not-allowed",
+                    isAvailable && !isSelected && "text-foreground hover:bg-muted cursor-pointer",
+                    isAvailable && !isCurrentMonth && !isSelected && "text-muted-foreground",
                     isSelected && "bg-foreground text-primary-foreground font-medium",
                     isTodayDate && !isSelected && isAvailable && "font-semibold"
                   )}

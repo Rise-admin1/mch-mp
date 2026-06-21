@@ -69,6 +69,16 @@ function toUtcOnTargetDay(targetDayStartUtc, hm) {
     ));
 }
 
+function resolveAvailabilityWindow(targetDayStartUtc, startTime, endTime) {
+    const windowStart = toUtcOnTargetDay(targetDayStartUtc, startTime);
+    let windowEnd = toUtcOnTargetDay(targetDayStartUtc, endTime);
+    if (!windowStart || !windowEnd) return { windowStart: null, windowEnd: null };
+    if (windowEnd.getTime() <= windowStart.getTime()) {
+        windowEnd = new Date(windowEnd.getTime() + 24 * 60 * 60 * 1000);
+    }
+    return { windowStart, windowEnd };
+}
+
 function ceilToNextHourUtc(instant) {
     const hourStart = new Date(Date.UTC(
         instant.getUTCFullYear(),
@@ -125,10 +135,12 @@ export const getAvailability = async (req, res, next) => {
         const generatedSlots = [];
 
         for (const row of availabilityRows) {
-            const windowStart = toUtcOnTargetDay(targetDayStartUtc, row.startTime);
-            const windowEnd = toUtcOnTargetDay(targetDayStartUtc, row.endTime);
+            const { windowStart, windowEnd } = resolveAvailabilityWindow(
+                targetDayStartUtc,
+                row.startTime,
+                row.endTime
+            );
             if (!windowStart || !windowEnd) continue;
-            if (windowEnd.getTime() <= windowStart.getTime()) continue;
 
             for (let slotStart = new Date(windowStart);;) {
                 const slotEnd = new Date(slotStart.getTime() + SLOT_DURATION_MS);
@@ -635,6 +647,10 @@ function hmToMinutes(hm) {
     return parsed.h * 60 + parsed.m;
 }
 
+function windowEndMinutes(startMin, endMin) {
+    return endMin <= startMin ? endMin + 24 * 60 : endMin;
+}
+
 function toAvailabilitySettingDto(row) {
     return {
         id: row.id,
@@ -659,13 +675,12 @@ function parseAvailabilityInput(body) {
     if (!startParsed || !endParsed) {
         return { error: 'startTime and endTime must be HH:MM in UTC (e.g. "09:00")' };
     }
-    if (startParsed.m !== 0 || endParsed.m !== 0) {
-        return { error: 'startTime and endTime must be on the hour (:00 minutes)' };
-    }
-
     const startMinutes = hmToMinutes(startTime);
     const endMinutes = hmToMinutes(endTime);
-    if (endMinutes <= startMinutes) {
+    if (startMinutes == null || endMinutes == null) {
+        return { error: 'startTime and endTime must be HH:MM in UTC (e.g. "09:00")' };
+    }
+    if (windowEndMinutes(startMinutes, endMinutes) <= startMinutes) {
         return { error: 'endTime must be after startTime' };
     }
 
@@ -681,6 +696,8 @@ function parseAvailabilityInput(body) {
 async function assertNoAvailabilityOverlap(db, { dayOfWeek, startTime, endTime, excludeId = null }) {
     const startMinutes = hmToMinutes(startTime);
     const endMinutes = hmToMinutes(endTime);
+    if (startMinutes == null || endMinutes == null) return;
+    const startEnd = windowEndMinutes(startMinutes, endMinutes);
 
     const existingRows = await db.schedulingAvailability.findMany({
         where: {
@@ -692,9 +709,10 @@ async function assertNoAvailabilityOverlap(db, { dayOfWeek, startTime, endTime, 
 
     for (const row of existingRows) {
         const rowStart = hmToMinutes(row.startTime);
-        const rowEnd = hmToMinutes(row.endTime);
-        if (rowStart == null || rowEnd == null) continue;
-        if (startMinutes < rowEnd && rowStart < endMinutes) {
+        const rowEndRaw = hmToMinutes(row.endTime);
+        if (rowStart == null || rowEndRaw == null) continue;
+        const rowEnd = windowEndMinutes(rowStart, rowEndRaw);
+        if (startMinutes < rowEnd && rowStart < startEnd) {
             const err = new Error(
                 `This window overlaps an existing window on the same day (${row.startTime}–${row.endTime} UTC)`
             );
@@ -960,10 +978,12 @@ async function resolveAvailabilityIdForStartTime(db, startTime) {
     });
 
     for (const row of availabilityRows) {
-        const windowStart = toUtcOnTargetDay(targetDayStartUtc, row.startTime);
-        const windowEnd = toUtcOnTargetDay(targetDayStartUtc, row.endTime);
+        const { windowStart, windowEnd } = resolveAvailabilityWindow(
+            targetDayStartUtc,
+            row.startTime,
+            row.endTime
+        );
         if (!windowStart || !windowEnd) continue;
-        if (windowEnd.getTime() <= windowStart.getTime()) continue;
 
         for (let slotStart = new Date(windowStart);;) {
             const slotEnd = new Date(slotStart.getTime() + SLOT_DURATION_MS);

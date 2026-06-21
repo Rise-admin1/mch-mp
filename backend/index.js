@@ -57,9 +57,20 @@ app.get('/auth/google', (req, res) => {
 
 app.get('/auth/google/callback', async (req, res) => {
   try {
+    const oauthError = req.query?.error;
+    if (oauthError && typeof oauthError === 'string') {
+      const description =
+        typeof req.query?.error_description === 'string'
+          ? req.query.error_description
+          : oauthError;
+      return res.status(400).send(`Google sign-in failed: ${description}`);
+    }
+
     const code = req.query?.code;
     if (!code || typeof code !== 'string') {
-      return res.status(400).send('Missing code');
+      return res.status(400).send(
+        'Missing authorization code. Open https://future.funyula.com/auth/google first, sign in with Google, and let Google redirect you here automatically.'
+      );
     }
     const tokens = await exchangeCodeForTokens(code);
     if (tokens.refresh_token) {
