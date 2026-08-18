@@ -7,6 +7,11 @@ const samiaOrigins = [
   'https://www.samiafuture.com',
 ];
 
+const mtcmOrigins = [
+  'https://mtcmfoundation.org',
+  'https://www.mtcmfoundation.org',
+];
+
 export const frontendURL = process.env.FRONTEND_URL ||
   [
     'http://localhost:3000',
@@ -15,13 +20,14 @@ export const frontendURL = process.env.FRONTEND_URL ||
     'http://localhost:5173',
     'https://www.scheduling.phdsuccess.ae',
     ...samiaOrigins,
+    ...mtcmOrigins,
   ];
 
 export const corsOptions = {
     origin :  (origin, callback) => { 
         console.log(origin,'origin-------------------------------');
         
-        if(frontendURL.indexOf(origin) !== -1 || samiaOrigins.indexOf(origin) !== -1 || !origin){
+        if(frontendURL.indexOf(origin) !== -1 || samiaOrigins.indexOf(origin) !== -1 || mtcmOrigins.indexOf(origin) !== -1 || !origin){
             callback(null, true)
         }else{
             callback(new Error('Not allowed by CORS'))
