@@ -24,6 +24,19 @@ function parseKesAmount(raw, min) {
   return Math.round(n);
 }
 
+function toPaystackPhone(phoneNumber) {
+  const normalized = normalizePhoneNumber(phoneNumber);
+  if (!normalized) return normalized;
+  return String(normalized).startsWith('+') ? String(normalized) : `+${normalized}`;
+}
+
+function paystackHeaders(secretKey) {
+  return {
+    Authorization: `Bearer ${secretKey}`,
+    'Content-Type': 'application/json',
+  };
+}
+
 function getCallbackUrl() {
   return `${getBackendUrl()}/api/samia-future/callback`;
 }
@@ -298,6 +311,82 @@ export const initializePaystack = async (req, res) => {
   }
 };
 
+export const chargePaystackMpesa = async (req, res) => {
+  try {
+    const kesAmount = parseKesAmount(req.body?.amount, MPESA_MIN_AMOUNT);
+    const email = typeof req.body?.email === 'string' ? req.body.email.trim() : '';
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const phoneNumber = toPaystackPhone(req.body?.phoneNumber);
+
+    if (kesAmount === null || !emailOk || !phoneNumber) {
+      return res.status(400).json({
+        status: false,
+        msg: `Valid email, M-Pesa phone, and amount (min ${MPESA_MIN_AMOUNT} KES) are required`,
+      });
+    }
+
+    const { secretKey } = getSamiaPaystackConfig();
+    if (!secretKey) {
+      return res.status(503).json({
+        status: false,
+        msg: "Samia Paystack is not configured. Set SAMIA_PAYSTACK_SECRET_KEY.",
+      });
+    }
+
+    const response = await axios.post(
+      'https://api.paystack.co/charge',
+      {
+        email,
+        amount: kesAmount * 100,
+        currency: 'KES',
+        mobile_money: {
+          phone: phoneNumber,
+          provider: 'mpesa',
+        },
+        metadata: {
+          source: 'samia-future',
+          channel: 'mpesa',
+          amountKes: String(kesAmount),
+        },
+      },
+      { headers: paystackHeaders(secretKey) }
+    );
+
+    const data = response.data?.data;
+    const reference = data?.reference;
+    if (!response.data?.status || !reference) {
+      return res.status(502).json({
+        status: false,
+        msg: response.data?.message || data?.display_text || 'Paystack did not start the M-Pesa charge',
+      });
+    }
+
+    await prisma.samiaDonation.create({
+      data: {
+        method: 'paystack',
+        amount: kesAmount,
+        currency: 'KES',
+        status: 'pending',
+        phoneNumber,
+        paystackReference: reference,
+        resultDesc: data.status || 'pay_offline',
+      },
+    });
+
+    return res.status(200).json({
+      status: true,
+      reference,
+      msg: data.display_text || 'Check your phone and enter your M-Pesa PIN.',
+    });
+  } catch (error) {
+    console.error('Error charging Samia Paystack M-Pesa:', error.response?.data || error);
+    return res.status(error.response?.status || 500).json({
+      status: false,
+      msg: error.response?.data?.message || error.message || 'Failed to start M-Pesa payment',
+    });
+  }
+};
+
 export const verifyPaystack = async (req, res) => {
   try {
     const reference = req.params?.reference;
@@ -326,22 +415,29 @@ export const verifyPaystack = async (req, res) => {
     );
 
     const verified = response.data?.data;
-    const succeeded = verified?.status === 'success';
+    const paystackStatus = verified?.status;
+    const succeeded = paystackStatus === 'success';
+    const failed = ['failed', 'abandoned', 'reversed'].includes(paystackStatus);
     const amountKes =
       typeof verified?.amount === 'number' ? verified.amount / 100 : undefined;
 
-    if (verified?.reference) {
+    if (verified?.reference && (succeeded || failed)) {
       await upsertPaystackDonation({
         reference: verified.reference,
         amountKes,
         status: succeeded ? 'success' : 'failed',
-        resultDesc: verified.status,
+        resultDesc: paystackStatus,
       });
     }
 
+    const status = succeeded ? 'success' : failed ? 'failed' : 'pending';
     return res.status(200).json({
-      status: succeeded ? 'success' : verified?.status || 'failed',
-      msg: succeeded ? 'Payment successful' : 'Payment not completed',
+      status,
+      msg: succeeded
+        ? 'Payment successful'
+        : failed
+          ? 'Payment not completed'
+          : 'Waiting for payment confirmation…',
       reference: verified?.reference || reference,
     });
   } catch (error) {

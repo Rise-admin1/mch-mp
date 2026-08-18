@@ -4,6 +4,7 @@ import {
   stkpushCallback,
   checkPaymentStatus,
   initializePaystack,
+  chargePaystackMpesa,
   verifyPaystack,
 } from "../controller/samia-future-controller.js";
 
@@ -13,6 +14,7 @@ samiaFutureRouter.post('/stkpush', stkpush);
 samiaFutureRouter.post('/callback', stkpushCallback);
 samiaFutureRouter.get('/status/:checkoutRequestID', checkPaymentStatus);
 samiaFutureRouter.post('/paystack/initialize', initializePaystack);
+samiaFutureRouter.post('/paystack/mpesa', chargePaystackMpesa);
 samiaFutureRouter.get('/paystack/verify/:reference', verifyPaystack);
 
 export default samiaFutureRouter;
