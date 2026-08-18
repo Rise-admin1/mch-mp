@@ -1,41 +1,18 @@
 import { PrismaClient } from '@prisma/client'
 import axios from "axios";
 import moment from "moment";
+import {
+  normalizePhoneNumber,
+  isProduction,
+  mpesaBaseUrl as baseUrl,
+  mpesaConfig as config,
+  getBackendUrl,
+  getMpesaAccessToken,
+} from "../utils/mpesaDaraja.js";
 const prisma = new PrismaClient();
 
-// Helper function to normalize phone number (remove + prefix, ensure string format)
-function normalizePhoneNumber(phoneNumber) {
-  if (!phoneNumber) return phoneNumber;
-  return String(phoneNumber).replace(/^\+/, '');
-}
-
-// Environment configuration
-const isProduction = process.env.NODE_ENV === 'production' || process.env.MPESA_ENV === 'production';
-const baseUrl = isProduction 
-  ? "https://api.safaricom.co.ke" 
-  : "https://sandbox.safaricom.co.ke";
-
-// Sandbox credentials (for testing)
-const SANDBOX_CONFIG = {
-  consumer_key: process.env.MPESA_CONSUMER_KEY || "",
-  consumer_secret: process.env.MPESA_CONSUMER_SECRET || "",
-  businessShortCode: process.env.MPESA_SHORTCODE || "", // Sandbox test Till number
-  passKey: process.env.MPESA_PASSKEY || "", // Sandbox passkey
-};
-
-// Production credentials (set these in .env file)
-const PRODUCTION_CONFIG = {
-  consumer_key: process.env.MPESA_PRODUCTION_CONSUMER_KEY || "",
-  consumer_secret: process.env.MPESA_PRODUCTION_CONSUMER_SECRET || "",
-  businessShortCode: process.env.MPESA_PRODUCTION_SHORTCODE || "4006467", // Your PayBill number
-  passKey: process.env.MPESA_PRODUCTION_PASSKEY || "", // Get from Daraja portal
-};
-
-const config = isProduction ? PRODUCTION_CONFIG : SANDBOX_CONFIG;
-
-// Callback URL configuration
 const getCallbackUrl = () => {
-  const backendUrl = process.env.BACKEND_URL || process.env.SERVER_URL || 'http://localhost:3001';
+  const backendUrl = getBackendUrl();
   console.log(backendUrl, 'backendUrl');
   return `${backendUrl}/api/dajaria/callback`;
 };
@@ -43,26 +20,8 @@ const getCallbackUrl = () => {
 async function getAccessToken() {
   console.log(config, 'config');
   console.log(baseUrl, 'baseUrl');
-  
-  
-    const url = `${baseUrl}/oauth/v1/generate?grant_type=client_credentials`;
-  
-    const auth =
-      "Basic " +
-      new Buffer.from(config.consumer_key + ":" + config.consumer_secret).toString("base64");
-  
-    try {
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: auth,
-        },
-      });
-      const accessToken = response.data.access_token;
-      return accessToken;
-    } catch (error) {
-      throw error;
-    }
-  }
+  return getMpesaAccessToken();
+}
 
 export const stkpush = async(req,res)=>{
     const {accountNumber, phoneNumber, amount} = req.body;

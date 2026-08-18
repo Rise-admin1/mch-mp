@@ -279,3 +279,27 @@ model VaultUserDocument {
   @@index([documentId])
 }
 
+model SamiaDonation {
+  id                    String    @id @default(cuid())
+  method                String    // 'mpesa' | 'paystack'
+  amount                Decimal   @db.Decimal(10, 2)
+  currency              String    @default("KES")
+  status                String    // 'pending' | 'success' | 'failed'
+  phoneNumber           String?
+  merchantRequestID     String?
+  checkoutRequestID     String?
+  mpesaReceiptNumber    String?
+  resultCode            Int?
+  resultDesc            String?
+  stripePaymentIntentId String?   @unique
+  paystackReference     String?   @unique
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([checkoutRequestID])
+  @@index([stripePaymentIntentId])
+  @@index([paystackReference])
+  @@index([status])
+  @@index([method])
+}
+

@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import volunteerRouter from './route/volunteer-Route.js';
 import africastalkingRouter from './route/africastalking-Route.js';
 import dajariaRouter from './route/dajaria-router.js';
+import samiaFutureRouter from './route/samia-future-router.js';
 import metaRouter from './route/meta-Route.js';
 import { corsOptions } from './utils/corsFe.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -13,6 +14,7 @@ import schedulingRouter from './route/scheduling-route.js';
 import { getGoogleAuthUrl, exchangeCodeForTokens, upsertGoogleRefreshToken } from './utils/googleCalendar.js';
 import { getSchedulingStripeConfig } from './utils/schedulingStripe.js';
 import { handleSchedulingStripeWebhook } from './utils/schedulingWebhook.js';
+import { handleSamiaPaystackWebhook } from './utils/samiaPaystackWebhook.js';
 import { deleteExpiredGuestUsers, deleteExpiredVaultSessions } from './middleware/vaultAuth.js';
 dotenv.config();
 const app = express();
@@ -39,6 +41,9 @@ app.post('/api/stripe/rise/webhook', express.raw({ type: 'application/json' }), 
     defaultAppSource: 'rise',
   })
 );
+
+// Paystack webhook for Samia Future card donations
+app.post('/api/samia-future/paystack/webhook', express.raw({ type: 'application/json' }), handleSamiaPaystackWebhook);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -91,6 +96,7 @@ app.get('/auth/google/callback', async (req, res) => {
 app.use('/api/volunteer', volunteerRouter);
 app.use('/api/africastalking',africastalkingRouter);
 app.use('/api/dajaria',dajariaRouter);
+app.use('/api/samia-future', samiaFutureRouter);
 app.use('/api/rise-reports', metaRouter);
 
 app.use('/api/scheduling', schedulingRouter);
