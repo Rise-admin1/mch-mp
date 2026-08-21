@@ -8,8 +8,9 @@ const prisma = new PrismaClient();
 
 const MPESA_MIN_AMOUNT = 10;
 const PAYSTACK_MIN_AMOUNT = 50;
-const MAX_AMOUNT = 5000000;
+const MAX_AMOUNT = 10000000;
 const METADATA_SOURCE = 'mtcm';
+const ALLOWED_GIFT_TIERS = ['ordinary', 'corporate', 'honorary', 'legacy'];
 
 function parseKesAmount(raw, min) {
   const n = Number(raw);
@@ -43,6 +44,10 @@ export const initializePaystack = async (req, res) => {
       });
     }
 
+    const giftTier = ALLOWED_GIFT_TIERS.includes(req.body?.giftTier)
+      ? req.body.giftTier
+      : undefined;
+
     const { secretKey } = getSamiaPaystackConfig();
     if (!secretKey) {
       return res.status(503).json({
@@ -61,6 +66,9 @@ export const initializePaystack = async (req, res) => {
         metadata: {
           source: METADATA_SOURCE,
           amountKes: String(kesAmount),
+          ...(giftTier
+            ? { giftTier, funnel: 'legacy-honour' }
+            : {}),
         },
       },
       {
